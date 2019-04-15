@@ -15,16 +15,22 @@ class ColorIDMapTest {
         ColorIDMap colorIDMap = new ColorIDMap(true,new ArrayList<>());
 
         /*for (Map.Entry<Integer, MapIDEntry> entry : colorIDMap.getMap().entrySet()){
-            System.out.format("ID: %d; RGB: %d,%d,%d; BlockName: %s; BlockID: %s%n", entry.getKey(), entry.getValue().rgbList.get(0), entry.getValue().rgbList.get(1), entry.getValue().rgbList.get(2), entry.getValue().blockName, entry.getValue().blockID);
+            int red =entry.getValue().getRed();
+            int green = entry.getValue().getGreen();
+            int blue = entry.getValue().getBlue();
+            System.out.format("ID: %d; RGB: %d,%d,%d; BlockName: %s; BlockID: %s%n", entry.getKey(), red , green, blue, entry.getValue().blockName, entry.getValue().blockID);
         }*/
     }
 
     @org.junit.jupiter.api.Test
     void mapColorIDGenerator2D() throws IOException {
-        ColorIDMap colorIDMap = new ColorIDMap(false,new ArrayList<>());
+        ColorIDMap colorIDMap = new ColorIDMap(false, new ArrayList<>());
 
-        /*for (Map.Entry<Integer, MapIDEntry> entry : colorIDMap.getMap().entrySet()){
-            System.out.format("ID: %d; RGB: %d,%d,%d; BlockName: %s; BlockID: %s%n", entry.getKey(), entry.getValue().rgbList.get(0), entry.getValue().rgbList.get(1), entry.getValue().rgbList.get(2), entry.getValue().blockName, entry.getValue().blockID);
+        /*for (Map.Entry<Integer, MapIDEntry> entry : colorIDMap.getMap().entrySet()) {
+            int red = entry.getValue().getRed();
+            int green = entry.getValue().getGreen();
+            int blue = entry.getValue().getBlue();
+            System.out.format("ID: %d; RGB: %d,%d,%d; BlockName: %s; BlockID: %s%n", entry.getKey(), red, green, blue, entry.getValue().blockName, entry.getValue().blockID);
         }*/
     }
 }

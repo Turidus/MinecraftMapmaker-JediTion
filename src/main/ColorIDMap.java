@@ -69,25 +69,19 @@ public class ColorIDMap {
 
             int[] rgbArray = {Integer.parseInt(secondSplit[0].trim()),Integer.parseInt(secondSplit[1].trim()),Integer.parseInt(secondSplit[2].trim())};
 
-            List<Integer> rgbList180 = new ArrayList<>(3);
-            List<Integer> rgbList220 = new ArrayList<>(3);
-            List<Integer> rgbList255 = new ArrayList<>(3);
+            int rgb180 = (mult180(rgbArray[0]) << 16 | mult180(rgbArray[1]) << 8 | mult180(rgbArray[2]));
+            int colorID180 = Integer.parseInt(firstSplit[0].trim()) * 4;
 
-            rgbList180.add(mult180(rgbArray[0]));
-            rgbList180.add(mult180(rgbArray[1]));
-            rgbList180.add(mult180(rgbArray[2]));
+            int rgb220 = (mult220(rgbArray[0]) << 16 | mult220(rgbArray[1]) << 8 | mult220(rgbArray[2]));
+            int colorID220 = Integer.parseInt(firstSplit[0].trim()) * 4 + 1;
 
-            rgbList220.add(mult220(rgbArray[0]));
-            rgbList220.add(mult220(rgbArray[1]));
-            rgbList220.add(mult220(rgbArray[2]));
+            int rgb255 = (rgbArray[0] << 16 | rgbArray[1] << 8 | rgbArray[2]);
+            int colorID255 = Integer.parseInt(firstSplit[0].trim()) * 4 + 2;
 
-            rgbList255.add(rgbArray[0]);
-            rgbList255.add(rgbArray[1]);
-            rgbList255.add(rgbArray[2]);
 
-            map.put(Integer.parseInt(firstSplit[0].trim()) * 4, new MapIDEntry(rgbList180,firstSplit[2],firstSplit[3]));
-            map.put(Integer.parseInt(firstSplit[0].trim()) * 4 + 1, new MapIDEntry(rgbList220,firstSplit[2],firstSplit[3]));
-            map.put(Integer.parseInt(firstSplit[0].trim()) * 4 + 2, new MapIDEntry(rgbList255,firstSplit[2],firstSplit[3]));
+            map.put(colorID180, new MapIDEntry(colorID180, rgb180,firstSplit[2],firstSplit[3]));
+            map.put(colorID220, new MapIDEntry(colorID220, rgb220,firstSplit[2],firstSplit[3]));
+            map.put(colorID255, new MapIDEntry(colorID255, rgb255,firstSplit[2],firstSplit[3]));
         }
     }
 
@@ -110,13 +104,10 @@ public class ColorIDMap {
 
             int[] rgbArray = {Integer.parseInt(secondSplit[0].trim()),Integer.parseInt(secondSplit[1].trim()),Integer.parseInt(secondSplit[2].trim())};
 
-            List<Integer> rgbList220 = new ArrayList<>(3);
+            int rgb220 = (mult220(rgbArray[0]) <<16 | mult220(rgbArray[1]) << 8 | mult220(rgbArray[2]));
+            int colorID220 = Integer.parseInt(firstSplit[0].trim()) * 4 + 1;
 
-            rgbList220.add(mult220(rgbArray[0]));
-            rgbList220.add(mult220(rgbArray[1]));
-            rgbList220.add(mult220(rgbArray[2]));
-
-            map.put(Integer.parseInt(firstSplit[0].trim()) * 4 + 1, new MapIDEntry(rgbList220,firstSplit[2],firstSplit[3]));
+            map.put(colorID220, new MapIDEntry(colorID220, rgb220,firstSplit[2],firstSplit[3]));
         }
     }
 
