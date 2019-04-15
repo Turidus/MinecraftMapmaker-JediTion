@@ -1,3 +1,5 @@
+package main;
+
 import com.sun.istack.internal.NotNull;
 
 import java.io.BufferedReader;
@@ -31,24 +33,24 @@ import java.util.List;
         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
         SOFTWARE.
 */
-public class MapColorIDGenerator {
+public class ColorIDMap {
 
-    private static int mult180(int x){
+    private HashMap<Integer, MapIDEntry> map = new HashMap<>();
+
+    public ColorIDMap(boolean threeD, @NotNull List<String> blacklist) throws IOException {
+        if (threeD) mapColorIDGenerator3D(blacklist);
+        else mapColorIDGenerator2D(blacklist);
+    }
+
+    private int mult180(int x){
         return (x * 180) / 255;
     }
 
-    private static int mult220(int x){
+    private int mult220(int x){
         return (x * 220) / 255;
     }
 
-    private static int mult135(int x){
-        return (x * 135) / 255;
-    }
-
-
-    public static HashMap<Integer, MapIDEntry> mapColorIDGenerator3D(@NotNull List<String> blacklist) throws IOException {
-
-        HashMap<Integer, MapIDEntry> mapColorIDMap = new HashMap<>();
+    private void mapColorIDGenerator3D(@NotNull List<String> blacklist) throws IOException {
 
         List<String> lines = new ArrayList<>();
         String line;
@@ -83,17 +85,13 @@ public class MapColorIDGenerator {
             rgbList255.add(rgbArray[1]);
             rgbList255.add(rgbArray[2]);
 
-            mapColorIDMap.put(Integer.parseInt(firstSplit[0].trim()) * 4, new MapIDEntry(rgbList180,firstSplit[2],firstSplit[3]));
-            mapColorIDMap.put(Integer.parseInt(firstSplit[0].trim()) * 4 + 1, new MapIDEntry(rgbList220,firstSplit[2],firstSplit[3]));
-            mapColorIDMap.put(Integer.parseInt(firstSplit[0].trim()) * 4 + 2, new MapIDEntry(rgbList255,firstSplit[2],firstSplit[3]));
+            map.put(Integer.parseInt(firstSplit[0].trim()) * 4, new MapIDEntry(rgbList180,firstSplit[2],firstSplit[3]));
+            map.put(Integer.parseInt(firstSplit[0].trim()) * 4 + 1, new MapIDEntry(rgbList220,firstSplit[2],firstSplit[3]));
+            map.put(Integer.parseInt(firstSplit[0].trim()) * 4 + 2, new MapIDEntry(rgbList255,firstSplit[2],firstSplit[3]));
         }
-
-        return  mapColorIDMap;
     }
 
-    public static HashMap<Integer, MapIDEntry> mapColorIDGenerator2D(@NotNull List<String> blacklist) throws IOException {
-
-        HashMap<Integer, MapIDEntry> mapColorIDMap = new HashMap<>();
+    private void mapColorIDGenerator2D(@NotNull List<String> blacklist) throws IOException {
 
         List<String> lines = new ArrayList<>();
         String line;
@@ -118,9 +116,11 @@ public class MapColorIDGenerator {
             rgbList220.add(mult220(rgbArray[1]));
             rgbList220.add(mult220(rgbArray[2]));
 
-            mapColorIDMap.put(Integer.parseInt(firstSplit[0].trim()) * 4 + 1, new MapIDEntry(rgbList220,firstSplit[2],firstSplit[3]));
+            map.put(Integer.parseInt(firstSplit[0].trim()) * 4 + 1, new MapIDEntry(rgbList220,firstSplit[2],firstSplit[3]));
         }
+    }
 
-        return  mapColorIDMap;
+    public HashMap<Integer, MapIDEntry> getMap() {
+        return map;
     }
 }
