@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class Tag_Compound extends Tag {
-    String name;
-    List<Tag> listOfTags;
+
+    private String name;
+    private List<Tag> listOfTags;
 
     public Tag_Compound(String name, List<Tag> listOfTags) {
         super((byte)10);
@@ -29,4 +30,10 @@ public class Tag_Compound extends Tag {
 
         return byteArrayOutputStream;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) { this.name = name; }
 }

@@ -14,10 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class TagTest {
 
     @Test
-    void tag_end() throws UnsupportedEncodingException {
+    void tag_end() {
         Tag_End tag_end = new Tag_End();
         ByteArrayOutputStream byteArrayOutputStream = tag_end.toBytes();
-        //System.out.println(byteArrayOutputStream.toString("UTF-8"));
 
         ByteArrayOutputStream expected = new ByteArrayOutputStream();
         expected.write(0);
@@ -84,11 +83,22 @@ class TagTest {
     @Test
     void tag_byteArray() throws IOException{
         byte[] bytes = {0,1,2};
+        List<Byte> bytes2 = new ArrayList<>();
+        bytes2.add((byte)0);
+        bytes2.add((byte)1);
+        bytes2.add((byte)2);
 
         Tag_ByteArray tag_byteArray = new Tag_ByteArray("test", bytes);
         ByteArrayOutputStream byteArrayOutputStream = tag_byteArray.toBytes();
 
+        Tag_ByteArray tag_byteArray2 = new Tag_ByteArray("test", bytes2);
+        ByteArrayOutputStream byteArrayOutputStream2 = tag_byteArray2.toBytes();
+
         /*for(byte item : byteArrayOutputStream.toByteArray()){
+            System.out.printf("%8s%n", Integer.toBinaryString(item & 0xFF));
+        }
+        System.out.println("");
+        for(byte item : byteArrayOutputStream2.toByteArray()){
             System.out.printf("%8s%n", Integer.toBinaryString(item & 0xFF));
         }*/
 
@@ -102,6 +112,9 @@ class TagTest {
         expected.write(2);
 
         assertEquals(expected.toString(),byteArrayOutputStream.toString());
+
+        assertEquals(byteArrayOutputStream.toByteArray().length, byteArrayOutputStream2.toByteArray().length);
+        assertEquals(byteArrayOutputStream.toString(),byteArrayOutputStream2.toString());
     }
 
     @Test
@@ -132,9 +145,9 @@ class TagTest {
         Tag_List tag_list = new Tag_List("test");
         ByteArrayOutputStream byteArrayOutputStream = tag_list.toBytes();
 
-        for(byte item : byteArrayOutputStream.toByteArray()){
+        /*for(byte item : byteArrayOutputStream.toByteArray()){
             System.out.printf("%8s%n", Integer.toBinaryString(item & 0xFF));
-        }
+        }*/
 
         ByteArrayOutputStream expected = new ByteArrayOutputStream();
         expected.write(9);
@@ -161,19 +174,33 @@ class TagTest {
         Tag_Compound tag_list = new Tag_Compound("test",listOfTags);
         ByteArrayOutputStream byteArrayOutputStream = tag_list.toBytes();
 
-        for(byte item : byteArrayOutputStream.toByteArray()){
-            System.out.printf("%8s%n", Integer.toBinaryString(item & 0xFF));
-        }
+        /*for(byte item : byteArrayOutputStream.toByteArray()){
+            System.out.print(String.format("%8s%n", Integer.toBinaryString(item & 0xFF)).replace(" ", "0"));
+        }*/
 
         ByteArrayOutputStream expected = new ByteArrayOutputStream();
-        expected.write(9);
+        expected.write(10);
         expected.write(0);
         expected.write(4);
         expected.write("test".getBytes());
-        expected.write(10);
+
+        expected.write(1);  //first tag
         expected.write(0);
+        expected.write(1);
+        expected.write("1".getBytes());
+        expected.write(1);
+
+        expected.write(1);  //second tag
         expected.write(0);
+        expected.write(1);
+        expected.write("2".getBytes());
+        expected.write(2);
+
+        expected.write(1);  //third tag
         expected.write(0);
+        expected.write(1);
+        expected.write("3".getBytes());
+        expected.write(3);
         expected.write(0);
 
         assertEquals(expected.toString(),byteArrayOutputStream.toString());

@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class Tag_List extends Tag {
-    String name;
-    byte value = 0;
+    private String name;
+    private byte value = 0;
 
     public Tag_List(String name) {
         super((byte)9);
@@ -19,7 +19,7 @@ public class Tag_List extends Tag {
         byteArrayOutputStream.write(tagID);
         stringToBytes(name).writeTo(byteArrayOutputStream);
         byteArrayOutputStream.write(10);
-        intToBytes(0).writeTo(byteArrayOutputStream);
+        intToBytes(value).writeTo(byteArrayOutputStream);
 
         return byteArrayOutputStream;
     }
