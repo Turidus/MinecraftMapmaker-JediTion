@@ -3,10 +3,13 @@ package logic;
 import nbt.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class holds the position matrix, a two dimensional array that contains y-coordiantes for the blocks.
+ *
  * @author Lars Schulze-Falck
  * <p>
  * “Commons Clause” License Condition v1.0
@@ -47,9 +50,9 @@ import java.util.List;
 public class PositionMatrix {
 
 
-    private int maxY = 250;
-    private int minY = 4;
-    private int maxSize = 129;
+    private int maxY;
+    private int minY;
+    private int maxSize;
 
     private int[][] positionMatrix;
 
@@ -57,24 +60,29 @@ public class PositionMatrix {
     private int length;
     private ColorIDMatrix colorIDMatrix;
 
+    /**
+     * This constructor calls {@link PositionMatrix#positionMatrixFromColorIDMatrix()} to build the position matrix
+     *
+     * @param colorIDMatrix a {@link ColorIDMatrix}
+     * @throws FileNotFoundException Thrown if the config file was not found
+     */
+    public PositionMatrix(@NotNull ColorIDMatrix colorIDMatrix) throws FileNotFoundException {
 
-    public PositionMatrix(@NotNull ColorIDMatrix colorIDMatrix) {
         this.width = colorIDMatrix.getWidth();
         this.length = colorIDMatrix.getLength();
         this.colorIDMatrix = colorIDMatrix;
+        this.maxSize = ConfigStore.getInstance().maxS;
+        this.minY = ConfigStore.getInstance().minY;
+        this.maxY = ConfigStore.getInstance().maxY;
         positionMatrixFromColorIDMatrix();
     }
 
-    public PositionMatrix(@NotNull ColorIDMatrix colorIDMatrix, @NotNull ConfigStore configStore) {
-        this.width = colorIDMatrix.getWidth();
-        this.length = colorIDMatrix.getLength();
-        this.colorIDMatrix = colorIDMatrix;
-        this.maxSize = configStore.maxS;
-        this.minY = configStore.minY;
-        this.maxY = configStore.maxY;
-        positionMatrixFromColorIDMatrix();
-    }
-
+    /**
+     * This method builds a String containing the XZY Coordinates and block names of all blocks,
+     * which then can be saved to a file
+     *
+     * @return A formatted string containing the XZY Coordinates of all blocks
+     */
     public String getPositionString() {
         StringBuilder positionSB = new StringBuilder();
         positionSB.append(String.format("|%40s|%5s|%5s|%5s|%n", "Block", "X", "Z", "Y"));
@@ -91,6 +99,13 @@ public class PositionMatrix {
         return positionSB.toString();
     }
 
+    /**
+     * This method builds a list of {@link Tag_Compound} containing at least one Tag_Compound, with each Tag_Compound representing a part of the image.
+     * This list can then be used to create the schematic files.
+     *
+     * @return A list of {@link Tag_Compound} representing the image
+     * @throws IllegalArgumentException Thrown if there is a mismatch between ColorIDMap and ColorIDMatrix
+     */
     public List<Tag_Compound> getTag_CompoundList() throws IllegalArgumentException {
         ArrayList<Tag_Compound> tagCompoundList = new ArrayList<>();
 
@@ -245,7 +260,9 @@ public class PositionMatrix {
         return tagCompoundList;
     }
 
-
+    /**
+     * This method builds the positionMatrix out of the {@link ColorIDMatrix}
+     */
     private void positionMatrixFromColorIDMatrix() {
         this.positionMatrix = new int[width][length];
 
@@ -280,13 +297,13 @@ public class PositionMatrix {
         }
 
         /*
-        Second pass over the matrix to fix to high y values
+        Second pass over the matrix to fix too high y values
          */
 
         /*
         First Step: Normalisation of each North-South column which are independend from each other,
         contrary to the West-East rows. At the end, each column has at least one block on
-        the minimal Y coordiante.
+        the minimal Y coordinate.
          */
 
         for (int x = 0; x < width; x++) {
@@ -305,7 +322,7 @@ public class PositionMatrix {
 
         /*
         Second Step: finding all ranges of blocks in each line that are too high and force them to be lower
-        than the maximum Y coordiante. This can lead to missmatched pixels inside the picture.
+        than the maximum Y coordinate. This can lead to mismatched pixels inside the picture.
         See Readme for additional information
          */
 
@@ -354,23 +371,7 @@ public class PositionMatrix {
         }
     }
 
-    public int getMaxY() {
-        return maxY;
-    }
-
-    public int getMinY() {
-        return minY;
-    }
-
     public int[][] getMatrix() {
         return positionMatrix;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getLength() {
-        return length;
     }
 }

@@ -39,13 +39,12 @@ public class MapmakerCore implements Runnable {
         try {
 
             File file = new File(configStore.pathToImage);
-            ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.blackList);
+            ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.blacklist);
             colorIDMatrix = new ColorIDMatrix(file, colorIDMap);
-            positionMatrix = new PositionMatrix(colorIDMatrix, configStore);
+            positionMatrix = new PositionMatrix(colorIDMatrix);
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.exit(1);
         }
 
         if (configStore.picture) {

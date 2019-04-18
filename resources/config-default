@@ -10,7 +10,7 @@ pathToSave = save/
 #You can add multiple IDs seperated with a comma
 #Example: Excluding the bright green color (color ID 33) and full red (color ID 4)
 #blacklist = 33,4
-blacklist = 
+blacklist =
 
 
 ####### Booleans (either " = true" or " = false")
