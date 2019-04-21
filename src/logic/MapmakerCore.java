@@ -37,9 +37,9 @@ public class MapmakerCore implements Runnable {
         PositionMatrix positionMatrix = null;
 
         try {
-
+            if(configStore.blocksToUse == null) throw new IllegalArgumentException("Blocks to use was not set");
             File file = new File(configStore.pathToImage);
-            ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.blacklist);
+            ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.blocksToUse);
             colorIDMatrix = new ColorIDMatrix(file, colorIDMap);
             positionMatrix = new PositionMatrix(colorIDMatrix);
 

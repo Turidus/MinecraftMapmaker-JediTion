@@ -61,6 +61,9 @@ public class ConfigStore {
     @Nullable
     public String name = null;
 
+    @Nullable
+    public List<MapIDEntry> blocksToUse = null;
+
     public String pathToSave = "save/";
 
     public List<String> blacklist = new ArrayList<>();
@@ -81,71 +84,15 @@ public class ConfigStore {
 
     public int maxS = 129;
 
+
+
     /**
      * Set private to stop instantiation
      *
      * @throws FileNotFoundException If config file was not found
      */
     private ConfigStore() throws FileNotFoundException {
-        BufferedReader reader;
-
-        try{
-            reader = new BufferedReader(new FileReader("resources/config"));
-        }catch (FileNotFoundException e){
-            throw new FileNotFoundException("The config file could not be opened. " + e.getMessage());
-        }
-
-        for (String line : reader.lines().toArray(String[]::new)) {
-            line = line.replace(" ", "");
-
-            if (line.startsWith("#") || line.length() == 0) continue;
-
-            String[] split = line.split("=");
-
-            if (split.length <= 1) continue;
-
-            for (Field field : this.getClass().getFields()) {
-                if (!field.getName().equals(split[0])) continue;
-
-                switch (split[0]) {
-                    case "pathToImage":
-                    case "name":
-                    case "pathToSave":
-                        try {
-                            field.set(this, split[1]);
-                        } catch (IllegalAccessException e) {
-                        }
-                        break;
-                    case "blacklist":
-                        String[] ids = split[1].split(",");
-                        try {
-                            field.set(this, new ArrayList<>(Arrays.asList(ids)));
-                        } catch (Exception e) {
-                        }
-                        break;
-                    case "threeD":
-                    case "picture":
-                    case "positionFile":
-                    case "amountFile":
-                    case "schematic":
-                        try {
-                            field.set(this, Boolean.valueOf(split[1]));
-                        } catch (Exception e) {
-                        }
-
-                        break;
-                    case "minY":
-                    case "maxY":
-                    case "maxS":
-                        try {
-                            field.set(this, Integer.valueOf(split[1]));
-                        } catch (Exception e) {
-                        }
-                        break;
-                }
-                break;
-            }
-        }
+        loadConfig(false);
     }
 
     /**
@@ -155,6 +102,14 @@ public class ConfigStore {
     public static ConfigStore getInstance() throws FileNotFoundException {
         if (single_instance == null) single_instance = new ConfigStore();
         return single_instance;
+    }
+
+    /**
+     * Loads the default vaules for the config
+     * @throws FileNotFoundException if config-default file is not found
+     */
+    public void loadDefault() throws FileNotFoundException {
+        loadConfig(true);
     }
 
     /**
@@ -214,6 +169,74 @@ public class ConfigStore {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Loads the config values from the config or config-default file
+     * @param backup If true, the values are loaded from config-default, else config is used
+     * @throws FileNotFoundException If config or config-default are not found
+     */
+    private void loadConfig(boolean backup) throws FileNotFoundException {
+        BufferedReader reader;
+
+        try{
+            if(!backup) reader = new BufferedReader(new FileReader("resources/config"));
+            else reader = new BufferedReader(new FileReader("resources/config-default"));
+        }catch (FileNotFoundException e){
+            throw new FileNotFoundException("The config file could not be opened. " + e.getMessage());
+        }
+
+        for (String line : reader.lines().toArray(String[]::new)) {
+            line = line.replace(" ", "");
+
+            if (line.startsWith("#") || line.length() == 0) continue;
+
+            String[] split = line.split("=");
+
+            if (split.length <= 1) continue;
+
+            for (Field field : this.getClass().getFields()) {
+                if (!field.getName().equals(split[0])) continue;
+
+                switch (split[0]) {
+                    case "pathToImage":
+                    case "name":
+                    case "pathToSave":
+                        try {
+                            field.set(this, split[1]);
+                        } catch (IllegalAccessException e) {
+                        }
+                        break;
+                    case "blacklist":
+                        String[] ids = split[1].split(",");
+                        try {
+                            field.set(this, new ArrayList<>(Arrays.asList(ids)));
+                        } catch (Exception e) {
+                        }
+                        break;
+                    case "threeD":
+                    case "picture":
+                    case "positionFile":
+                    case "amountFile":
+                    case "schematic":
+                        try {
+                            field.set(this, Boolean.valueOf(split[1]));
+                        } catch (Exception e) {
+                        }
+
+                        break;
+                    case "minY":
+                    case "maxY":
+                    case "maxS":
+                        try {
+                            field.set(this, Integer.valueOf(split[1]));
+                        } catch (Exception e) {
+                        }
+                        break;
+                }
+                break;
+            }
         }
     }
 }

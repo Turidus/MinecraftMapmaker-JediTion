@@ -230,9 +230,9 @@ public class PositionMatrix {
                                     if (blockID == null)
                                         throw new IllegalArgumentException(String.format("%d was not a valid colorID", colorID));
 
-                                    if (blockID.contains("_")) {
-                                        blockList.add(Integer.valueOf(blockID.split("_")[0]).byteValue());
-                                        blockDataList.add(Integer.valueOf(blockID.split("_")[1]).byteValue());
+                                    if (blockID.contains(":")) {
+                                        blockList.add(Integer.valueOf(blockID.split(":")[0]).byteValue());
+                                        blockDataList.add(Integer.valueOf(blockID.split(":")[1]).byteValue());
                                     } else {
                                         blockList.add(Integer.valueOf(blockID).byteValue());
                                         blockDataList.add((byte) 0);
