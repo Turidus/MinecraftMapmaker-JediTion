@@ -1,38 +1,35 @@
 package logic;
 
+import events.CriticalExceptionEvent;
+import events.MessageEvent;
+import events.NonCriticalExceptionEvent;
 import nbt.Tag_Compound;
+import org.greenrobot.eventbus.EventBus;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.List;
+import java.util.Timer;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
 public class MapmakerCore implements Runnable {
 
     private ConfigStore configStore;
+    private String tw = "Turidus did something wrong: ";
 
     public MapmakerCore() {
         try {
             this.configStore = ConfigStore.getInstance();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            EventBus.getDefault().post(new CriticalExceptionEvent("Configuration File was not found",e));
         }
     }
 
     @Override
     public void run() {
-        if (configStore.pathToImage == null) throw new IllegalArgumentException("No file was given");
-        if (configStore.name == null) {
-            String[] pathSplit = configStore.pathToImage.split("[" + Pattern.quote(File.pathSeparator) + "/]");
-            configStore.name = pathSplit[pathSplit.length - 1].split(Pattern.quote("."))[0];
-            configStore.pathToSave += configStore.name + "/";
-        } else {
-            configStore.name = configStore.name.replaceAll("[^a-zA-Z0-9_\\-]", "");
-            configStore.pathToSave += configStore.name + "/";
-        }
-
+        final long time = System.currentTimeMillis();
         ColorIDMatrix colorIDMatrix = null;
         PositionMatrix positionMatrix = null;
 
@@ -43,8 +40,14 @@ public class MapmakerCore implements Runnable {
             colorIDMatrix = new ColorIDMatrix(file, colorIDMap);
             positionMatrix = new PositionMatrix(colorIDMatrix);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        catch (IllegalArgumentException e){
+            EventBus.getDefault().post(new CriticalExceptionEvent( tw + e.getMessage(),e));
+            return;
+        }
+        catch (IOException e) {
+            EventBus.getDefault().post(new NonCriticalExceptionEvent( e.getMessage(),e));
+            return;
         }
 
         if (configStore.picture) {
@@ -55,7 +58,7 @@ public class MapmakerCore implements Runnable {
                 file.createNewFile();
                 ImageIO.write(image, "png", file);
             } catch (IOException e) {
-                e.printStackTrace();
+                EventBus.getDefault().post(new NonCriticalExceptionEvent( "Image could not be saved",e));
             }
         }
 
@@ -70,7 +73,7 @@ public class MapmakerCore implements Runnable {
                     out.print(amount);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                EventBus.getDefault().post(new NonCriticalExceptionEvent( "Amount file could not be saved",e));
             }
         }
 
@@ -84,7 +87,7 @@ public class MapmakerCore implements Runnable {
                     out.print(position);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                EventBus.getDefault().post(new NonCriticalExceptionEvent( "Position file could not be saved",e));
             }
         }
 
@@ -106,8 +109,10 @@ public class MapmakerCore implements Runnable {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                EventBus.getDefault().post(new NonCriticalExceptionEvent( "Schematic files could not be saved",e));
             }
         }
+        EventBus.getDefault().post(new MessageEvent(String.valueOf(System.currentTimeMillis() - time)));
+        EventBus.getDefault().post(new MessageEvent("Done!"));
     }
 }

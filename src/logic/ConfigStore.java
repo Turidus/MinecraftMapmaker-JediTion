@@ -1,5 +1,7 @@
 package logic;
 
+import events.MessageEvent;
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -188,11 +190,18 @@ public class ConfigStore {
         }
 
         for (String line : reader.lines().toArray(String[]::new)) {
-            line = line.replace(" ", "");
 
+            String[] split;
             if (line.startsWith("#") || line.length() == 0) continue;
-
-            String[] split = line.split("=");
+            if (line.startsWith("path")){
+                split = line.split("=");
+                split[0] = split[0].trim();
+                split[1] = split[1].trim();
+            }
+            else {
+                line = line.replace(" ", "");
+                split = line.split("=");
+            }
 
             if (split.length <= 1) continue;
 

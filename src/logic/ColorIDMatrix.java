@@ -141,14 +141,16 @@ public class ColorIDMatrix {
 
         StringBuilder amountString = new StringBuilder();
 
-        amountString.append("You need these blocks:\n");
-        amountString.append("|" + centerString("Blockname", 40) + "|" + centerString("BlockID", 10) + "|" + centerString("Amount", 10) + "|\n");
+        amountString.append(String.format("You need these blocks:%n"));
+        amountString.append(String.format("|" + centerString("Blockname", 30) + "|" + centerString("BlockID", 10) +
+                "|" + centerString("Amount", 10) + "|" + centerString("in Stacks", 10) + "|" + "%n"));
         for (Map.Entry<String, ArrayList<Integer>> entry : sortingMap.entrySet()) {
             String blockName = entry.getKey();
             String blockID = (colorIDMap.getEntry(entry.getValue().get(0)).blockID).replace("_", ":");
             Integer amount = entry.getValue().get(1);
+            Double amountInStacks = (double)amount / 64d;
 
-            amountString.append(String.format("|%40s|%10s|%-10d|%n", blockName, blockID, amount));
+            amountString.append(String.format("|%-30s|%10s|%10d|%10.1f|%n", blockName, blockID, amount,amountInStacks));
 
             if (blockID.equals("9")) {
                 waterAmount = amount;

@@ -4,11 +4,17 @@ import logic.ColorIDMap;
 import logic.ColorIDMatrix;
 import logic.MapIDEntry;
 import org.junit.jupiter.api.Test;
+import sun.reflect.generics.tree.Tree;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,9 +22,15 @@ class ColorIDMatrixTest {
 
     @Test
     void getEntryfromPoint() throws IOException {
-        ColorIDMap colorIDMap = new ColorIDMap(true,new ArrayList<>());
+        TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
+        ArrayList entryList = new ArrayList();
+        for (int key : baseColorIDMap.keySet()){
+            entryList.add(baseColorIDMap.get(key).get(0));
+        }
 
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("resources/icon.gif"),colorIDMap);
+        ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
+
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/icon.gif"),colorIDMap);
 
         MapIDEntry mapIDEntry = colorIDMatrix.getEntryfromPoint(0,1);
         assertEquals(116, mapIDEntry.colorID);
@@ -32,13 +44,19 @@ class ColorIDMatrixTest {
 
     @Test
     void coordinateTest() throws IOException{
-        ColorIDMap colorIDMap = new ColorIDMap(true,new ArrayList<>());
+        TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
+        ArrayList entryList = new ArrayList();
+        for (int key : baseColorIDMap.keySet()){
+            entryList.add(baseColorIDMap.get(key).get(0));
+        }
+
+        ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
         ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("resources/test.png"),colorIDMap);
         MapIDEntry mapIDEntry = colorIDMatrix.getEntryfromPoint(0,2);
-        /*System.out.println(mapIDEntry.colorID);
+        System.out.println(mapIDEntry.colorID);
         System.out.println(mapIDEntry.getRed());
         System.out.println(mapIDEntry.getGreen());
-        System.out.println(mapIDEntry.getBlue());*/
+        System.out.println(mapIDEntry.getBlue());
 
         assertEquals(34,mapIDEntry.colorID);
     }
@@ -46,10 +64,17 @@ class ColorIDMatrixTest {
 
     @Test
     void getAmountString() throws IOException {
-        ColorIDMap colorIDMap = new ColorIDMap(true,new ArrayList<>());
+        TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
+        ArrayList entryList = new ArrayList();
+        for (int key : baseColorIDMap.keySet()){
+            entryList.add(baseColorIDMap.get(key).get(0));
+        }
+
+        ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
 
         ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("resources/icon.gif"),colorIDMap);
         String resultString = colorIDMatrix.getAmountString();
+        System.out.println(resultString);
 
         /*System.out.println(resultString);
         System.out.println(resultString.indexOf("133"));
@@ -60,11 +85,17 @@ class ColorIDMatrixTest {
 
     @Test
     void imageFromColorIDMatrix() throws IOException {
-        ColorIDMap colorIDMap = new ColorIDMap(true,new ArrayList<>());
+        TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
+        ArrayList entryList = new ArrayList();
+        for (int key : baseColorIDMap.keySet()){
+            entryList.add(baseColorIDMap.get(key).get(0));
+        }
 
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("resources/icon.gif"),colorIDMap);
+        ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
+
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/DTH.jpg"),colorIDMap);
         BufferedImage image = colorIDMatrix.imageFromColorIDMatrix();
-        /*ImageIcon icon=new ImageIcon(image);
+        ImageIcon icon=new ImageIcon(image);
         JFrame frame=new JFrame();
         frame.setLayout(new FlowLayout());
         frame.setSize(200,300);
@@ -77,6 +108,6 @@ class ColorIDMatrixTest {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }

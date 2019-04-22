@@ -94,6 +94,8 @@ public class PositionMatrix {
                  */
                 positionSB.append(String.format("|%40s|%5d|%5d|%5d|%n", colorIDMatrix.getEntryfromPoint(x, z).blockName, x, length - z - 1, positionMatrix[x][z]));
             }
+
+            positionSB.append(String.format("%n"));
         }
 
         return positionSB.toString();
@@ -109,13 +111,13 @@ public class PositionMatrix {
     public List<Tag_Compound> getTag_CompoundList() throws IllegalArgumentException {
         ArrayList<Tag_Compound> tagCompoundList = new ArrayList<>();
 
-        int maxSchematicHeight = maxY - minY;
+        int maxSchematicHeight = maxY - minY  + 1;
         int highestUsedY = minY;
 
         /*
         The order of indexes is [y][z][x] by the convention of Schematics, also the z-value is inverted to the image based ordering.
          */
-        int[][][] schematicCube = new int[maxSchematicHeight + 1][length][width];
+        int[][][] schematicCube = new int[maxSchematicHeight][length][width];
 
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < length; z++) {
@@ -179,6 +181,7 @@ public class PositionMatrix {
                 }
             }
         }
+        System.out.println("Was here");
         /*
         Preparing data for building the Tag_Compounds.
         If the picture is bigger than maxSize, it will get cut in pices
@@ -189,8 +192,8 @@ public class PositionMatrix {
         int schematicLength = length;
         int schematicWidth = width;
         int schematicHeight;
-        if (highestUsedY < maxSchematicHeight) schematicHeight = highestUsedY + 2;
-        else schematicHeight = maxSchematicHeight + 2;
+        if (highestUsedY < maxSchematicHeight) schematicHeight = highestUsedY + 1;
+        else schematicHeight = maxSchematicHeight;
 
         List<Integer> lengthRanges = new ArrayList<>();
         for (int i = 0; i < (schematicLength / maxSize + 1); i++) {
@@ -209,7 +212,6 @@ public class PositionMatrix {
 
                 List<Byte> blockList = new ArrayList<>();
                 List<Byte> blockDataList = new ArrayList<>();
-
                 for (int y = 0; y < schematicHeight; y++) {
                     for (int z = lengthRanges.get(rangeZ - 1); z < lengthRanges.get(rangeZ); z++) {
                         for (int x = widthRanges.get((rangeX - 1)); x < widthRanges.get((rangeX)); x++) {

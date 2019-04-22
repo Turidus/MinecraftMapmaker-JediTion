@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Generates the colorIDMap out of the BaseColorIDList.txt and a blacklist.
@@ -121,8 +122,8 @@ public class ColorIDMap {
     }
 
 
-    public static HashMap<Integer,List<MapIDEntry>> getBaseColorIDMap() throws FileNotFoundException {
-        HashMap<Integer,List<MapIDEntry>> baseColorIDMap = new HashMap<>();
+    public static TreeMap<Integer,List<MapIDEntry>> getBaseColorIDMap() throws FileNotFoundException {
+        TreeMap<Integer,List<MapIDEntry>> baseColorIDMap = new TreeMap<>();
         BufferedReader reader = new BufferedReader(new FileReader("resources/BaseColorIDs"));
 
         int baseColorID = 0;
@@ -140,6 +141,7 @@ public class ColorIDMap {
                 String[] secondSplit = firstSplit[1].split(",");
                 baseColorID = Integer.valueOf(firstSplit[0]);
                 rgb = (Integer.valueOf(secondSplit[0].trim()) << 16) | (Integer.valueOf(secondSplit[1].trim()) << 8) | (Integer.valueOf(secondSplit[2].trim()));
+                //System.out.println("ID: " + baseColorID + "red:" + secondSplit[0]);
             }
             else {
                 String[] firstSplit = line.split(",");
