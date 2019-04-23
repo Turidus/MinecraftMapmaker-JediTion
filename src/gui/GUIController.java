@@ -1,8 +1,6 @@
 package gui;
 
-import events.CriticalExceptionEvent;
-import events.MessageEvent;
-import events.NonCriticalExceptionEvent;
+import events.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -237,6 +235,24 @@ public class GUIController {
     }
 
     @FXML
+    private void aboutWindow(){
+        Parent root;
+        try {
+            root = FXMLLoader.load(getClass().getResource("About.fxml"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            EventBus.getDefault().post(new CriticalExceptionEvent("About.fxml was not found!",e));
+            return;
+        }
+
+        Stage stage = new Stage();
+        stage.setTitle("About");
+        stage.setScene(new Scene(root,600,400));
+        stage.show();
+    }
+
+    @FXML
     private void runProgram(){
         updateConfigStore();
 
@@ -254,7 +270,7 @@ public class GUIController {
             configStore.name = configStore.name.replaceAll("[^a-zA-Z0-9_\\-]", "");
             configStore.pathToSave += "/" + configStore.name + "/";
         }
-
+        EventBus.getDefault().post(new StartEvent());
         Thread thread = new Thread(new MapmakerCore());
         thread.start();
     }
@@ -275,6 +291,7 @@ public class GUIController {
 
     @Subscribe
     public void nonCriticalExceptionHandling(NonCriticalExceptionEvent ncee){
+        EventBus.getDefault().post(new DoneEvent());
         String status = Tstatus.getText() + "\n";
         Tstatus.setText(status + ncee.msg);
     }
@@ -283,6 +300,20 @@ public class GUIController {
     public void messageHandling(MessageEvent me){
         String status = Tstatus.getText() + "\n";
         Tstatus.setText(status +"Message: " + me.msg);
+    }
+
+    @Subscribe
+    public void startHandling(StartEvent se){
+        System.out.println("Start was fired");
+        Bgo.setDisable(true);
+        Bexit.setDisable(true);
+    }
+
+    @Subscribe
+    public void doneHandling(DoneEvent de){
+        System.out.println("Done was fired");
+        Bgo.setDisable(false);
+        Bexit.setDisable(false);
     }
 
     /*

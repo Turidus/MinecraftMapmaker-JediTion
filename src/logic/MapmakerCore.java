@@ -1,6 +1,7 @@
 package logic;
 
 import events.CriticalExceptionEvent;
+import events.DoneEvent;
 import events.MessageEvent;
 import events.NonCriticalExceptionEvent;
 import nbt.Tag_Compound;
@@ -36,7 +37,9 @@ public class MapmakerCore implements Runnable {
             File file = new File(configStore.pathToImage);
             ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.blocksToUse);
             colorIDMatrix = new ColorIDMatrix(file, colorIDMap);
+            EventBus.getDefault().post(new MessageEvent("ColorIDMatrix was calculated"));
             positionMatrix = new PositionMatrix(colorIDMatrix);
+            EventBus.getDefault().post(new MessageEvent("PositionMatrix was calculated"));
 
         }
         catch (IllegalArgumentException e){
@@ -59,6 +62,7 @@ public class MapmakerCore implements Runnable {
             } catch (IOException e) {
                 EventBus.getDefault().post(new NonCriticalExceptionEvent( "Image could not be saved",e));
             }
+            EventBus.getDefault().post(new MessageEvent("Image was saved"));
         }
 
         if (configStore.amountFile) {
@@ -74,6 +78,7 @@ public class MapmakerCore implements Runnable {
             } catch (IOException e) {
                 EventBus.getDefault().post(new NonCriticalExceptionEvent( "Amount file could not be saved",e));
             }
+            EventBus.getDefault().post(new MessageEvent("Amount file was saved"));
         }
 
         if (configStore.positionFile) {
@@ -88,6 +93,7 @@ public class MapmakerCore implements Runnable {
             } catch (IOException e) {
                 EventBus.getDefault().post(new NonCriticalExceptionEvent( "Position file could not be saved",e));
             }
+            EventBus.getDefault().post(new MessageEvent("Position file was saved"));
         }
 
         if (configStore.schematic) {
@@ -110,8 +116,10 @@ public class MapmakerCore implements Runnable {
             } catch (IOException e) {
                 EventBus.getDefault().post(new NonCriticalExceptionEvent( "Schematic files could not be saved",e));
             }
+            EventBus.getDefault().post(new MessageEvent("Schematics where saved"));
         }
-        EventBus.getDefault().post(new MessageEvent(String.valueOf(System.currentTimeMillis() - time)));
+        EventBus.getDefault().post(new MessageEvent("Time passed: " + String.valueOf((System.currentTimeMillis() - time)/1000d) + " s"));
         EventBus.getDefault().post(new MessageEvent("Done!"));
+        EventBus.getDefault().post(new DoneEvent());
     }
 }

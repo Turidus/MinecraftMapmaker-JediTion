@@ -47,6 +47,7 @@ public class GUI extends Application {
             fileConfig.getParentFile().mkdir();
             fileConfig.createNewFile();
             try(InputStream inputStream = getClass().getResourceAsStream("/config")){
+
                 try(FileOutputStream outputStream = new FileOutputStream(fileConfig)) {
                     int read;
                     byte[] bytes = new byte[1024];

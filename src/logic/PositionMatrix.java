@@ -181,7 +181,6 @@ public class PositionMatrix {
                 }
             }
         }
-        System.out.println("Was here");
         /*
         Preparing data for building the Tag_Compounds.
         If the picture is bigger than maxSize, it will get cut in pices
