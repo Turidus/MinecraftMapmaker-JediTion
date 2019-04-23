@@ -3,7 +3,7 @@
 
 ####### Strings
 
-pathToSave = C:\intellij-workspace\MinecraftMapmaker-JediTion\save
+pathToSave = save/
 
 #The blacklist excludes certain colors from being placed.
 #To exclude a color, add the base color id (as found in the BaseColorID File).

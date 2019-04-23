@@ -1,11 +1,8 @@
-package tests.logic;
+package logic;
 
 
 import java.io.IOException;
 import java.util.*;
-
-import logic.ColorIDMap;
-import logic.MapIDEntry;
 
 
 class ColorIDMapTest {

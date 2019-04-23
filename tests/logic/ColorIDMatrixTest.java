@@ -1,10 +1,6 @@
-package tests.logic;
+package logic;
 
-import logic.ColorIDMap;
-import logic.ColorIDMatrix;
-import logic.MapIDEntry;
 import org.junit.jupiter.api.Test;
-import sun.reflect.generics.tree.Tree;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -23,7 +18,7 @@ class ColorIDMatrixTest {
     @Test
     void getEntryfromPoint() throws IOException {
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
-        ArrayList entryList = new ArrayList();
+        ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }

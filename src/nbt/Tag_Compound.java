@@ -7,7 +7,7 @@ import java.util.List;
 public class Tag_Compound extends Tag {
 
     private String name;
-    private List<Tag> listOfTags;
+    private final List<Tag> listOfTags;
 
     public Tag_Compound(String name, List<Tag> listOfTags) {
         super((byte)10);

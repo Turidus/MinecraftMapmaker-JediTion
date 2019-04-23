@@ -1,12 +1,8 @@
-package tests.logic;
+package logic;
 
-import logic.ConfigStore;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ConfigStoreTest {
 

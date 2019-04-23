@@ -1,7 +1,5 @@
 package logic;
 
-import events.MessageEvent;
-import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -143,6 +141,7 @@ public class ConfigStore {
                 StringBuilder newline = new StringBuilder(fieldName + " = ");
                 Object fieldValue = field.get(this);
 
+                //noinspection SwitchStatementWithTooFewBranches This is for code readability
                 switch (fieldName) {
                     case "blacklist":
                         if (blacklist.isEmpty()) break;
@@ -184,9 +183,15 @@ public class ConfigStore {
 
         try{
             if(!backup) reader = new BufferedReader(new FileReader("resources/config"));
-            else reader = new BufferedReader(new FileReader("resources/config-default"));
+            else {
+                try(InputStream inputStream = getClass().getResourceAsStream("/config-default")){
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                }
+            }
         }catch (FileNotFoundException e){
             throw new FileNotFoundException("The config file could not be opened. " + e.getMessage());
+        }catch (IOException e){
+            throw new FileNotFoundException("The config-default file could not be opened. " + e.getMessage());
         }
 
         for (String line : reader.lines().toArray(String[]::new)) {
@@ -214,14 +219,14 @@ public class ConfigStore {
                     case "pathToSave":
                         try {
                             field.set(this, split[1]);
-                        } catch (IllegalAccessException e) {
+                        } catch (IllegalAccessException ignored) {
                         }
                         break;
                     case "blacklist":
                         String[] ids = split[1].split(",");
                         try {
                             field.set(this, new ArrayList<>(Arrays.asList(ids)));
-                        } catch (Exception e) {
+                        } catch (Exception ignored) {
                         }
                         break;
                     case "threeD":
@@ -231,7 +236,7 @@ public class ConfigStore {
                     case "schematic":
                         try {
                             field.set(this, Boolean.valueOf(split[1]));
-                        } catch (Exception e) {
+                        } catch (Exception ignored) {
                         }
 
                         break;
@@ -240,7 +245,7 @@ public class ConfigStore {
                     case "maxS":
                         try {
                             field.set(this, Integer.valueOf(split[1]));
-                        } catch (Exception e) {
+                        } catch (Exception ignored) {
                         }
                         break;
                 }

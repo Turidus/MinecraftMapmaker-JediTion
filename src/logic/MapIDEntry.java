@@ -44,14 +44,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public class MapIDEntry {
 
-    public int colorID;
+    public final int colorID;
     /**
      * This int contains all rgb values by shifting the red value by 16 bits, the green value by 8 bits and the blue value by zero bits.
      * The alpha value is shifted by 24 bits.
      */
-    public int rgb;
-    public String blockName;
-    public String blockID;
+    public final int rgb;
+    public final String blockName;
+    public final String blockID;
 
     public MapIDEntry(int colorID, int rgb, @NotNull String blockName, @NotNull String blockID) {
         this.colorID = colorID;

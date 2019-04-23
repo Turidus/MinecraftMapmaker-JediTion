@@ -10,14 +10,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.List;
-import java.util.Timer;
-import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
 public class MapmakerCore implements Runnable {
 
     private ConfigStore configStore;
-    private String tw = "Turidus did something wrong: ";
 
     public MapmakerCore() {
         try {
@@ -30,11 +27,12 @@ public class MapmakerCore implements Runnable {
     @Override
     public void run() {
         final long time = System.currentTimeMillis();
-        ColorIDMatrix colorIDMatrix = null;
-        PositionMatrix positionMatrix = null;
+        ColorIDMatrix colorIDMatrix;
+        PositionMatrix positionMatrix;
 
         try {
             if(configStore.blocksToUse == null) throw new IllegalArgumentException("Blocks to use was not set");
+            if(configStore.pathToImage == null) throw new IllegalArgumentException("Path to image was not set");
             File file = new File(configStore.pathToImage);
             ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.blocksToUse);
             colorIDMatrix = new ColorIDMatrix(file, colorIDMap);
@@ -42,6 +40,7 @@ public class MapmakerCore implements Runnable {
 
         }
         catch (IllegalArgumentException e){
+            String tw = "Turidus did something wrong: ";
             EventBus.getDefault().post(new CriticalExceptionEvent( tw + e.getMessage(),e));
             return;
         }

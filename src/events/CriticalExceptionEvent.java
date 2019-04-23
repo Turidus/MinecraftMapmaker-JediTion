@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class CriticalExceptionEvent {
 
-    public String msg;
-    public Exception exception;
+    public final String msg;
+    public final Exception exception;
 
     public CriticalExceptionEvent(@NotNull String msg,@NotNull Exception exception){
         this.msg = msg;

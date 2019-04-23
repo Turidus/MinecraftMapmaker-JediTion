@@ -6,8 +6,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public final class Tag_Byte extends Tag {
-    private String name;
-    private byte value;
+    private final String name;
+    private final byte value;
 
     public Tag_Byte(@NotNull String name, @NotNull byte value) {
         super((byte)1);

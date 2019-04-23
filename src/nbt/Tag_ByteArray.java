@@ -2,12 +2,11 @@ package nbt;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Tag_ByteArray extends Tag {
-    private String name;
-    private byte[] value;
+    private final String name;
+    private final byte[] value;
 
     public Tag_ByteArray(String name, byte[] value) {
         super((byte)7);

@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class Tag_Int extends Tag {
-    private String name;
-    private int value;
+    private final String name;
+    private final int value;
 
     public Tag_Int(String name, int value) {
         super((byte) 3);

@@ -56,9 +56,9 @@ public class PositionMatrix {
 
     private int[][] positionMatrix;
 
-    private int width;
-    private int length;
-    private ColorIDMatrix colorIDMatrix;
+    private final int width;
+    private final int length;
+    private final ColorIDMatrix colorIDMatrix;
 
     /**
      * This constructor calls {@link PositionMatrix#positionMatrixFromColorIDMatrix()} to build the position matrix
@@ -136,35 +136,35 @@ public class PositionMatrix {
                         if (schematicCube[correctedY - 1][z][x] == 0) {
                             schematicCube[correctedY - 1][z][x] = 1;
                         }
-                    } catch (IndexOutOfBoundsException e) {
+                    } catch (IndexOutOfBoundsException ignored) {
                     }
 
                     try {
                         if (schematicCube[correctedY][z - 1][x] == 0) {
                             schematicCube[correctedY][z - 1][x] = 1;
                         }
-                    } catch (IndexOutOfBoundsException e) {
+                    } catch (IndexOutOfBoundsException ignored) {
                     }
 
                     try {
                         if (schematicCube[correctedY][z + 1][x] == 0) {
                             schematicCube[correctedY][z + 1][x] = 1;
                         }
-                    } catch (IndexOutOfBoundsException e) {
+                    } catch (IndexOutOfBoundsException ignored) {
                     }
 
                     try {
                         if (schematicCube[correctedY][z][x - 1] == 0) {
                             schematicCube[correctedY][z][x - 1] = 1;
                         }
-                    } catch (IndexOutOfBoundsException e) {
+                    } catch (IndexOutOfBoundsException ignored) {
                     }
 
                     try {
                         if (schematicCube[correctedY][z][x + 1] == 0) {
                             schematicCube[correctedY][z][x + 1] = 1;
                         }
-                    } catch (IndexOutOfBoundsException e) {
+                    } catch (IndexOutOfBoundsException ignored) {
                     }
                 }
 
@@ -176,7 +176,7 @@ public class PositionMatrix {
                         if (schematicCube[correctedY - 1][z][x] == 0) {
                             schematicCube[correctedY - 1][z][x] = 45;
                         }
-                    } catch (IndexOutOfBoundsException e) {
+                    } catch (IndexOutOfBoundsException ignored) {
                     }
                 }
             }

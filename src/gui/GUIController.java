@@ -23,11 +23,10 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
 
 public class GUIController {
 
@@ -35,9 +34,9 @@ public class GUIController {
     Logic Fields
      */
 
-    ConfigStore configStore;
+    private ConfigStore configStore;
 
-    TreeMap<Integer, List<MapIDEntry>> baseColorIDs;
+    private TreeMap<Integer, List<MapIDEntry>> baseColorIDs;
 
 
 
@@ -158,7 +157,7 @@ public class GUIController {
 
         //Choicebox
         ObservableList<String> choices = FXCollections.observableArrayList("2D Construct - 51 Colors","3D Construct - 153 Colors");
-        DBthreeD.setItems((ObservableList<String>) choices);
+        DBthreeD.setItems(choices);
         if (configStore.threeD) DBthreeD.getSelectionModel().select(1);
         else DBthreeD.getSelectionModel().select(0);
 
@@ -241,11 +240,11 @@ public class GUIController {
     private void runProgram(){
         updateConfigStore();
 
-        if (configStore.pathToImage.equals("")){
+        if (Objects.equals(configStore.pathToImage, "")){
             EventBus.getDefault().post(new NonCriticalExceptionEvent("Image file was not set",new IllegalArgumentException()));
             return;
         }
-        if (configStore.name.equals("")) {
+        if (Objects.equals(configStore.name, "")) {
             File file = new File(configStore.pathToImage);
             String name = file.getName();
             if (name.contains(".")) configStore.name = name.split("\\.")[0];
@@ -301,7 +300,7 @@ public class GUIController {
         configStore.blocksToUse = blocksToUse;
     }
 
-    private void updateConfigStore() throws IllegalArgumentException,NumberFormatException{
+    private void updateConfigStore() throws IllegalArgumentException {
 
         configStore.pathToImage = Tpath.getText();
         configStore.name = Tname.getText();
@@ -350,17 +349,17 @@ public class GUIController {
         configStore.maxY = maxY;
         configStore.maxS = maxS;
 
-        if (DBthreeD.getSelectionModel().getSelectedIndex() == 1) configStore.threeD = true;
-        else configStore.threeD = false;
+        configStore.threeD = DBthreeD.getSelectionModel().getSelectedIndex() == 1;
 
         configStore.picture = CBpicture.isSelected();
         configStore.amountFile = CBamount.isSelected();
         configStore.positionFile = CBposition.isSelected();
         configStore.schematic = CBschematic.isSelected();
 
+        if (configStore.blocksToUse == null) throw new IllegalArgumentException("blocksToUse was null");
         List<Integer> tempList = new ArrayList<>(baseColorIDs.keySet());
         for(MapIDEntry entry : configStore.blocksToUse){
-            tempList.remove(tempList.indexOf(entry.colorID));
+            tempList.remove((Integer) entry.colorID);
         }
         List<String> newBlacklist = new ArrayList<>();
         for (Integer i : tempList){

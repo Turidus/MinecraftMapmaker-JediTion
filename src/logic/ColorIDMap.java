@@ -53,9 +53,9 @@ import java.util.TreeMap;
  */
 public class ColorIDMap {
 
-    private HashMap<Integer, MapIDEntry> map = new HashMap<>();
+    private final HashMap<Integer, MapIDEntry> map = new HashMap<>();
 
-    public ColorIDMap(boolean threeD, @NotNull List<MapIDEntry> usedBlocks) throws IOException {
+    public ColorIDMap(boolean threeD, @NotNull List<MapIDEntry> usedBlocks) {
         if (threeD) mapColorIDGenerator3D(usedBlocks);
         else mapColorIDGenerator2D(usedBlocks);
     }

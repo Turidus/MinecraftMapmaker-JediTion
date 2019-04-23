@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class Tag_Short extends Tag {
-    private String name;
-    private short value;
+    private final String name;
+    private final short value;
 
     public Tag_Short(String name, short value) {
         super((byte) 2);

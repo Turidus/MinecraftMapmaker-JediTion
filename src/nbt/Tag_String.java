@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class Tag_String extends Tag {
-    private String name;
-    private String value;
+    private final String name;
+    private final String value;
 
     public Tag_String(String name, String value) {
         super((byte)8);

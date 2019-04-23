@@ -7,16 +7,13 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import logic.ColorIDMap;
@@ -31,7 +28,7 @@ import java.util.TreeMap;
 
 public class ColorBlockController {
 
-    TreeMap<Integer, List<MapIDEntry>> baseColorIDs;
+    private TreeMap<Integer, List<MapIDEntry>> baseColorIDs;
     private ConfigStore configStore;
 
     /*
@@ -96,7 +93,7 @@ public class ColorBlockController {
 
             //Label
             Label label = new Label();
-            label.setText(String.valueOf(keyList.get(i)) + ": ");
+            label.setText(keyList.get(i) + ": ");
             label.setPadding(new Insets(0d,2d,0d,5d));
             label.setAlignment(Pos.CENTER);
 
@@ -179,6 +176,7 @@ public class ColorBlockController {
             Label idLabel = (Label)children.get(0);
             Integer id = Integer.valueOf(idLabel.getText().replace(": ",""));
 
+            //noinspection unchecked If this fails, it should fail as hard as possible
             ChoiceBox<String> choiceBox = (ChoiceBox<String>)children.get(3);
             for (MapIDEntry entry : baseColorIDs.get(id)){
                 if (entry.blockName.equals(choiceBox.getSelectionModel().getSelectedItem())){

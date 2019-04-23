@@ -1,9 +1,5 @@
-package tests.logic;
+package logic;
 
-import logic.ColorIDMap;
-import logic.ColorIDMatrix;
-import logic.MapIDEntry;
-import logic.PositionMatrix;
 import nbt.Tag_Compound;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +17,7 @@ class PositionMatrixTest {
     void newPositionMatrix() throws IOException {
         File file = new File("resources/icon.gif");
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
-        ArrayList entryList = new ArrayList();
+        ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }

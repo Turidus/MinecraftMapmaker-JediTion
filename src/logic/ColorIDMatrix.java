@@ -61,8 +61,8 @@ public class ColorIDMatrix {
     private int width;
     private int length;
 
-    private ColorIDMap colorIDMap;
-    private HashMap<Integer, Integer> amountMap = new HashMap<>();
+    private final ColorIDMap colorIDMap;
+    private final HashMap<Integer, Integer> amountMap = new HashMap<>();
 
     /**
      * Constructor

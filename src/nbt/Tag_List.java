@@ -4,8 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class Tag_List extends Tag {
-    private String name;
-    private byte value = 0;
+    private final String name;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final byte value = 0;
 
     public Tag_List(String name) {
         super((byte)9);

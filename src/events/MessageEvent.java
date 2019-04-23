@@ -1,10 +1,8 @@
 package events;
 
-import org.jetbrains.annotations.NotNull;
-
 public class MessageEvent {
 
-    public String msg;
+    public final String msg;
 
     public MessageEvent(String message){
         msg = message;
