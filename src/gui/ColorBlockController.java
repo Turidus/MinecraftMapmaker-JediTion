@@ -114,6 +114,7 @@ public class ColorBlockController {
         int numberOfColumns = (keyList.size() / 10 + 1);
         GPpane.setMinWidth(1200);
         double pWidth = 1200d/ numberOfColumns;
+        double percentage = 100d / numberOfColumns;
 
         if(keyList.size() > 20) {
             ObservableList<ColumnConstraints> constraints = GPpane.getColumnConstraints();
@@ -121,12 +122,24 @@ public class ColorBlockController {
                 GPpane.addColumn(i);
                 ColumnConstraints cc = new ColumnConstraints();
                 cc.setMinWidth(pWidth);
+                cc.setPercentWidth(percentage);
                 constraints.add(i,cc);
             }
         }
 
         for (int i = 0; i < keyList.size(); i++ ){
             MapIDEntry entry = baseColorIDs.get(keyList.get(i)).get(0);
+            if (configStore.blocksToUse != null){
+                System.out.println(entry.blockName);
+                for (MapIDEntry usedEntry : configStore.blocksToUse){
+                    if (usedEntry.colorID == entry.colorID){
+                        entry = usedEntry;
+                        System.out.println(entry.blockName);
+                        break;
+                    }
+                }
+            }
+            System.out.println("---");
 
             GridPane childGP = new GridPane();
             ObservableList<ColumnConstraints> constraintsChildGP = childGP.getColumnConstraints();
@@ -176,7 +189,10 @@ public class ColorBlockController {
                 choices.add(blockEntry.blockName);
             }
             choiceBox.setItems(choices);
-            choiceBox.getSelectionModel().selectFirst();
+            choiceBox.getSelectionModel().select(entry.blockName);
+
+
+
 
             childGP.addColumn(3,choiceBox);
             cc = new ColumnConstraints();
@@ -220,6 +236,7 @@ public class ColorBlockController {
             ChoiceBox<String> choiceBox = (ChoiceBox<String>)children.get(3);
             for (MapIDEntry entry : baseColorIDs.get(id)){
                 if (entry.blockName.equals(choiceBox.getSelectionModel().getSelectedItem())){
+                    System.out.println(entry.blockName);
                     blocksToUse.add(entry);
                     break;
                 }
