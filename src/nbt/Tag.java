@@ -1,9 +1,9 @@
 /**
-* Extremly barebone implementation of Minecrafts NBT format.
-* The only function it can fullfill is support the generation of schematic files and map.dat files.
+* Extremely bare bones implementation of Minecrafts NBT format.
+* The only function it can fulfill is support the generation of schematic files and map.dat files.
 *
 *
-* Implemented are Tag_End, Tag_Byte, Tag_Short, Tag_Int, Tag_Bytearray, Tag_List, Tag_String, Tag_Compound
+* Implemented are Tag_End, Tag_Byte, Tag_Short, Tag_Int, Tag_ByteArray, Tag_List (incomplete), Tag_String, Tag_Compound
 *
 *
 * Made by Turidus https://github.com/Turidus/Minecraft-MapMaker
