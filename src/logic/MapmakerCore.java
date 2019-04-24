@@ -32,8 +32,8 @@ public class MapmakerCore implements Runnable {
         PositionMatrix positionMatrix;
 
         try {
-            if(configStore.blocksToUse == null) throw new IllegalArgumentException("Blocks to use was not set");
-            if(configStore.pathToImage == null) throw new IllegalArgumentException("Path to image was not set");
+            if(configStore.blocksToUse == null) throw new InvalidObjectException("Blocks to use was not set");
+            if(configStore.pathToImage == null) throw new InvalidObjectException("Path to image was not set");
             File file = new File(configStore.pathToImage);
             ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.blocksToUse);
             colorIDMatrix = new ColorIDMatrix(file, colorIDMap);
@@ -42,9 +42,13 @@ public class MapmakerCore implements Runnable {
             EventBus.getDefault().post(new MessageEvent("PositionMatrix was calculated"));
 
         }
-        catch (IllegalArgumentException e){
+        catch (InvalidObjectException e){
             String tw = "Turidus did something wrong: ";
             EventBus.getDefault().post(new CriticalExceptionEvent( tw + e.getMessage(),e));
+            return;
+        }
+        catch (IllegalArgumentException e){
+            EventBus.getDefault().post(new NonCriticalExceptionEvent( e.getMessage(),e));
             return;
         }
         catch (IOException e) {

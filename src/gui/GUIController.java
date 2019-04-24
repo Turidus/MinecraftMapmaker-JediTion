@@ -350,14 +350,12 @@ public class GUIController {
 
     @Subscribe
     public void startHandling(StartEvent se){
-        System.out.println("Start was fired");
         Bgo.setDisable(true);
         Bexit.setDisable(true);
     }
 
     @Subscribe
     public void doneHandling(DoneEvent de){
-        System.out.println("Done was fired");
         Bgo.setDisable(false);
         Bexit.setDisable(false);
     }

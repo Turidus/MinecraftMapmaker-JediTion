@@ -155,7 +155,7 @@
         <TextField fx:id="TmaxS" text="129" GridPane.columnIndex="5" GridPane.rowIndex="4" />
         <Button fx:id="Bgo" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#runProgram" text="Go" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
         <Button fx:id="Bexit" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" text="Exit" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
-        <TextArea fx:id="Tstatus" editable="false" focusTraversable="false" mouseTransparent="true" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="7" GridPane.rowSpan="2" />
+        <TextArea fx:id="Tstatus" editable="false" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="7" GridPane.rowSpan="2" />
         <Label text="Status:" GridPane.halignment="RIGHT" GridPane.rowIndex="7" GridPane.valignment="TOP">
             <padding>
                 <Insets left="10.0" />

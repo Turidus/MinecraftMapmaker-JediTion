@@ -73,9 +73,12 @@ public class ColorIDMatrix {
      *         A {@link ColorIDMap}
      * @throws IOException
      */
-    public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap) throws IOException {
+    public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap) throws IOException, IllegalArgumentException {
         this.colorIDMap = colorIDMap;
         BufferedImage image = ImageIO.read(imageFile);
+        if (image == null){
+            throw new IllegalArgumentException("The chosen file was not an image or could not be opened.");
+        }
 
         this.width = image.getWidth();
         this.length = image.getHeight() + 1;
