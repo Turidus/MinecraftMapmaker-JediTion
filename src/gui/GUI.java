@@ -72,6 +72,7 @@ public class GUI extends Application {
         }
         catch (IOException e) {
             System.out.println("GUI.fxml File was not found!");
+            return;
         }
         primaryStage.setTitle("Minecraft Map Maker");
         primaryStage.setScene(new Scene(root,1000,800));

@@ -33,7 +33,7 @@ class PositionMatrixTest {
     void positionString() throws IOException {
         File file = new File("testpictures/DTH.jpg");
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
-        ArrayList entryList = new ArrayList();
+        ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }
@@ -50,7 +50,7 @@ class PositionMatrixTest {
     void tagCompoundList() throws IOException{
         File file = new File("testpictures/DTH.jpg");
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
-        ArrayList entryList = new ArrayList();
+        ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }

@@ -227,9 +227,10 @@ public class PositionMatrix {
                                     blockDataList.add((byte) 0);
                                     break;
                                 default:
-                                    String blockID = colorIDMatrix.getEntryFromID(colorID).blockID;
-                                    if (blockID == null)
+                                    if (colorIDMatrix.getEntryFromID(colorID) == null)
                                         throw new IllegalArgumentException(String.format("%d was not a valid colorID", colorID));
+
+                                    String blockID = colorIDMatrix.getEntryFromID(colorID).blockID;
 
                                     if (blockID.contains(":")) {
                                         blockList.add(Integer.valueOf(blockID.split(":")[0]).byteValue());

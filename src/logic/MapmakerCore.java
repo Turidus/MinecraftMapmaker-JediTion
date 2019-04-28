@@ -47,11 +47,7 @@ public class MapmakerCore implements Runnable {
             EventBus.getDefault().post(new CriticalExceptionEvent( tw + e.getMessage(),e));
             return;
         }
-        catch (IllegalArgumentException e){
-            EventBus.getDefault().post(new NonCriticalExceptionEvent( e.getMessage(),e));
-            return;
-        }
-        catch (IOException e) {
+        catch (IllegalArgumentException | IOException e){
             EventBus.getDefault().post(new NonCriticalExceptionEvent( e.getMessage(),e));
             return;
         }
@@ -122,7 +118,7 @@ public class MapmakerCore implements Runnable {
             }
             EventBus.getDefault().post(new MessageEvent("Schematics where saved"));
         }
-        EventBus.getDefault().post(new MessageEvent("Time passed: " + String.valueOf((System.currentTimeMillis() - time)/1000d) + " s"));
+        EventBus.getDefault().post(new MessageEvent("Time passed: " + (System.currentTimeMillis() - time)/1000d + " s"));
         EventBus.getDefault().post(new MessageEvent("Done!"));
         EventBus.getDefault().post(new DoneEvent());
     }

@@ -19,7 +19,7 @@ class ColorIDMapTest {
     @org.junit.jupiter.api.Test
     void mapColorIDGenerator3DTest() throws IOException {
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
-        ArrayList entryList = new ArrayList();
+        ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }
@@ -37,7 +37,7 @@ class ColorIDMapTest {
     @org.junit.jupiter.api.Test
     void mapColorIDGenerator2D() throws IOException {
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
-        ArrayList entryList = new ArrayList();
+        ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }

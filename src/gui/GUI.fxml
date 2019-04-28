@@ -62,7 +62,7 @@
                 <MenuItem mnemonicParsing="false" onAction="#getDefaultConfig" text="Load default configuration" />
             </Menu>
             <Menu mnemonicParsing="false" text="About">
-                <MenuItem fx:id="MIabout" mnemonicParsing="false" onAction="#aboutWindow" text="About" />
+                <MenuItem mnemonicParsing="false" onAction="#aboutWindow" text="About" />
             </Menu>
         </MenuBar>
         <Label text="Image:" GridPane.rowIndex="2">

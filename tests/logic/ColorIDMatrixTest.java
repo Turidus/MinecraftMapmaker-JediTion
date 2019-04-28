@@ -40,7 +40,7 @@ class ColorIDMatrixTest {
     @Test
     void coordinateTest() throws IOException{
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
-        ArrayList entryList = new ArrayList();
+        ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }
@@ -60,7 +60,7 @@ class ColorIDMatrixTest {
     @Test
     void getAmountString() throws IOException {
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
-        ArrayList entryList = new ArrayList();
+        ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }
@@ -81,7 +81,7 @@ class ColorIDMatrixTest {
     @Test
     void imageFromColorIDMatrix() throws IOException {
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
-        ArrayList entryList = new ArrayList();
+        ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }

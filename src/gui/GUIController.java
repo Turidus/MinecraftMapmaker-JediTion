@@ -259,11 +259,11 @@ public class GUIController {
             return;
         }
 
-        if (Objects.equals(configStore.pathToImage, "")){
+        if (Objects.equals(configStore.pathToImage, "") || configStore.pathToImage == null){
             EventBus.getDefault().post(new NonCriticalExceptionEvent("Image file was not set",new IllegalArgumentException()));
             return;
         }
-        if (Objects.equals(configStore.name, "")) {
+        if (Objects.equals(configStore.name, "") || configStore.name == null) {
             File file = new File(configStore.pathToImage);
             String name = file.getName();
             if (name.contains(".")) configStore.name = name.split("\\.")[0];

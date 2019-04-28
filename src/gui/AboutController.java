@@ -61,7 +61,7 @@ public class AboutController {
     @FXML
     private Button Bversion;
 
-    public AboutController(){};
+    public AboutController(){}
 
     @FXML
     private void initialize(){
