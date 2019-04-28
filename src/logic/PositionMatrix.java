@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class holds the position matrix, a two dimensional array that contains y-coordiantes for the blocks.
+ * This class holds the position matrix, a two dimensional array that contains y-coordinates for the blocks.
  *
  * @author Lars Schulze-Falck
  * <p>
@@ -183,7 +183,7 @@ public class PositionMatrix {
         }
         /*
         Preparing data for building the Tag_Compounds.
-        If the picture is bigger than maxSize, it will get cut in pices
+        If the picture is bigger than maxSize, it will get cut in pieces
         to make importing them easier.
         Even so, you should use Fast asynchrone world edit or similar.
         See Readme for additional information
@@ -244,7 +244,7 @@ public class PositionMatrix {
                     }
                 }
 
-                //Building Tag_Coumpound
+                //Building Tag_Compound
                 List<Tag> tagList = new ArrayList<>();
                 tagList.add(new Tag_Short("Height", (short) schematicHeight));
                 tagList.add(new Tag_Short("Length", (short) (lengthRanges.get(rangeZ) - lengthRanges.get(rangeZ - 1))));
@@ -303,7 +303,7 @@ public class PositionMatrix {
          */
 
         /*
-        First Step: Normalisation of each North-South column which are independend from each other,
+        First Step: Normalisation of each North-South column which are independent from each other,
         contrary to the West-East rows. At the end, each column has at least one block on
         the minimal Y coordinate.
          */

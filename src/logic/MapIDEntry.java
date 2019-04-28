@@ -3,7 +3,7 @@ package logic;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This class provides a data structur for a single color of the colorIDMap.
+ * This class provides a data structure for a single color of the colorIDMap.
  *
  * @author Lars Schulze-Falck
  * <p>

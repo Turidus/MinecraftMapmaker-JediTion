@@ -36,7 +36,7 @@ In the second column you can choose what will be generated.
 In the third column you can modify the constrains under which the map will be generated.
 The field minY should be on the level where you plan to construct the map. It has to be smaller than 251 and at least 4 smaller than maxY.
 The field maxY should be as high as you can to prevent miscolored blocks. It has to be bigger than 4, smaller than 256 and at least 4 bigger than minY.
-The field maxS hast to bigger than 0. It limites the size of the generated maxS. If you set it too low you have to import lots of schematics, if you set it too high,
+The field maxS hast to bigger than 0. It limits the size of the generated maxS. If you set it too low you have to import lots of schematics, if you set it too high,
 importing the schematics can choke or even outright crash your server (see About large images).
 
 
@@ -56,12 +56,12 @@ by providing a -maxS value smaller than the image size.
 Very large images, 250 x 250 pixels and larger, not only have all the problems large images have,
 they also run into the world height limit. Especially if you have large areas with one single color or you have a really large image
 (~450 x 450 pixels and larger) a perfect representation of the image would need Y coordinates higher than 256. To prevent the result 
-of exceeding this height limit (or any choosen **-maxY**) this program will force any blocks exceeding the maximum allowed Y coordinate
-to be below it, but this also introduces misshaded pixels into the final image. These become very noticeable in images with large areas
+of exceeding this height limit (or any chosen **-maxY**) this program will force any blocks exceeding the maximum allowed Y coordinate
+to be below it, but this also introduces miscolored pixels into the final image. These become very noticeable in images with large areas
 with a single color, while busy images can deal better with this.
 
 Besides setting the **-maxY** bigger than your image size, the best way to handle this is to cut your image into ImageSizeX x 256 or
-even ImageSizeX x 128 pixle areas. These images can then be processed and placed individually.
+even ImageSizeX x 128 pixel areas. These images can then be processed and placed individually.
 
 An additional problem is performance. Very large images can take a while to process, up to multiple minutes depending on your machine.
 

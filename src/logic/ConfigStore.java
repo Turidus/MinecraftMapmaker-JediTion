@@ -105,7 +105,7 @@ public class ConfigStore {
     }
 
     /**
-     * Loads the default vaules for the config
+     * Loads the default values for the config
      * @throws FileNotFoundException if config-default file is not found
      */
     public void loadDefault() throws FileNotFoundException {
@@ -116,7 +116,7 @@ public class ConfigStore {
      * This Method takes the current state of the ConfigStore and writes it to the config file.
      *
      * @throws FileNotFoundException If config file was not found
-     * @throws IllegalAccessException If a field in ConfigStore was not accessable
+     * @throws IllegalAccessException If a field in ConfigStore was not accessible
      */
     public void setCurrentAsDefault() throws FileNotFoundException, IllegalAccessException {
         BufferedReader reader;

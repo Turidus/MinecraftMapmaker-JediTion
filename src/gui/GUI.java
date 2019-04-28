@@ -158,7 +158,7 @@ public class GUI extends Application {
             }
         }
 
-        //Setting up READEMEde file
+        //Setting up READMEde file
         File fileReadmeDE = new File("resources/READMEde.md");
         if(!fileReadmeDE.exists()){
             fileReadmeDE.getParentFile().mkdir();
