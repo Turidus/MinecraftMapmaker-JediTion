@@ -180,12 +180,17 @@ public class ConfigStore {
      */
     private void loadConfig(boolean backup) throws FileNotFoundException {
         BufferedReader reader;
+        String[] stringArray;
 
         try{
-            if(!backup) reader = new BufferedReader(new FileReader("resources/config"));
+            if(!backup) {
+                reader = new BufferedReader(new FileReader("resources/config"));
+                stringArray = reader.lines().toArray(String[]::new);
+            }
             else {
                 try(InputStream inputStream = getClass().getResourceAsStream("/config-default")){
                 reader = new BufferedReader(new InputStreamReader(inputStream));
+                stringArray = reader.lines().toArray(String[]::new);
                 }
             }
         }catch (FileNotFoundException e){
@@ -194,7 +199,7 @@ public class ConfigStore {
             throw new FileNotFoundException("The config-default file could not be opened. " + e.getMessage());
         }
 
-        for (String line : reader.lines().toArray(String[]::new)) {
+        for (String line : stringArray) {
 
             String[] split;
             if (line.startsWith("#") || line.length() == 0) continue;

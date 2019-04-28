@@ -160,46 +160,7 @@ public class GUIController {
             return;
         }
 
-        setBlocksToUseFromBlacklist();
-
-        /*
-        Setting config values into GUI
-        */
-        //Text fields
-
-        File file = new File(configStore.pathToSave);
-        TpathSave.setText(file.getAbsolutePath());
-
-        if(configStore.pathToImage != null){
-            Tpath.setText(new File(configStore.pathToImage).getAbsolutePath());
-        }
-
-        if(configStore.name != null){
-            Tname.setText(configStore.name);
-        }
-
-        TminY.setText(String.valueOf(configStore.minY));
-
-        TmaxY.setText(String.valueOf(configStore.maxY));
-
-        TmaxS.setText(String.valueOf(configStore.maxS));
-
-        //Checkboxes
-        CBpicture.setSelected(configStore.picture);
-
-        CBamount.setSelected(configStore.amountFile);
-
-        CBposition.setSelected(configStore.positionFile);
-
-        CBschematic.setSelected(configStore.schematic);
-
-        //Choicebox
-        ObservableList<String> choices = FXCollections.observableArrayList("2D Construct - 51 Colors","3D Construct - 153 Colors");
-        DBthreeD.setItems(choices);
-        if (configStore.threeD) DBthreeD.getSelectionModel().select(1);
-        else DBthreeD.getSelectionModel().select(0);
-
-
+        setUIFromConfigStore();
     }
 
     /*
@@ -215,10 +176,7 @@ public class GUIController {
     private void choosePath(){
         FileChooser fc = new FileChooser();
         File file = fc.showOpenDialog(Tpath.getScene().getWindow());
-        if (file == null){
-            Tpath.setText("No file found");
-        }
-        else {
+        if (file != null){
             Tpath.setText(file.getAbsolutePath());
         }
     }
@@ -227,10 +185,7 @@ public class GUIController {
     private void choosePathSave(){
         DirectoryChooser fc = new DirectoryChooser();
         File file = fc.showDialog(TpathSave.getScene().getWindow());
-        if (file == null){
-            TpathSave.setText("No directory found");
-        }
-        else {
+        if (file != null){
             TpathSave.setText(file.getAbsolutePath());
         }
     }
@@ -239,6 +194,8 @@ public class GUIController {
     private void getDefaultConfig(){
         try {
             configStore.loadDefault();
+            setUIFromConfigStore();
+
         } catch (FileNotFoundException e) {
             EventBus.getDefault().post(new NonCriticalExceptionEvent("config-default file could not be found",e));
         }
@@ -363,6 +320,47 @@ public class GUIController {
     /*
     Helper
      */
+    private void setUIFromConfigStore(){
+
+        setBlocksToUseFromBlacklist();
+
+        /*
+        Setting config values into GUI
+        */
+        //Text fields
+
+        File file = new File(configStore.pathToSave);
+        TpathSave.setText(file.getAbsolutePath());
+
+        if(configStore.pathToImage != null){
+            Tpath.setText(new File(configStore.pathToImage).getAbsolutePath());
+        }
+
+        if(configStore.name != null){
+            Tname.setText(configStore.name);
+        }
+
+        TminY.setText(String.valueOf(configStore.minY));
+
+        TmaxY.setText(String.valueOf(configStore.maxY));
+
+        TmaxS.setText(String.valueOf(configStore.maxS));
+
+        //Checkboxes
+        CBpicture.setSelected(configStore.picture);
+
+        CBamount.setSelected(configStore.amountFile);
+
+        CBposition.setSelected(configStore.positionFile);
+
+        CBschematic.setSelected(configStore.schematic);
+
+        //Choicebox
+        ObservableList<String> choices = FXCollections.observableArrayList("2D Construct - 51 Colors","3D Construct - 153 Colors");
+        DBthreeD.setItems(choices);
+        if (configStore.threeD) DBthreeD.getSelectionModel().select(1);
+        else DBthreeD.getSelectionModel().select(0);
+    }
 
     private void setBlocksToUseFromBlacklist(){
         List<MapIDEntry> blocksToUse = new ArrayList<>();
