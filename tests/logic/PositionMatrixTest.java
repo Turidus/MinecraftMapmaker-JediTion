@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PositionMatrixTest {
 
     @Test
-    void newPositionMatrix() throws IOException {
+    void newPositionMatrix() throws IOException, ClassNotFoundException {
         File file = new File("resources/icon.gif");
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList();
@@ -30,7 +30,7 @@ class PositionMatrixTest {
     }
 
     @Test
-    void positionString() throws IOException {
+    void positionString() throws IOException, ClassNotFoundException {
         File file = new File("testpictures/DTH.jpg");
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList();
@@ -47,7 +47,7 @@ class PositionMatrixTest {
     }
 
     @Test
-    void tagCompoundList() throws IOException{
+    void tagCompoundList() throws IOException, ClassNotFoundException {
         File file = new File("testpictures/DTH.jpg");
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList();

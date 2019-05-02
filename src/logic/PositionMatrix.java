@@ -64,9 +64,9 @@ public class PositionMatrix {
      * This constructor calls {@link PositionMatrix#positionMatrixFromColorIDMatrix()} to build the position matrix
      *
      * @param colorIDMatrix a {@link ColorIDMatrix}
-     * @throws FileNotFoundException Thrown if the config file was not found
+     * @throws FileNotFoundException Thrown if the config.txt file was not found
      */
-    public PositionMatrix(@NotNull ColorIDMatrix colorIDMatrix) throws FileNotFoundException {
+    public PositionMatrix(@NotNull ColorIDMatrix colorIDMatrix) throws FileNotFoundException, ClassNotFoundException {
 
         this.width = colorIDMatrix.getWidth();
         this.length = colorIDMatrix.getLength();

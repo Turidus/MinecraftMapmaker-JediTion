@@ -20,8 +20,8 @@ public class MapmakerCore implements Runnable {
     public MapmakerCore() {
         try {
             this.configStore = ConfigStore.getInstance();
-        } catch (FileNotFoundException e) {
-            EventBus.getDefault().post(new CriticalExceptionEvent("Configuration File was not found",e));
+        } catch (FileNotFoundException | ClassNotFoundException e) {
+            EventBus.getDefault().post(new CriticalExceptionEvent(e.getMessage(),e));
         }
     }
 
@@ -42,7 +42,7 @@ public class MapmakerCore implements Runnable {
             EventBus.getDefault().post(new MessageEvent("PositionMatrix was calculated"));
 
         }
-        catch (InvalidObjectException e){
+        catch (InvalidObjectException | ClassNotFoundException e){
             String tw = "Turidus did something wrong: ";
             EventBus.getDefault().post(new CriticalExceptionEvent( tw + e.getMessage(),e));
             return;

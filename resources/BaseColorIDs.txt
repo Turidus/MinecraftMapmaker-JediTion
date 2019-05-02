@@ -1,0 +1,184 @@
+#Lines that start with # are comments
+#This file lists all base color ids, their RGB value and a list of blocks that represent that color on the minecraft map
+#The structure is very rigid, especially empty lines could wreck havoc
+#The top most block in this list is the default block
+#Be aware: Transparent blocks only appear on the map if a solid block is placed under them. This is hardcoded for Iron Bars,
+#other transparent blocks will not have this luxury. Add transparent blocks on your own peril.
+1; 127, 178, 56
+    Grass Block,2
+2; 247, 233, 163
+    Sandstone Slab,44:1
+    Sandstone,24
+    Birch Wood Planks,5:2
+    Birch Wood Slab,126:2
+    Bone Block,216
+    Glowstone,89
+    End Stone,121
+    End Stone Bricks,206
+3; 199, 199, 199
+    Cobweb,30
+4; 255, 0, 0
+    Block of Redstone,152
+    TNT,46
+5; 160, 160, 255
+    Ice,79
+6; 167, 167, 167
+    Iron Bars,101
+    Block of Iron,42
+7; 0, 124, 0
+    Leaves,18
+8; 255, 255, 255
+    Snow Block,80
+    White Wool,251
+    White Glazed Terracotta,235
+    White Concrete,35
+9; 164, 168, 184
+    Clay,82
+10; 151, 109, 77
+    Coarse Dirt,3:1
+    Dirt,3
+    Jukebox,84
+    Grass Path,208
+    Jungle Wood Planks,5:3
+    Jungle Wood Slab,126:3
+11; 112, 112, 112
+    Cobblestone,4
+    Cobblestone Slab,44:3
+    Stone,1
+    Stone Slab,44:0
+    Stone Brick,98
+    Stone Brick Slab,44:5
+    Moss Stone,48
+    Andesite,1:5
+12; 64, 64, 255
+    Water,9
+13; 143, 119, 72
+    Oak Wood Plank,5
+    Oak Wood Slab,126
+14; 255, 252, 245
+    Diorite,1:3
+    Block of Quartz,155
+    Quartz Slab,44:7
+    Sea Lantern,169
+15; 216, 127, 51
+    Terracotta,172
+    Acacia Wood Planks,5:4
+    Acacia Wood Slab,126:4
+    Orange Wool,35:1
+    Orange Concrete,251:1
+    Orange Glazed Terracotta,236
+16; 178, 76, 216
+    Magenta Glazed Terracotta,237
+    Purpur Block,201
+    Magenta Wool,35:2
+    Magenta Concrete,251:1
+    Magenta Glazed Terracotta,237
+17; 102, 153, 216
+    Light Blue Glazed Terracotta,238
+    Light Blue Wool,35:3
+    Light Blue Concrete,251:3
+18; 229, 229, 51
+    Yellow Glazed Terracotta,239
+    Yellow Wool,35:4
+    Yellow Concrete,251:4
+19; 127, 204, 25
+    Lime Glazed Terracotta,240
+    Lime Wool,35:5
+    Lime Concrete,251:4
+    Melon,103
+20; 242, 127, 165
+    Pink Glazed Terracotta,241
+    Pink Wool,35:6
+    Pink Concrete,251:6
+21; 76, 76, 76
+    Gray Glazed Terracotta,242
+    Gray Wool,35:7
+    Gray Concrete,251:7
+22; 153, 153, 153
+    Light Gray Glazed Terracotta,243
+    Light Gray Wool,35:8
+    Light Gray Concrete,251:8
+23; 76, 127, 153
+    Cyan Glazed Terracotta,244
+    Cyan Wool,35:9
+    Cyan Concrete,251:9
+    Prismarin,168
+24; 127, 63, 178
+    Purple Glazed Terracotta,245
+    Purple Wool,35:10
+    Purple Concrete,251:10
+    Mycelium,110
+25; 51, 76, 178
+    Blue Glazed Terracotta,246
+    Blue Wool,35:11
+    Blue Concrete,251:11
+26; 102, 76, 51
+    Dark Oak Wood Planks,5:5
+    Dark Oak Slab,126:5
+    Brown Glazed Terracotta,247
+    Brown Wool,35:12
+    Brown Concrete,251:12
+27; 102, 127, 51
+    Green Glazed Terracotta,248
+    Green Wool,35:13
+    Green Concrete,251:13
+28; 153, 51, 51
+    Red Glazed Terracotta,249
+    Brick,45
+    Brick Slab,44:4
+    Red Wool,35:14
+    Red Concrete,251:14
+29; 25, 25, 25
+    Block of Coal,173
+    Obsidian,49
+    Black Glazed Terracotta,250
+    Black Wool,35:15
+    Black Concrete,251:15
+30; 250, 238, 77
+    Block of Gold,41
+31; 92, 219, 213
+    Prismarine Bricks,168:1
+    Block of Diamond,57
+32; 74, 128, 255
+    Lapis Lazuli Block,22
+33; 0, 217, 58
+    Block of Emerald,133
+34; 129, 86, 49
+    Spruce Wood Planks,5:1
+    Spruce Wood Slab,126:1
+    Podzol,3:2
+35; 112, 2, 0
+    Netherrack,87
+    Nether Bricks,112
+36; 209, 177, 161
+    White Terracotta,159
+37; 159, 82, 36
+    Orange Terracotta,159:1
+38; 149, 87, 108
+    Magenta Terracotta,159:2
+39; 112, 108, 138
+    Light Blue Terracotta,159:3
+40; 186, 133, 36
+    Yellow Terracotta,159:4
+41; 103, 117, 53
+    Lime Terracotta,159:5
+42; 160, 77, 78
+    Pink Terracotta,159:6
+43; 57, 41, 35
+    Gray Terracotta,159:7
+44; 135, 107, 98
+    Light Gray Terracotta,159:8
+45; 87, 92, 92
+    Cyan Terracotta,159:9
+46; 122, 73, 88
+    Purple Terracotta,159:10
+47; 76, 62, 92
+    Blue Terracotta,159:11
+48; 76, 50, 35
+    Brown Terracotta,159:12
+49; 76, 82, 42
+    Green Terracotta,159:13
+50; 142, 60, 46
+    Red Terracotta,159:14
+51; 37, 22, 16
+    Black Terracotta,159:15

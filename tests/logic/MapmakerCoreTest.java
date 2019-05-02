@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 class MapmakerCoreTest {
 
     @Test
-    void runTest() throws FileNotFoundException {
+    void runTest() throws FileNotFoundException, ClassNotFoundException {
         ConfigStore configStore = ConfigStore.getInstance();
         configStore.pathToImage = "resources/icon.gif";
 

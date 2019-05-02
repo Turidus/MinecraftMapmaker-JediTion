@@ -87,8 +87,8 @@ public class GUI extends Application {
      */
     private void setUp() throws IOException {
 
-        //Setting up config file
-        File fileConfig = new File("resources/config");
+        //Setting up config.txt file
+        File fileConfig = new File("resources/config.txt");
         if(!fileConfig.exists()){
             fileConfig.getParentFile().mkdir();
             fileConfig.createNewFile();
@@ -104,8 +104,8 @@ public class GUI extends Application {
             }
         }
 
-        //Setting up BaseColorIDs file
-        File fileBaseColorID = new File("resources/BaseColorIDs");
+        //Setting up BaseColorIDs.txt file
+        File fileBaseColorID = new File("resources/BaseColorIDs.txt");
         if(!fileBaseColorID.exists()){
             fileBaseColorID.getParentFile().mkdir();
             fileBaseColorID.createNewFile();
@@ -122,8 +122,8 @@ public class GUI extends Application {
             }
         }
 
-        //Setting up LICENSE file
-        File fileLicense = new File("resources/LICENSE");
+        //Setting up LICENSE.txt file
+        File fileLicense = new File("resources/LICENSE.txt");
         if(!fileLicense.exists()){
             fileLicense.getParentFile().mkdir();
             fileLicense.createNewFile();
@@ -166,6 +166,24 @@ public class GUI extends Application {
             try(InputStream inputStream = getClass().getResourceAsStream("/READMEde.md")){
 
                 try(FileOutputStream outputStream = new FileOutputStream(fileReadmeDE)) {
+
+                    int read;
+                    byte[] bytes = new byte[1024];
+                    while ((read = inputStream.read(bytes)) != -1){
+                        outputStream.write(bytes,0,read);
+                    }
+                }
+            }
+        }
+
+        //Setting up selectedBlocks file
+        File fileUsedBlocks = new File("resources/selectedBlocks");
+        if(!fileUsedBlocks.exists()){
+            fileUsedBlocks.getParentFile().mkdir();
+            fileUsedBlocks.createNewFile();
+            try(InputStream inputStream = getClass().getResourceAsStream("/selectedBlocks")){
+
+                try(FileOutputStream outputStream = new FileOutputStream(fileUsedBlocks)) {
 
                     int read;
                     byte[] bytes = new byte[1024];

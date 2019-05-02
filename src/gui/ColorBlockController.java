@@ -1,6 +1,7 @@
 package gui;
 
 import events.CriticalExceptionEvent;
+import events.NonCriticalExceptionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,6 +22,7 @@ import logic.ConfigStore;
 import logic.MapIDEntry;
 import org.greenrobot.eventbus.EventBus;
 
+import javax.xml.bind.TypeConstraintException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,17 +98,15 @@ public class ColorBlockController {
     private void initialize() {
         try {
             configStore = ConfigStore.getInstance();
-        } catch (FileNotFoundException e) {
-            EventBus.getDefault().post(new CriticalExceptionEvent("Configuration File was not found!",e));
+        } catch (FileNotFoundException | ClassNotFoundException e) {
+            EventBus.getDefault().post(new CriticalExceptionEvent(e.getMessage(),e));
             return;
         }
-        {
-            try {
-                baseColorIDs = ColorIDMap.getBaseColorIDMap();
-            } catch (FileNotFoundException e) {
-                EventBus.getDefault().post(new CriticalExceptionEvent("BaseColorIDs File was not found!",e));
-                return;
-            }
+        try {
+            baseColorIDs = ColorIDMap.getBaseColorIDMap();
+        } catch (FileNotFoundException e) {
+            EventBus.getDefault().post(new CriticalExceptionEvent("BaseColorIDs.txt File was not found!",e));
+            return;
         }
 
         List<Integer> keyList = new ArrayList<>(baseColorIDs.keySet());
@@ -129,17 +129,14 @@ public class ColorBlockController {
 
         for (int i = 0; i < keyList.size(); i++ ){
             MapIDEntry entry = baseColorIDs.get(keyList.get(i)).get(0);
-            if (configStore.blocksToUse != null){
-                System.out.println(entry.blockName);
-                for (MapIDEntry usedEntry : configStore.blocksToUse){
+            if (configStore.selectedBlocks != null){
+                for (MapIDEntry usedEntry : configStore.selectedBlocks){
                     if (usedEntry.colorID == entry.colorID){
                         entry = usedEntry;
-                        System.out.println(entry.blockName);
                         break;
                     }
                 }
             }
-            System.out.println("---");
 
             GridPane childGP = new GridPane();
             ObservableList<ColumnConstraints> constraintsChildGP = childGP.getColumnConstraints();
@@ -183,18 +180,23 @@ public class ColorBlockController {
             constraintsChildGP.add(2,cc);
 
             //ChoiceBox
-            ChoiceBox<String> choiceBox = new ChoiceBox<>();
-            ObservableList<String> choices = FXCollections.observableArrayList();
-            for (MapIDEntry blockEntry : baseColorIDs.get(keyList.get(i))){
-                choices.add(blockEntry.blockName);
+            List<MapIDEntry> availableBlocks = baseColorIDs.get(keyList.get(i));
+            if(availableBlocks.size() > 1) {
+                ChoiceBox<String> choiceBox = new ChoiceBox<>();
+                ObservableList<String> choices = FXCollections.observableArrayList();
+                for (MapIDEntry blockEntry : availableBlocks) {
+                    choices.add(blockEntry.blockName);
+                }
+                choiceBox.setItems(choices);
+                choiceBox.getSelectionModel().select(entry.blockName);
+                childGP.addColumn(3,choiceBox);
             }
-            choiceBox.setItems(choices);
-            choiceBox.getSelectionModel().select(entry.blockName);
+            else{
+                Label choiceLabel = new Label();
+                choiceLabel.setText(availableBlocks.get(0).blockName);
+                childGP.addColumn(3,choiceLabel);
+            }
 
-
-
-
-            childGP.addColumn(3,choiceBox);
             cc = new ColumnConstraints();
             cc.setMinWidth(110);
             cc.setMaxWidth(110);
@@ -220,30 +222,55 @@ public class ColorBlockController {
 
     @FXML
     private void done(){
-        List<MapIDEntry> blocksToUse = new ArrayList<>();
+        ArrayList<MapIDEntry> blocksToUse = new ArrayList<>();
+        ArrayList<MapIDEntry> selectedBlocks = new ArrayList<>();
+
+        /*
+        Parsing out the selected colors and chosen blocks
+         */
         for (Node node : GPpane.getChildren()){
             if (!node.getTypeSelector().equals("GridPane")) continue;
             GridPane childPane = (GridPane) node;
             ObservableList<Node> children = childPane.getChildren();
 
+            //Used later for adding to blocksToUse
             CheckBox checkBox = (CheckBox)children.get(2);
-            if (!checkBox.isSelected()) continue;
 
+            //Get the selected color
             Label idLabel = (Label)children.get(0);
             Integer id = Integer.valueOf(idLabel.getText().replace(": ",""));
 
-            //noinspection unchecked If this fails, it should fail as hard as possible
-            ChoiceBox<String> choiceBox = (ChoiceBox<String>)children.get(3);
+            //Get the chosen block:
+            String chosenBlockName;
+            if(children.get(3).getClass().getSimpleName().equals("ChoiceBox")) {
+                ChoiceBox<String> choiceBox = (ChoiceBox<String>) children.get(3);
+                chosenBlockName = choiceBox.getSelectionModel().getSelectedItem();
+            }
+            else if (children.get(3).getClass().getSimpleName().equals("Label")) {
+                Label choiceLabel = (Label) children.get(3);
+                chosenBlockName = choiceLabel.getText();
+            }
+            else{
+                EventBus.getDefault().post(new CriticalExceptionEvent("Turidus did something wrong: Parsing of chosen blocks did fail", new TypeConstraintException("Wrong Type")));
+                Bdone.getScene().getWindow().hide();
+                return;
+            }
             for (MapIDEntry entry : baseColorIDs.get(id)){
-                if (entry.blockName.equals(choiceBox.getSelectionModel().getSelectedItem())){
-                    System.out.println(entry.blockName);
-                    blocksToUse.add(entry);
+                if (entry.blockName.equals(chosenBlockName)){
+                    if (checkBox.isSelected()) blocksToUse.add(entry);
+                    selectedBlocks.add(entry);
                     break;
                 }
             }
         }
 
+        if(blocksToUse.isEmpty()){
+            EventBus.getDefault().post(new NonCriticalExceptionEvent("You have to at least select one color",new IllegalStateException("blocksToUse was empty")));
+            Bdone.getScene().getWindow().hide();
+            return;
+        }
         configStore.blocksToUse = blocksToUse;
+        configStore.selectedBlocks = selectedBlocks;
 
         List<Integer> tempList = new ArrayList<>(baseColorIDs.keySet());
         for(MapIDEntry entry : configStore.blocksToUse){

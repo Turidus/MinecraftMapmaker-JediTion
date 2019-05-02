@@ -1,0 +1,33 @@
+#Config file for MinecraftMapmaker-JediTion
+#Lines that start with # are comments
+
+####### Strings
+
+pathToSave = C:\intellij-workspace\MinecraftMapmaker-JediTion\save
+
+#The blacklist excludes certain colors from being placed.
+#To exclude a color, add the base color id (as found in the BaseColorID File).
+#You can add multiple IDs seperated with a comma
+#Example: Excluding the bright green color (color ID 33) and full red (color ID 4)
+#blacklist = 33,4
+blacklist = 
+
+
+####### Booleans (either " = true" or " = false")
+threeD = true
+
+picture = true
+
+positionFile = true
+
+amountFile = true
+
+schematic = true
+
+###### Integers
+
+minY = 4
+
+maxY = 250
+
+maxS = 129

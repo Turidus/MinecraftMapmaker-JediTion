@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 class ConfigStoreTest {
 
     @Test
-    void test() throws FileNotFoundException, IllegalAccessException {
+    void test() throws FileNotFoundException, IllegalAccessException, ClassNotFoundException {
         ConfigStore configStore = ConfigStore.getInstance();
 
         /*for (Field field : configStore.getClass().getFields()){
@@ -17,8 +17,8 @@ class ConfigStoreTest {
     }
 
     @Test
-    void setCurrentAsDefault() throws FileNotFoundException, IllegalAccessException {
+    void setCurrentAsDefault() throws FileNotFoundException, IllegalAccessException, ClassNotFoundException {
         ConfigStore.getInstance().minY = 4;
-        ConfigStore.getInstance().setCurrentAsDefault();
+        ConfigStore.getInstance().saveCurrent();
     }
 }

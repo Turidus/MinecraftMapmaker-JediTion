@@ -115,11 +115,11 @@ public class ColorIDMap {
     /**
      * Parses the BaseColorID into a TreeMap for further handling.
      * @return A {@code TreeMap<Integer,List<MapIDEntry>>} that contains the base color ID as key and {@link MapIDEntry} as value
-     * @throws FileNotFoundException If BaseColorIDs file could not be found
+     * @throws FileNotFoundException If BaseColorIDs.txt file could not be found
      */
     public static TreeMap<Integer,List<MapIDEntry>> getBaseColorIDMap() throws FileNotFoundException {
         TreeMap<Integer,List<MapIDEntry>> baseColorIDMap = new TreeMap<>();
-        BufferedReader reader = new BufferedReader(new FileReader("resources/BaseColorIDs"));
+        BufferedReader reader = new BufferedReader(new FileReader("resources/BaseColorIDs.txt"));
 
         int baseColorID = 0;
         int rgb = 0;

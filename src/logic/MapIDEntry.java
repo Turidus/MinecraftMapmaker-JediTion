@@ -2,6 +2,8 @@ package logic;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 /**
  * This class provides a data structure for a single color of the colorIDMap.
  *
@@ -42,7 +44,7 @@ import org.jetbrains.annotations.NotNull;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class MapIDEntry {
+public class MapIDEntry implements Serializable {
 
     public final int colorID;
     /**

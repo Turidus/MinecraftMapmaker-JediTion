@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MinecraftMapmaker-JediTion:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MinecraftMapmaker_JediTion_jar</output-path>
+    <root id="archive" name="MinecraftMapmaker-JediTion.jar">
+      <element id="module-output" name="MinecraftMapmaker-JediTion" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/json-simple-1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../GlobalLibs/eventbus-3.1.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

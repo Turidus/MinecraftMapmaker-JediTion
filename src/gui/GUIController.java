@@ -149,14 +149,16 @@ public class GUIController {
             configStore = ConfigStore.getInstance();
         } catch (FileNotFoundException e) {
             EventBus.getDefault().post(new MessageEvent(new File("t").getAbsolutePath()));
-            EventBus.getDefault().post(new CriticalExceptionEvent("Configuration File was not found!",e));
+            EventBus.getDefault().post(new CriticalExceptionEvent(e.getMessage(),e));
             return;
+        } catch (ClassNotFoundException e) {
+            EventBus.getDefault().post(new CriticalExceptionEvent(e.getMessage(),e));
         }
 
         try {
             baseColorIDs = ColorIDMap.getBaseColorIDMap();
         } catch (FileNotFoundException e) {
-            EventBus.getDefault().post(new CriticalExceptionEvent("BaseColorIDs File was not found!",e));
+            EventBus.getDefault().post(new CriticalExceptionEvent("BaseColorIDs.txt File was not found!",e));
             return;
         }
 
@@ -198,6 +200,8 @@ public class GUIController {
 
         } catch (FileNotFoundException e) {
             EventBus.getDefault().post(new NonCriticalExceptionEvent("config-default file could not be found",e));
+        } catch (ClassNotFoundException e) {
+            EventBus.getDefault().post(new CriticalExceptionEvent(e.getMessage(),e));
         }
     }
 
@@ -205,9 +209,9 @@ public class GUIController {
     private void saveConfig(){
         updateConfigStore();
         try {
-            configStore.setCurrentAsDefault();
+            configStore.saveCurrent();
         } catch (FileNotFoundException e) {
-            EventBus.getDefault().post(new NonCriticalExceptionEvent("config file could not be saved",e));
+            EventBus.getDefault().post(new NonCriticalExceptionEvent("config.txt file could not be saved",e));
         } catch (IllegalAccessException e) {
             EventBus.getDefault().post(new NonCriticalExceptionEvent("Turidus did something wrong: IllegalAccessException in ConfigStore",e));
         }
@@ -363,7 +367,7 @@ public class GUIController {
     }
 
     private void setBlocksToUseFromBlacklist(){
-        List<MapIDEntry> blocksToUse = new ArrayList<>();
+        ArrayList<MapIDEntry> blocksToUse = new ArrayList<>();
 
         for (Integer key : baseColorIDs.keySet()){
             if(configStore.blacklist.contains(String.valueOf(key))) continue;

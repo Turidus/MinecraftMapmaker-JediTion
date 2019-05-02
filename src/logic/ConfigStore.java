@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class holds the configuration values, which it reads out of the config file
+ * This class holds the configuration values, which it reads out of the config.txt file
  * pathToImage and name can be null and have to be set later.
  *
  * It acts as a singelton
@@ -62,7 +62,10 @@ public class ConfigStore {
     public String name = null;
 
     @Nullable
-    public List<MapIDEntry> blocksToUse = null;
+    public ArrayList<MapIDEntry> blocksToUse = null;
+
+    @Nullable
+    public ArrayList<MapIDEntry> selectedBlocks = null;
 
     public String pathToSave = "save/";
 
@@ -89,17 +92,17 @@ public class ConfigStore {
     /**
      * Set private to stop instantiation
      *
-     * @throws FileNotFoundException If config file was not found
+     * @throws FileNotFoundException If config.txt file was not found
      */
-    private ConfigStore() throws FileNotFoundException {
+    private ConfigStore() throws FileNotFoundException, ClassNotFoundException {
         loadConfig(false);
     }
 
     /**
      * Returns the singelton instance of the config store
-     * @throws FileNotFoundException if config file was not found
+     * @throws FileNotFoundException if config.txt file was not found
      */
-    public static ConfigStore getInstance() throws FileNotFoundException {
+    public static ConfigStore getInstance() throws FileNotFoundException, ClassNotFoundException {
         if (single_instance == null) single_instance = new ConfigStore();
         return single_instance;
     }
@@ -108,23 +111,27 @@ public class ConfigStore {
      * Loads the default values for the config
      * @throws FileNotFoundException if config-default file is not found
      */
-    public void loadDefault() throws FileNotFoundException {
+    public void loadDefault() throws FileNotFoundException, ClassNotFoundException {
         loadConfig(true);
     }
 
     /**
-     * This Method takes the current state of the ConfigStore and writes it to the config file.
+     * This Method takes the current state of the ConfigStore and writes it to the config.txt file.
      *
-     * @throws FileNotFoundException If config file was not found
+     * @throws FileNotFoundException If config.txt file was not found
      * @throws IllegalAccessException If a field in ConfigStore was not accessible
      */
-    public void setCurrentAsDefault() throws FileNotFoundException, IllegalAccessException {
+    public void saveCurrent() throws FileNotFoundException, IllegalAccessException {
+        /*
+        Saving data to the config.txt file
+         */
+
         BufferedReader reader;
 
         try{
-            reader = new BufferedReader(new FileReader("resources/config"));
+            reader = new BufferedReader(new FileReader("resources/config.txt"));
         }catch (FileNotFoundException e){
-            throw new FileNotFoundException("The config file could not be opened. " + e.getMessage());
+            throw new FileNotFoundException("The config.txt file could not be opened. " + e.getMessage());
         }
 
         String[] lines = reader.lines().toArray(String[]::new);
@@ -141,7 +148,7 @@ public class ConfigStore {
                 StringBuilder newline = new StringBuilder(fieldName + " = ");
                 Object fieldValue = field.get(this);
 
-                //noinspection SwitchStatementWithTooFewBranches This is for code readability
+                //noinspection SwitchStatementWithTooFewBranches This switch statement increases code readability, only get called once
                 switch (fieldName) {
                     case "blacklist":
                         if (blacklist.isEmpty()) break;
@@ -161,7 +168,7 @@ public class ConfigStore {
         }
 
         try {
-            File file = new File("resources/config");
+            File file = new File("resources/config.txt");
             try (PrintStream out = new PrintStream(new FileOutputStream(file))) {
                 for (String line : lines){
                     out.println(line);
@@ -169,22 +176,40 @@ public class ConfigStore {
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileNotFoundException("The config.txt file could not be opened. " + e.getMessage());
+        }
+
+
+        /*
+        Saving data to the usedBlock file
+         */
+        if(this.blocksToUse != null){
+            try(FileOutputStream fileOutputStream = new FileOutputStream("resources/selectedBlocks")){
+                try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)){
+                    objectOutputStream.writeObject(this.blocksToUse);
+                }
+            } catch (IOException e) {
+                throw new FileNotFoundException("The blockUsed file could not be opened. " + e.getMessage());
+            }
         }
     }
 
     /**
-     * Loads the config values from the config or config-default file
-     * @param backup If true, the values are loaded from config-default, else config is used
-     * @throws FileNotFoundException If config or config-default are not found
+     * Loads the config.txt values from the config.txt or config.txt-default file
+     * @param fromDefault If true, the values are loaded from config.txt-default, else config.txt is used
+     * @throws FileNotFoundException If config.txt or config.txt-default are not found
      */
-    private void loadConfig(boolean backup) throws FileNotFoundException {
+    private void loadConfig(boolean fromDefault) throws FileNotFoundException, ClassNotFoundException {
+        /*
+        Loading in values from the config.txt or config.txt default file
+         */
+
         BufferedReader reader;
         String[] stringArray;
 
         try{
-            if(!backup) {
-                reader = new BufferedReader(new FileReader("resources/config"));
+            if(!fromDefault) {
+                reader = new BufferedReader(new FileReader("resources/config.txt"));
                 stringArray = reader.lines().toArray(String[]::new);
             }
             else {
@@ -194,7 +219,7 @@ public class ConfigStore {
                 }
             }
         }catch (FileNotFoundException e){
-            throw new FileNotFoundException("The config file could not be opened. " + e.getMessage());
+            throw new FileNotFoundException("The config.txt file could not be opened. " + e.getMessage());
         }catch (IOException e){
             throw new FileNotFoundException("The config-default file could not be opened. " + e.getMessage());
         }
@@ -255,6 +280,32 @@ public class ConfigStore {
                         break;
                 }
                 break;
+            }
+        }
+
+        /*
+        Loading in selectedBlocks from usedBlock file. The selectedBlocks file is an serialized {@code ArrayList<MapIDEntry>}
+         */
+        if(fromDefault) {
+            try (ObjectInputStream objectInputStream = new ObjectInputStream(getClass().getResourceAsStream("/selectedBlocks-default"))){
+
+                this.selectedBlocks = (ArrayList<MapIDEntry>) objectInputStream.readObject();
+
+            } catch (IOException e) {
+                throw new FileNotFoundException("The selectedBlocks-default file could not be opened. " + e.getMessage());
+            } catch (ClassNotFoundException e) {
+                throw new ClassNotFoundException("The selectedBlocks-default file could not be deserialized. " + e.getMessage());
+            }
+        }
+        else {
+            try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("resources/selectedBlocks"))){
+
+                this.selectedBlocks = (ArrayList<MapIDEntry>) objectInputStream.readObject();
+
+            } catch (IOException e) {
+                throw new FileNotFoundException("The selectedBlocks-default file could not be opened. " + e.getMessage());
+            } catch (ClassNotFoundException e) {
+                throw new ClassNotFoundException("The selectedBlocks-default file could not be deserialized. " + e.getMessage());
             }
         }
     }
