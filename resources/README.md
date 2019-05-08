@@ -6,6 +6,8 @@ this image. Contrary to other programs, this does not generate the maps itself.
 This program can work with the stepped method, using the full 153 map colors available to
 ingame generated maps.
 
+To run this program, you need Java 1.8 installed.
+
 ## Generated Files
 
    A txt file displaying the type and amount of blocks needed

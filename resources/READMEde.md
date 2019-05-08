@@ -5,6 +5,8 @@ Dieses Programm nimmt ein Bild und erstellt daraus mehrere Dateien, die bei der 
 
 Dieses Programm kann mit der Treppenmethode arbeiten, was 153 Farben auf der Karte ermöglicht.
 
+Um dieses Programm auszuführen muss Java 1.8 installiert sein.
+
 ## Generierte Dateien
 
 Eine Textdatei mit der Anzahl und Typ an benötigten Blöcke
