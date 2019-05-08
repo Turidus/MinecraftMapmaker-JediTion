@@ -89,7 +89,7 @@ public class AboutController {
         }
         String curVersion = Lversion.getText().split(" ")[1].trim();
 
-        String url = "https://api.github.com/repos/Turidus/Minecraft-MapMaker/releases/latest";
+        String url = "https://api.github.com/repos/Turidus/MinecraftMapMaker-JediTion/releases/latest";
         InputStream response;
 
         try {
@@ -111,7 +111,7 @@ public class AboutController {
             EventBus.getDefault().post(new NonCriticalExceptionEvent("Could not find the version of the newest release",e));
             return;
         }
-
+        System.out.println(jsonObject.get("tag_name"));
         if(jsonObject.get("tag_name").equals(curVersion)) EventBus.getDefault().post(new MessageEvent("This version is up to date"));
         else EventBus.getDefault().post(new MessageEvent("There is a new version, get it under About -> Latest Version"));
     }
