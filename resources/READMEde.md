@@ -25,7 +25,13 @@ wie diese Readme Datei.
 Dies öffnet eine GUI.
 
 ### GUI
+#### Menüleiste
 
+- File: Hier kann das Fenster geschlossen werden
+- Edit: Hier can die aktuelle Konfiguration gespeichert oder zurücksetzt werden.
+- About: Hier findet man mehr über das Programm und kann auf neue Versionen prüfen
+
+#### Hauptfenster
 Diese GUI hat drei Spalten.
 
 In der ersten Spalte kann man das Bild welches umgewandelt werden soll und den Speicherort auswählen. Optional kann man ein Projekname festlegen,
@@ -39,6 +45,9 @@ Das Feld maxY sollte so hoch wie möglich liegen, um Farbfehler zu vermeiden. Es
 Das Feld maxS muss größer sein als 0. Dieses Feld bestimmt die maximale Größe der erstellten Schematic Dateien. Je kleiner maxS ist, 
 desto mehr Schematic Dateien werden erstellt, auf der anderen Seite können zu große Schematic Dateien beim Importieren den Server zum Absturz bringen. 
 
+#### Color and Blocks
+Dieses Fenster erlaubt es, die Farben, welche genutzt werden sollen, auszuwählen und, wo möglich, den Block zu bestimmen,
+der für diese Farbe genutzt wird.
 
 ## Über die Cobblestone Line
 Wenn das Bild gebaut oder eingefügt wird, fällt auf das am Nordende des Konstrukts eine zusätzliche Line Cobblestone platziert wurde.

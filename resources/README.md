@@ -26,6 +26,14 @@ A GUI will open where you can generate the files you want.
 
 ### GUI
 
+####Menu Bar
+
+ - File: Here you can close the window
+ - Edit: Here you can save the current configuration or load the default values
+ - About: Here you can find out more and check for new updates.
+
+
+####Main Window
 The GUI has three main columns.
 
 In the first column you can choose the image to process and a folder to save the files to. You can also optionally
@@ -39,6 +47,9 @@ The field maxY should be as high as you can to prevent miscolored blocks. It has
 The field maxS hast to bigger than 0. It limits the size of the generated maxS. If you set it too low you have to import lots of schematics, if you set it too high,
 importing the schematics can choke or even outright crash your server (see About large images).
 
+####Colors and Blocks
+In this window you can select the colors that are used by clicking the check mark and also select, where available,
+which block to use for this color.
 
 ## About the cobblestone line
 When you built/import the construct, you will notice that

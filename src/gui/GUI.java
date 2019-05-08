@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -75,6 +76,7 @@ public class GUI extends Application {
             return;
         }
         primaryStage.setTitle("Minecraft Map Maker");
+        primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/icon.gif")));
         primaryStage.setScene(new Scene(root,1000,800));
         primaryStage.show();
 
