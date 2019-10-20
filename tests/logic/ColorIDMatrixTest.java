@@ -46,7 +46,7 @@ class ColorIDMatrixTest {
         }
 
         ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("resources/test.png"),colorIDMap);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/test.png"),colorIDMap);
         MapIDEntry mapIDEntry = colorIDMatrix.getEntryfromPoint(0,2);
         System.out.println(mapIDEntry.colorID);
         System.out.println(mapIDEntry.getRed());

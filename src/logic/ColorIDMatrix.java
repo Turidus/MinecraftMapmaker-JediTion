@@ -222,11 +222,11 @@ public class ColorIDMatrix {
                     int count = amountMap.get(tempcolorID);
                     amountMap.replace(tempcolorID, count + 1);
                 } else {
-                    double curDif = 442d; //roughly the maximum distance between rgb(0,0,0) and rgb(255,255,255)
+                    double curDif = Double.MAX_VALUE;
                     int curColorID = 0;
                     for (Map.Entry<Integer, MapIDEntry> entry : colorIDMap.getMap().entrySet()) {
 
-                        double tempdif = rgbDistance(rgb, entry.getValue().rgb);
+                        double tempdif = colorDistance(rgb, entry.getValue().rgb);
                         if (tempdif < curDif) {
                             curDif = tempdif;
                             curColorID = entry.getKey();
@@ -248,7 +248,9 @@ public class ColorIDMatrix {
     }
 
     /**
-     * This method calculates the distance between to rgb values using the three dimensional pythagoras
+     * This method calculates the distance between to rgb values by converting to Lab values and calculating DeltaE2000.
+     * Math found here: http://www.easyrgb.com/en/math.php See Delta E2000
+     * Explained here: https://en.wikipedia.org/wiki/Color_difference
      *
      * @param rgbA
      *         An int containing the red value in byte 2, the green value in byte 3 and the blue value in byte 4 (left to right)
@@ -256,12 +258,178 @@ public class ColorIDMatrix {
      *         An int containing the red value in byte 2, the green value in byte 3 and the blue value in byte 4 (left to right)
      * @return A double value representing the distance between both input values
      */
-    private double rgbDistance(int rgbA, int rgbB) {
-        int difRed = ((byte) (rgbA >> 16) & 0xFF) - ((byte) (rgbB >> 16) & 0xFF);
-        int difGreen = ((byte) (rgbA >> 8) & 0xFF) - ((byte) (rgbB >> 8) & 0xFF);
-        int difBlue = ((byte) (rgbA) & 0xFF) - ((byte) (rgbB) & 0xFF);
+    private double colorDistance(int rgbA, int rgbB) {
+        int redA = (byte) (rgbA >> 16) & 0xFF;
+        int redB = (byte) (rgbB >> 16) & 0xFF;
+        int greenA = (byte) (rgbA >> 8) & 0xFF;
+        int greenB = (byte) (rgbB >> 8) & 0xFF;
+        int blueA = (byte) (rgbA) & 0xFF;
+        int blueB = (byte) (rgbB) & 0xFF;
 
-        return Math.sqrt((difRed * difRed) + (difGreen * difGreen) + (difBlue * difBlue));
+        double[] labA = rgb2lab(redA,greenA,blueA);
+        double[] labB = rgb2lab(redB,greenB,blueB);
+
+
+        return deltaE2000squared(labA, labB);
+    }
+
+    private double deltaE2000squared(double[] labA, double[] labB){
+        double l1 = labA[0], a1 = labA[1], b1 = labA[2];          //Color #1 CIE-L*ab values
+        double l2 = labB[0];          //Color #2 CIE-L*ab values
+        double a2 = labB[1];
+        double b2 = labB[2];
+        double weightL = 1; //Weight factors
+        double weightC = 1;
+        double weightH = 1;
+
+        double xC1 = Math.sqrt( a1 * a1 + b1 * b1 );
+        double xC2 = Math.sqrt( a2 * a2 + b2 * b2 );
+        double xCX = ( xC1 + xC2 ) / 2;
+        double xGX = 0.5 * ( 1 - Math.sqrt( Math.pow(xCX, 7) / ( Math.pow(xCX, 7) + Math.pow(25, 7 ))));
+        double xNN = ( 1 + xGX ) * a1;
+        xC1 = Math.sqrt( xNN * xNN + b1 * b1 );
+        double xH1 = cieLab2Hue( xNN, b1 );
+        xNN = ( 1 + xGX ) * a2;
+        xC2 = Math.sqrt( xNN * xNN + b2 * b2 );
+        double xH2 = cieLab2Hue( xNN, b2 );
+        double xDL = l2 - l1;
+        double xDC = xC2 - xC1;
+        double xDH;
+        if ( ( xC1 * xC2 ) == 0 ) xDH = 0;
+        else {
+            xNN = xH2 - xH1;
+            if ( Math.abs( xNN ) <= 180 ) {
+                xDH = xH2 - xH1;
+            }
+            else {
+                if ( xNN > 180 ) xDH = xH2 - xH1 - 360;
+                else             xDH = xH2 - xH1 + 360;
+            }
+        }
+
+        xDH = 2 * Math.sqrt( xC1 * xC2 ) * Math.sin( Math.toRadians( xDH / 2 ) );
+        double xLX = ( l1 + l2 ) / 2;
+        double xCY = ( xC1 + xC2 ) / 2;
+        double xHX;
+        if ( ( xC1 *  xC2 ) == 0 ) {
+            xHX = xH1 + xH2;
+        }
+        else {
+            xNN = Math.abs( xH1 - xH2 );
+            if ( xNN >  180 ) {
+                if ( ( xH2 + xH1 ) <  360 ) xHX = xH1 + xH2 + 360;
+                else                        xHX = xH1 + xH2 - 360;
+            }
+            else {
+                xHX = xH1 + xH2;
+            }
+            xHX /= 2;
+        }
+        double xTX = 1 - 0.17 * Math.cos( Math.toRadians( xHX - 30 ) ) + 0.24
+                * Math.cos( Math.toRadians( 2 * xHX ) ) + 0.32
+                * Math.cos( Math.toRadians( 3 * xHX + 6 ) ) - 0.20
+                * Math.cos( Math.toRadians( 4 * xHX - 63 ) );
+        double xPH = 30 * Math.exp( - ( ( xHX  - 275 ) / 25 ) * ( ( xHX  - 275 ) / 25 ) );
+        double xRC = 2 * Math.sqrt( Math.pow(xCY, 7) / ( Math.pow( xCY, 7 ) + Math.pow( 25, 7 ) ) );
+        double xSL = 1 + ( ( 0.015 * ( ( xLX - 50 ) * ( xLX - 50 ) ) )
+                / Math.sqrt( 20 + ( ( xLX - 50 ) * ( xLX - 50 ) ) ) );
+
+        double xSC = 1 + 0.045 * xCY;
+        double xSH = 1 + 0.015 * xCY * xTX;
+        double xRT = - Math.sin( Math.toRadians( 2 * xPH ) ) * xRC;
+        xDL = xDL / ( weightL * xSL );
+        xDC = xDC / ( weightC * xSC );
+        xDH = xDH / ( weightH * xSH );
+
+        return Math.pow(xDL, 2) + Math.pow(xDC, 2) + Math.pow(xDH, 2) + xRT * xDC * xDH;
+    }
+
+    private double cieLab2Hue(double var_a, double var_b) {
+        int var_bias = 0;
+        if ( var_a >= 0 && var_b == 0 ) return 0;
+        if ( var_a <  0 && var_b == 0 ) return 180;
+        if ( var_a == 0 && var_b >  0 ) return 90;
+        if ( var_a == 0 && var_b <  0 ) return 270;
+        if ( var_a >  0 && var_b >  0 ) var_bias = 0;
+        if ( var_a <  0               ) var_bias = 180;
+        if ( var_a >  0 && var_b <  0 ) var_bias = 360;
+        return ( Math.toDegrees(Math.atan( var_b / var_a )) + var_bias );
+
+
+    }
+
+    /**
+     * Code taken from User Thanasis1101 on stackoverflow.com<br>
+     *     https://stackoverflow.com/a/45263428
+     * With math explained here: http://www.easyrgb.com/en/math.php
+     * @param R Red channel value
+     * @param G Green channel value
+     * @param B Blue channel value
+     * @return Array with L, a, and b, values on index 0,1,2.
+     */
+    private double[] rgb2lab(int R, int G, int B) {
+        //http://www.brucelindbloom.com
+        double[] lab = new double[3];
+
+        float r, g, b, X, Y, Z, fx, fy, fz, xr, yr, zr;
+        float eps = 216.f/24389.f;
+        float k = 24389.f/27.f;
+
+        float Xr = 0.964221f;  // reference white D50
+        float Yr = 1.0f;
+        float Zr = 0.825211f;
+
+        // RGB to XYZ
+        r = R/255.f; //R 0..1
+        g = G/255.f; //G 0..1
+        b = B/255.f; //B 0..1
+
+        // assuming sRGB (D65)
+        if (r <= 0.04045)
+            r = r/12;
+        else
+            r = (float) Math.pow((r+0.055)/1.055,2.4);
+
+        if (g <= 0.04045)
+            g = g/12;
+        else
+            g = (float) Math.pow((g+0.055)/1.055,2.4);
+
+        if (b <= 0.04045)
+            b = b/12;
+        else
+            b = (float) Math.pow((b+0.055)/1.055,2.4);
+
+
+        X =  0.436052025f*r     + 0.385081593f*g + 0.143087414f *b;
+        Y =  0.222491598f*r     + 0.71688606f *g + 0.060621486f *b;
+        Z =  0.013929122f*r     + 0.097097002f*g + 0.71418547f  *b;
+
+        // XYZ to Lab
+        xr = X/Xr;
+        yr = Y/Yr;
+        zr = Z/Zr;
+
+        if ( xr > eps )
+            fx =  (float) Math.pow(xr, 1/3.);
+        else
+            fx = (float) ((k * xr + 16.) / 116.);
+
+        if ( yr > eps )
+            fy =  (float) Math.pow(yr, 1/3.);
+        else
+            fy = (float) ((k * yr + 16.) / 116.);
+
+        if ( zr > eps )
+            fz =  (float) Math.pow(zr, 1/3.);
+        else
+            fz = (float) ((k * zr + 16.) / 116);
+
+        lab[0] = ( 116 * fy ) - 16;
+        lab[1] = 500*(fx-fy);
+        lab[2] = 200*(fy-fz);
+
+        return lab;
     }
 
     /**
