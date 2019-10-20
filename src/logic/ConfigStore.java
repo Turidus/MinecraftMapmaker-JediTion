@@ -81,6 +81,8 @@ public class ConfigStore {
 
     public boolean schematic = true;
 
+    public boolean cie = true;
+
     public int minY = 4;
 
     public int maxY = 250;
@@ -264,6 +266,7 @@ public class ConfigStore {
                     case "positionFile":
                     case "amountFile":
                     case "schematic":
+                    case "cie":
                         try {
                             field.set(this, Boolean.valueOf(split[1]));
                         } catch (Exception ignored) {

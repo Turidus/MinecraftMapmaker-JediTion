@@ -107,6 +107,9 @@ public class GUIController {
     private ChoiceBox<String> DBthreeD;
 
     @FXML
+    private ChoiceBox<String> CIE;
+
+    @FXML
     private CheckBox CBpicture;
 
     @FXML
@@ -359,11 +362,16 @@ public class GUIController {
 
         CBschematic.setSelected(configStore.schematic);
 
-        //Choicebox
+        //Choiceboxes
         ObservableList<String> choices = FXCollections.observableArrayList("2D Construct - 51 Colors","3D Construct - 153 Colors");
         DBthreeD.setItems(choices);
         if (configStore.threeD) DBthreeD.getSelectionModel().select(1);
         else DBthreeD.getSelectionModel().select(0);
+
+        ObservableList<String> cieChoices = FXCollections.observableArrayList("CIE deltaE2000","Euclidean");
+        CIE.setItems(cieChoices);
+        if (!configStore.cie) CIE.getSelectionModel().select(1);
+        else CIE.getSelectionModel().select(0);
     }
 
     private void setBlocksToUseFromBlacklist(){
@@ -427,6 +435,7 @@ public class GUIController {
         configStore.maxS = maxS;
 
         configStore.threeD = DBthreeD.getSelectionModel().getSelectedIndex() == 1;
+        configStore.cie = CIE.getSelectionModel().getSelectedIndex() == 0;
 
         configStore.picture = CBpicture.isSelected();
         configStore.amountFile = CBamount.isSelected();

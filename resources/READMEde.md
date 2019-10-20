@@ -38,6 +38,8 @@ Diese GUI hat drei Spalten.
 
 In der ersten Spalte kann man das Bild welches umgewandelt werden soll und den Speicherort auswählen. Optional kann man ein Projekname festlegen,
 unter dem die Dateien gespeichert werden sollen. Außerdem kann man die Farben und Blöcke bearbeiten welche für die Erstellung genutzt werden sollen.
+Des Weiteren kann der Algorithmus zur Farbauswahl bestimmt werden. CIE deltaE2000 wählt Farben anhand der menschlichen Wahrnehmung aus,
+Euclidian wählt sie nach einem simplen Verfahren aus, welches zu schärfen Abgrenzungen führt.
 
 In der zweite Spalte kann festgelegt werden welche Dateien erstellt werden sollen.
 

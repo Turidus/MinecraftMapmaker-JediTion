@@ -1,3 +1,6 @@
+Compatible with Schematica and Worledit for Minecraft 1.12. Testing for 1.13 and 1.14 is commencing.
+Compatible with Minecraft 1.12, 1.13 and 1.14 if the schematic files are not used.
+
 # Minecraft-MapMaker
 
 This program takes an image and generates multiple files that aid in the generation of Minecraft maps displaying
@@ -40,6 +43,8 @@ The GUI has three main columns.
 
 In the first column you can choose the image to process and a folder to save the files to. You can also optionally
 choose a project name under which the files will be saved and modify the colors and the blocks to be used in the generation.
+It also lets you choose the color matching algorithm. CIE deltaE 2000 matches closer to the human reception of colors,
+while Euclidian uses a very simple approach, that leads to sharper color islands. When in doubt, test it out.
 
 In the second column you can choose what will be generated.
 

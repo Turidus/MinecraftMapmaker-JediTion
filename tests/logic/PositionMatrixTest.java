@@ -23,7 +23,7 @@ class PositionMatrixTest {
         }
 
         ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(file,colorIDMap);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(file,colorIDMap, false);
 
         PositionMatrix positionMatrix = new PositionMatrix(colorIDMatrix);
         assertEquals(4,positionMatrix.getMatrix()[0][16]);
@@ -39,7 +39,7 @@ class PositionMatrixTest {
         }
 
         ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(file,colorIDMap);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(file,colorIDMap, false);
 
         PositionMatrix positionMatrix = new PositionMatrix(colorIDMatrix);
         String result = positionMatrix.getPositionString();
@@ -56,7 +56,7 @@ class PositionMatrixTest {
         }
 
         ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(file,colorIDMap);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(file,colorIDMap, false);
 
         PositionMatrix positionMatrix = new PositionMatrix(colorIDMatrix);
         List<Tag_Compound> tag_compoundList = positionMatrix.getTag_CompoundList();

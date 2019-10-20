@@ -36,7 +36,7 @@ public class MapmakerCore implements Runnable {
             if(configStore.pathToImage == null) throw new InvalidObjectException("Path to image was not set");
             File file = new File(configStore.pathToImage);
             ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.blocksToUse);
-            colorIDMatrix = new ColorIDMatrix(file, colorIDMap);
+            colorIDMatrix = new ColorIDMatrix(file, colorIDMap, configStore.cie);
             EventBus.getDefault().post(new MessageEvent("ColorIDMatrix was calculated"));
             positionMatrix = new PositionMatrix(colorIDMatrix);
             EventBus.getDefault().post(new MessageEvent("PositionMatrix was calculated"));

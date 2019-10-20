@@ -25,7 +25,7 @@ class ColorIDMatrixTest {
 
         ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
 
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/icon.gif"),colorIDMap);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/icon.gif"),colorIDMap, false);
 
         MapIDEntry mapIDEntry = colorIDMatrix.getEntryfromPoint(0,1);
         assertEquals(116, mapIDEntry.colorID);
@@ -46,7 +46,7 @@ class ColorIDMatrixTest {
         }
 
         ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/test.png"),colorIDMap);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/test.png"),colorIDMap, false);
         MapIDEntry mapIDEntry = colorIDMatrix.getEntryfromPoint(0,2);
         System.out.println(mapIDEntry.colorID);
         System.out.println(mapIDEntry.getRed());
@@ -67,7 +67,7 @@ class ColorIDMatrixTest {
 
         ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
 
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("resources/icon.gif"),colorIDMap);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("resources/icon.gif"),colorIDMap, false);
         String resultString = colorIDMatrix.getAmountString();
         System.out.println(resultString);
 
@@ -88,7 +88,7 @@ class ColorIDMatrixTest {
 
         ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
 
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/DTH.jpg"),colorIDMap);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/DTH.jpg"),colorIDMap, false);
         BufferedImage image = colorIDMatrix.imageFromColorIDMatrix();
         ImageIcon icon=new ImageIcon(image);
         JFrame frame=new JFrame();

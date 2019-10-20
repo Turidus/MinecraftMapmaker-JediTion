@@ -24,6 +24,8 @@ amountFile = true
 
 schematic = true
 
+cie = true
+
 ###### Integers
 
 minY = 4

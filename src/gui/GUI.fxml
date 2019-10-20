@@ -183,5 +183,21 @@
         </Label>
         <TextField fx:id="TpathSave" prefHeight="25.0" prefWidth="240.0" promptText="enter path" GridPane.columnIndex="1" GridPane.rowIndex="3" />
         <Button fx:id="BchoosePathSave" contentDisplay="CENTER" mnemonicParsing="false" onAction="#choosePathSave" text="Choose Folder" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+      <Label text="Color matching algorithm:" wrapText="true" GridPane.rowIndex="6">
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ChoiceBox fx:id="CIE" prefHeight="25.0" prefWidth="220.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets left="10.0" right="10.0" />
+         </padding>
+      </ChoiceBox>
     </GridPane>
 </AnchorPane>

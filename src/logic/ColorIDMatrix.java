@@ -62,6 +62,7 @@ public class ColorIDMatrix {
     private int length;
 
     private final ColorIDMap colorIDMap;
+    private boolean cie;
     private final HashMap<Integer, Integer> amountMap = new HashMap<>();
 
     /**
@@ -73,8 +74,9 @@ public class ColorIDMatrix {
      *         A {@link ColorIDMap}
      * @throws IOException
      */
-    public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap) throws IOException, IllegalArgumentException {
+    public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap, boolean cie) throws IOException, IllegalArgumentException {
         this.colorIDMap = colorIDMap;
+        this.cie = cie;
         BufferedImage image = ImageIO.read(imageFile);
         if (image == null){
             throw new IllegalArgumentException("The chosen file was not an image or could not be opened.");
@@ -226,7 +228,7 @@ public class ColorIDMatrix {
                     int curColorID = 0;
                     for (Map.Entry<Integer, MapIDEntry> entry : colorIDMap.getMap().entrySet()) {
 
-                        double tempdif = colorDistance(rgb, entry.getValue().rgb);
+                        double tempdif = colorDistance(rgb, entry.getValue().rgb, this.cie);
                         if (tempdif < curDif) {
                             curDif = tempdif;
                             curColorID = entry.getKey();
@@ -258,19 +260,25 @@ public class ColorIDMatrix {
      *         An int containing the red value in byte 2, the green value in byte 3 and the blue value in byte 4 (left to right)
      * @return A double value representing the distance between both input values
      */
-    private double colorDistance(int rgbA, int rgbB) {
+    private double colorDistance(int rgbA, int rgbB, boolean cie) {
         int redA = (byte) (rgbA >> 16) & 0xFF;
         int redB = (byte) (rgbB >> 16) & 0xFF;
         int greenA = (byte) (rgbA >> 8) & 0xFF;
         int greenB = (byte) (rgbB >> 8) & 0xFF;
         int blueA = (byte) (rgbA) & 0xFF;
         int blueB = (byte) (rgbB) & 0xFF;
+        if(cie){
+            double[] labA = rgb2lab(redA,greenA,blueA);
+            double[] labB = rgb2lab(redB,greenB,blueB);
+            return deltaE2000squared(labA, labB);
+        }
+        else {
+            double diffR = redA - redB;
+            double diffG = greenA - greenB;
+            double diffB = blueA - blueB;
 
-        double[] labA = rgb2lab(redA,greenA,blueA);
-        double[] labB = rgb2lab(redB,greenB,blueB);
-
-
-        return deltaE2000squared(labA, labB);
+            return diffR * diffR + diffG * diffG + diffB * diffB;
+        }
     }
 
     private double deltaE2000squared(double[] labA, double[] labB){
