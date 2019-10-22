@@ -2,8 +2,8 @@
 #This file lists all base color ids, their RGB value and a list of blocks that represent that color on the minecraft map
 #The structure is very rigid, especially empty lines could wreck havoc
 #The top most block in this list is the default block
-#Be aware: Transparent blocks only appear on the map if a solid block is placed under them. This is hardcoded for Iron Bars,
-#other transparent blocks will not have this luxury. Add transparent blocks on your own peril.
+#Be aware: Transparent blocks only appear on the map if a solid block is placed under them.
+#Add transparent blocks on your own peril.
 1; 127, 178, 56
     Grass Block,2
 2; 247, 233, 163
@@ -23,7 +23,6 @@
 5; 160, 160, 255
     Ice,79
 6; 167, 167, 167
-    Iron Bars,101
     Block of Iron,42
 7; 0, 124, 0
     Leaves,18
