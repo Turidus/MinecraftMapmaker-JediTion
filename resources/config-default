@@ -34,4 +34,8 @@ maxY = 250
 
 maxS = 129
 
+maxX = 0
+
+maxZ = 0
+
 mcDataVersion = 1519

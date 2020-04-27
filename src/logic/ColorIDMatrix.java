@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,7 @@ import java.util.TreeMap;
  */
 public class ColorIDMatrix {
 
-
+    private ConfigStore ch;
     private int[][] colorIDMatrix;
 
     private int width;
@@ -74,7 +75,8 @@ public class ColorIDMatrix {
      *         A {@link ColorIDMap}
      * @throws IOException
      */
-    public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap, boolean cie) throws IOException, IllegalArgumentException {
+    public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap, boolean cie) throws IOException, IllegalArgumentException, ClassNotFoundException {
+        this.ch = ConfigStore.getInstance();
         this.colorIDMap = colorIDMap;
         this.cie = cie;
         BufferedImage image = ImageIO.read(imageFile);
@@ -82,10 +84,17 @@ public class ColorIDMatrix {
             throw new IllegalArgumentException("The chosen file was not an image or could not be opened.");
         }
 
-        this.width = image.getWidth();
-        this.length = image.getHeight() + 1;
+        int scaleWidth = ch.maxX == 0 ? image.getWidth() : ch.maxX;
+        int scaleHeight = ch.maxZ == 0 ? image.getHeight() : ch.maxZ;
 
-        imageToColorIDMatrix(image);
+        Image sI = image.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_AREA_AVERAGING);
+        BufferedImage scaledImage = new BufferedImage(sI.getWidth(null),sI.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+        Graphics2D bGr = scaledImage.createGraphics();
+        bGr.drawImage(sI,0,0, null);
+        bGr.dispose();
+        this.width = scaledImage.getWidth();
+        this.length = scaledImage.getHeight() + 1;
+        imageToColorIDMatrix(scaledImage);
     }
 
     /**

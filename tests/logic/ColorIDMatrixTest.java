@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ColorIDMatrixTest {
 
     @Test
-    void getEntryfromPoint() throws IOException {
+    void getEntryfromPoint() throws IOException, ClassNotFoundException {
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
@@ -38,7 +38,7 @@ class ColorIDMatrixTest {
     }
 
     @Test
-    void coordinateTest() throws IOException{
+    void coordinateTest() throws IOException, ClassNotFoundException {
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
@@ -58,7 +58,7 @@ class ColorIDMatrixTest {
 
 
     @Test
-    void getAmountString() throws IOException {
+    void getAmountString() throws IOException, ClassNotFoundException {
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){
@@ -79,7 +79,7 @@ class ColorIDMatrixTest {
     }
 
     @Test
-    void imageFromColorIDMatrix() throws IOException {
+    void imageFromColorIDMatrix() throws IOException, ClassNotFoundException {
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList();
         for (int key : baseColorIDMap.keySet()){

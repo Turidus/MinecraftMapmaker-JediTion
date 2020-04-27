@@ -87,6 +87,10 @@ public class ConfigStore {
 
     public int maxY = 250;
 
+    public int maxX = 0;
+
+    public int maxZ = 0;
+
     public int maxS = 129;
 
     public int mcDataVersion = 1519;
@@ -277,6 +281,8 @@ public class ConfigStore {
                         break;
                     case "minY":
                     case "maxY":
+                    case "maxX":
+                    case "maxZ":
                     case "maxS":
                     case "mcDataVersion":
                         try {

@@ -120,6 +120,12 @@ public class GUIController {
     private TextField TmaxY;
 
     @FXML
+    private TextField TmaxX;
+
+    @FXML
+    private TextField TmaxZ;
+
+    @FXML
     private TextField TmaxS;
 
     @FXML
@@ -382,6 +388,10 @@ public class GUIController {
 
         TmaxY.setText(String.valueOf(configStore.maxY));
 
+        TmaxX.setText(String.valueOf(configStore.maxX));
+
+        TmaxZ.setText(String.valueOf(configStore.maxZ));
+
         TmaxS.setText(String.valueOf(configStore.maxS));
 
         //Checkboxes
@@ -435,6 +445,8 @@ public class GUIController {
 
         int minY;
         int maxY;
+        int maxX;
+        int maxZ;
         int maxS;
 
         try{
@@ -463,6 +475,20 @@ public class GUIController {
         }
 
         try{
+            maxX = Integer.parseInt(TmaxX.getText());
+            maxX = Math.max(maxX, 0);
+        } catch (NumberFormatException e){
+            throw new NumberFormatException("Finale size in X was not a Number");
+        }
+
+        try{
+            maxZ = Integer.parseInt(TmaxZ.getText());
+            maxZ = Math.max(maxZ, 0);
+        } catch (NumberFormatException e){
+            throw new NumberFormatException("Finale size in Z was not a Number");
+        }
+
+        try{
             maxS = Integer.parseInt(TmaxS.getText());
             if(maxS <= 0){
                 throw new IllegalArgumentException("maxS is only vaild when maxS > 0");
@@ -474,6 +500,8 @@ public class GUIController {
 
         configStore.minY = minY;
         configStore.maxY = maxY;
+        configStore.maxX = maxX;
+        configStore.maxZ = maxZ;
         configStore.maxS = maxS;
 
         configStore.threeD = DBthreeD.getSelectionModel().getSelectedIndex() == 1;
