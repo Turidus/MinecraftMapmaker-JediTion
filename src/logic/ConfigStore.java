@@ -89,6 +89,8 @@ public class ConfigStore {
 
     public int maxS = 129;
 
+    public int mcDataVersion = 1519;
+
 
 
     /**
@@ -276,6 +278,7 @@ public class ConfigStore {
                     case "minY":
                     case "maxY":
                     case "maxS":
+                    case "mcDataVersion":
                         try {
                             field.set(this, Integer.valueOf(split[1]));
                         } catch (Exception ignored) {

@@ -4,7 +4,7 @@
  * The only function it can fulfill is support the generation of schematic files and map.dat files.
  *
  *
- * Implemented are Tag_End, Tag_Byte, Tag_Short, Tag_Int, Tag_ByteArray, Tag_List (incomplete), Tag_String, Tag_Compound
+ * Implemented are Tag_End, Tag_Byte, Tag_Short, Tag_Int, Tag_ByteArray, Tag_List_Integer (incomplete), Tag_String, Tag_Compound
  *
  *
  * Made by Turidus https://github.com/Turidus/Minecraft-MapMaker

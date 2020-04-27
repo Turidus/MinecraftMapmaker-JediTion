@@ -101,7 +101,8 @@ public class MapmakerCore implements Runnable {
             try {
                 for (Tag_Compound tagC : tagCompoundList) {
                     String[] tagCName = tagC.getName().split(" ");
-                    File file = new File(configStore.pathToSave + configStore.name + "_Z" + tagCName[0] + "-X" + tagCName[1] + ".schematic");
+                    File file = new File(configStore.pathToSave + configStore.name + "_Z" +
+                            tagCName[0] + "-X" + tagCName[1] + ".schem");
                     file.getParentFile().mkdirs();
                     file.createNewFile();
 

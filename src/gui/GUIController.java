@@ -68,6 +68,26 @@ import java.util.TreeMap;
  */
 public class GUIController {
 
+    private static class McVersion{
+
+        private final String version;
+        private final int dataVersion;
+
+        private McVersion(String version, int dataVersion){
+
+            this.version = version;
+            this.dataVersion = dataVersion;
+        }
+
+        private String getVersion() {
+            return version;
+        }
+
+        private int getDataVersion() {
+            return dataVersion;
+        }
+    }
+
     /*
     Logic Fields
      */
@@ -75,6 +95,8 @@ public class GUIController {
     private ConfigStore configStore;
 
     private TreeMap<Integer, List<MapIDEntry>> baseColorIDs;
+
+    private static List<McVersion> mcVersionList;
 
 
 
@@ -110,6 +132,9 @@ public class GUIController {
     private ChoiceBox<String> CIE;
 
     @FXML
+    private ChoiceBox<String> McDataVersion;
+
+    @FXML
     private CheckBox CBpicture;
 
     @FXML
@@ -136,10 +161,16 @@ public class GUIController {
     @FXML
     private Button Bexit;
 
+
     /*
     Initialisation
      */
-
+    static {
+        mcVersionList = new ArrayList<>();
+        mcVersionList.add(new McVersion("1.13", 1519));
+        mcVersionList.add(new McVersion("1.14", 1952));
+        mcVersionList.add(new McVersion("1.15", 2225));
+    }
     /**
      * Public no args controller
      */
@@ -363,7 +394,7 @@ public class GUIController {
         CBschematic.setSelected(configStore.schematic);
 
         //Choiceboxes
-        ObservableList<String> choices = FXCollections.observableArrayList("2D Construct - 51 Colors","3D Construct - 153 Colors");
+        ObservableList<String> choices = FXCollections.observableArrayList("Flat - 51 Colors","Staircase - 153 Colors");
         DBthreeD.setItems(choices);
         if (configStore.threeD) DBthreeD.getSelectionModel().select(1);
         else DBthreeD.getSelectionModel().select(0);
@@ -372,6 +403,17 @@ public class GUIController {
         CIE.setItems(cieChoices);
         if (!configStore.cie) CIE.getSelectionModel().select(1);
         else CIE.getSelectionModel().select(0);
+
+        ObservableList<String> mcVersionChoices = FXCollections.observableArrayList();
+        String toSelect = null;
+        for (McVersion mcv : mcVersionList){
+            mcVersionChoices.add(mcv.version);
+            if(configStore.mcDataVersion == mcv.dataVersion) toSelect = mcv.version;
+        }
+        McDataVersion.setItems(mcVersionChoices);
+        if(toSelect != null) McDataVersion.getSelectionModel().select(toSelect);
+
+
     }
 
     private void setBlocksToUseFromBlacklist(){
@@ -436,6 +478,14 @@ public class GUIController {
 
         configStore.threeD = DBthreeD.getSelectionModel().getSelectedIndex() == 1;
         configStore.cie = CIE.getSelectionModel().getSelectedIndex() == 0;
+
+        String selectedVersion = McDataVersion.getSelectionModel().getSelectedItem();
+        for(McVersion mcv : mcVersionList){
+            if(selectedVersion.equals(mcv.version)) {
+                configStore.mcDataVersion = mcv.dataVersion;
+                break;
+            }
+        }
 
         configStore.picture = CBpicture.isSelected();
         configStore.amountFile = CBamount.isSelected();

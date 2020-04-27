@@ -126,7 +126,6 @@ public class ColorIDMatrix {
     public String getAmountString() {
         TreeMap<String, ArrayList<Integer>> sortingMap = new TreeMap<>();
         int waterAmount = 0;
-        int ironBarAmount = 0;
 
         for (Map.Entry<Integer, Integer> entry : amountMap.entrySet()) {
 
@@ -147,28 +146,24 @@ public class ColorIDMatrix {
         StringBuilder amountString = new StringBuilder();
 
         amountString.append(String.format("You need these blocks:%n"));
-        amountString.append(String.format("|" + centerString("Blockname", 30) + "|" + centerString("BlockID", 10) +
+        amountString.append(String.format("|" + centerString("Blockname", 30) + "|" + centerString("BlockID", 45) +
                 "|" + centerString("Amount", 10) + "|" + centerString("in Stacks", 10) + "|" + "%n"));
         for (Map.Entry<String, ArrayList<Integer>> entry : sortingMap.entrySet()) {
             String blockName = entry.getKey();
-            String blockID = (colorIDMap.getEntry(entry.getValue().get(0)).blockID).replace("_", ":");
+            String blockID = (colorIDMap.getEntry(entry.getValue().get(0)).blockID);
             Integer amount = entry.getValue().get(1);
             Double amountInStacks = (double)amount / 64d;
 
-            amountString.append(String.format("|%-30s|%10s|%10d|%10.1f|%n", blockName, blockID, amount,amountInStacks));
+            amountString.append(String.format("|%-30s|%45s|%10d|%10.1f|%n", blockName, blockID, amount,amountInStacks));
 
-            if (blockID.equals("9")) {
+            if (blockID.equals("minecraft:water")) {
                 waterAmount = amount;
-            }
-            if (blockID.equals("101")) {
-                ironBarAmount = amount;
             }
 
         }
 
         if (waterAmount > 0) amountString.append("\nGlas blocks to surround Water (at most): " + (waterAmount * 5));
-        if (ironBarAmount > 0)
-            amountString.append("\nCobbelstone blocks to add below Iron Bars (at most): " + ironBarAmount);
+
 
         return amountString.toString();
     }

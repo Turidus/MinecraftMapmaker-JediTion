@@ -4,8 +4,7 @@ import nbt.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class holds the position matrix, a two dimensional array that contains y-coordinates for the blocks.
@@ -49,6 +48,7 @@ import java.util.List;
  */
 public class PositionMatrix {
 
+    ConfigStore configStore = ConfigStore.getInstance();
 
     private int maxY;
     private int minY;
@@ -102,7 +102,8 @@ public class PositionMatrix {
     }
 
     /**
-     * This method builds a list of {@link Tag_Compound} containing at least one Tag_Compound, with each Tag_Compound representing a part of the image.
+     * This method builds a list of {@link Tag_Compound} containing at least one Tag_Compound, with
+     * each Tag_Compound representing a part of the image.
      * This list can then be used to create the schematic files.
      *
      * @return A list of {@link Tag_Compound} representing the image
@@ -110,6 +111,8 @@ public class PositionMatrix {
      */
     public List<Tag_Compound> getTag_CompoundList() throws IllegalArgumentException {
         ArrayList<Tag_Compound> tagCompoundList = new ArrayList<>();
+        int dataVersion = configStore.mcDataVersion;
+
 
         int maxSchematicHeight = maxY - minY  + 1;
         int highestUsedY = minY;
@@ -131,7 +134,7 @@ public class PositionMatrix {
                 Surrounds blocks of water with glass on all sides and below. Because there is no colorID for glass,
                 the unused value 1 is used.
                 */
-                if (entry.blockID.equals("9")) {
+                if (entry.blockID.equals("minecraft:water")) {
                     try {
                         if (schematicCube[correctedY - 1][z][x] == 0) {
                             schematicCube[correctedY - 1][z][x] = 1;
@@ -167,18 +170,6 @@ public class PositionMatrix {
                     } catch (IndexOutOfBoundsException ignored) {
                     }
                 }
-
-                /*
-                Adds a block of cobblestone below all Iron Bars
-                 */
-                if (entry.blockID.equals("101")) {
-                    try {
-                        if (schematicCube[correctedY - 1][z][x] == 0) {
-                            schematicCube[correctedY - 1][z][x] = 45;
-                        }
-                    } catch (IndexOutOfBoundsException ignored) {
-                    }
-                }
             }
         }
         /*
@@ -209,8 +200,9 @@ public class PositionMatrix {
         for (int rangeZ = 1; rangeZ < lengthRanges.size(); rangeZ++) {
             for (int rangeX = 1; rangeX < widthRanges.size(); rangeX++) {
 
-                List<Byte> blockList = new ArrayList<>();
-                List<Byte> blockDataList = new ArrayList<>();
+                List<Integer> blockList = new ArrayList<>();
+                Map<String, Integer> patternMap = new HashMap<>();
+                int curIndex = 0;
                 for (int y = 0; y < schematicHeight; y++) {
                     for (int z = lengthRanges.get(rangeZ - 1); z < lengthRanges.get(rangeZ); z++) {
                         for (int x = widthRanges.get((rangeX - 1)); x < widthRanges.get((rangeX)); x++) {
@@ -219,48 +211,53 @@ public class PositionMatrix {
                             int colorID = schematicCube[y][z][x];
                             switch (colorID) {
                                 case 0:
-                                    blockList.add((byte) 0);
-                                    blockDataList.add((byte) 0);
+                                    if(!patternMap.containsKey("minecraft:air")){
+                                        patternMap.put("minecraft:air", curIndex);
+                                        curIndex++;
+                                    }
+                                    blockList.add(patternMap.get("minecraft:air"));
                                     break;
                                 case 1:
-                                    blockList.add((byte) 20);
-                                    blockDataList.add((byte) 0);
+                                    if(!patternMap.containsKey("minecraft:glass")){
+                                        patternMap.put("minecraft:glass", curIndex);
+                                        curIndex++;
+                                    }
+                                    blockList.add(patternMap.get("minecraft:glass"));
                                     break;
                                 default:
                                     if (colorIDMatrix.getEntryFromID(colorID) == null)
                                         throw new IllegalArgumentException(String.format("%d was not a valid colorID", colorID));
 
                                     String blockID = colorIDMatrix.getEntryFromID(colorID).blockID;
-
-                                    if (blockID.contains(":")) {
-                                        blockList.add(Integer.valueOf(blockID.split(":")[0]).byteValue());
-                                        blockDataList.add(Integer.valueOf(blockID.split(":")[1]).byteValue());
-                                    } else {
-                                        blockList.add(Integer.valueOf(blockID).byteValue());
-                                        blockDataList.add((byte) 0);
+                                    if(!patternMap.containsKey(blockID)){
+                                        patternMap.put(blockID, curIndex);
+                                        curIndex++;
                                     }
+                                    blockList.add(patternMap.get(blockID));
                             }
                         }
                     }
                 }
 
                 //Building Tag_Compound
+                String tag_compoundName = (rangeZ - 1) + " " + (rangeX - 1);
                 List<Tag> tagList = new ArrayList<>();
+                tagList.add(new Tag_Int("Version", 2));
+                tagList.add(new Tag_Int("DataVersion", configStore.mcDataVersion));
+                tagList.add(makeMetaDataObject(tag_compoundName));
+                tagList.add(new Tag_Short("Width", (short) (widthRanges.get(rangeX) - widthRanges.get(rangeX - 1))));
                 tagList.add(new Tag_Short("Height", (short) schematicHeight));
                 tagList.add(new Tag_Short("Length", (short) (lengthRanges.get(rangeZ) - lengthRanges.get(rangeZ - 1))));
-                tagList.add(new Tag_Short("Width", (short) (widthRanges.get(rangeX) - widthRanges.get(rangeX - 1))));
-                tagList.add(new Tag_String("Materials", "Alpha"));
-                tagList.add(new Tag_List("Entities"));
-                tagList.add(new Tag_List("TileEntities"));
-                tagList.add(new Tag_ByteArray("Blocks", blockList));
-                tagList.add(new Tag_ByteArray("Data", blockDataList));
+                tagList.add(new Tag_Int("PaletteMax", patternMap.keySet().size()));
+                tagList.add(makePaletteObject(patternMap));
+                tagList.add(new Tag_ByteArray("BlockData", makeVarInt(blockList)));
 
-                String tag_compoundName = (rangeZ - 1) + " " + (rangeX - 1);
                 tagCompoundList.add(new Tag_Compound(tag_compoundName, tagList));
             }
         }
         return tagCompoundList;
     }
+
 
     /**
      * This method builds the positionMatrix out of the {@link ColorIDMatrix}
@@ -375,5 +372,38 @@ public class PositionMatrix {
 
     public int[][] getMatrix() {
         return positionMatrix;
+    }
+
+    private Tag_Compound makeMetaDataObject(String tag_compoundName) {
+        List<Tag> tagList = new ArrayList<>();
+        tagList.add(new Tag_String("Name", tag_compoundName));
+        tagList.add(new Tag_String("Author", "MinecraftMapmaker"));
+        tagList.add(new Tag_Long("Date", System.currentTimeMillis()));
+
+        return new Tag_Compound("Metadata Object", tagList);
+    }
+
+    private Tag_Compound makePaletteObject(Map<String, Integer> patternMap) {
+        TreeMap<Integer, String> switchedMap = new TreeMap<>();
+        for(String key : patternMap.keySet()) {
+            switchedMap.put(patternMap.get(key), key);
+        }
+        List<Tag> tagList = new ArrayList<>();
+        for(Integer key : switchedMap.keySet()){
+            tagList.add(new Tag_Int(switchedMap.get(key),key));
+        }
+        return new Tag_Compound("Palette", tagList);
+    }
+
+    private List<Byte> makeVarInt(List<Integer> blockList) {
+        List<Byte> byteList = new ArrayList<>();
+        for(Integer i : blockList){
+            while( (i & -128) != 0){
+                byteList.add((byte)(i & 127 | 128));
+                i >>>= 7;
+            }
+            byteList.add(i.byteValue());
+        }
+        return byteList;
     }
 }

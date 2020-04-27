@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -140,8 +141,8 @@ class TagTest {
     @Test
     void tag_list() throws IOException{
 
-        Tag_List tag_list = new Tag_List("test");
-        ByteArrayOutputStream byteArrayOutputStream = tag_list.toBytes();
+        Tag_List_Integer tag_listIntegerInteger = new Tag_List_Integer("test", Collections.singletonList(2));
+        ByteArrayOutputStream byteArrayOutputStream = tag_listIntegerInteger.toBytes();
 
         /*for(byte item : byteArrayOutputStream.toByteArray()){
             System.out.printf("%8s%n", Integer.toBinaryString(item & 0xFF));
@@ -152,11 +153,15 @@ class TagTest {
         expected.write(0);
         expected.write(4);
         expected.write("test".getBytes());
-        expected.write(10);
+        expected.write(3);
         expected.write(0);
         expected.write(0);
         expected.write(0);
+        expected.write(1);
         expected.write(0);
+        expected.write(0);
+        expected.write(0);
+        expected.write(2);
 
         assertEquals(expected.toString(),byteArrayOutputStream.toString());
     }
