@@ -75,8 +75,14 @@
                 <Font size="14.0" />
             </font>
         </Label>
-        <TextField fx:id="Tpath" prefHeight="25.0" prefWidth="240.0" promptText="enter path" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.vgrow="NEVER" />
-        <Button fx:id="BchoosePath" contentDisplay="CENTER" mnemonicParsing="false" onAction="#choosePath" text="Choose Image" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+        <TextField fx:id="Tpath" prefHeight="25.0" prefWidth="240.0" promptText="enter path" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.vgrow="NEVER">
+         <GridPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </GridPane.margin></TextField>
+        <Button fx:id="BchoosePath" contentDisplay="CENTER" mnemonicParsing="false" onAction="#choosePath" text="Choose Image" GridPane.columnIndex="2" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </GridPane.margin></Button>
         <Separator halignment="RIGHT" nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
         <Separator layoutX="377.0" layoutY="80.0" nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
         <Separator halignment="RIGHT" layoutX="377.0" layoutY="80.0" nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
@@ -95,7 +101,10 @@
                 <Font size="14.0" />
             </font>
         </Label>
-        <TextField fx:id="Tname" prefHeight="25.0" prefWidth="240.0" promptText="optional" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <TextField fx:id="Tname" prefHeight="25.0" prefWidth="240.0" promptText="optional" GridPane.columnIndex="1" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </GridPane.margin></TextField>
         <Label text="Colors/Blocks used:" GridPane.rowIndex="6">
             <padding>
                 <Insets left="10.0" />
@@ -104,7 +113,10 @@
                 <Font size="14.0" />
             </font>
         </Label>
-        <Button fx:id="BcolorBlocks" contentDisplay="CENTER" mnemonicParsing="false" onAction="#colorBlockWindow" text="Colors and Blocks" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+        <Button fx:id="BcolorBlocks" contentDisplay="CENTER" mnemonicParsing="false" onAction="#colorBlockWindow" text="Colors and Blocks" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6">
+         <GridPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </GridPane.margin></Button>
         <Label text="What to generate:" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
             <font>
                 <Font size="14.0" />
@@ -115,17 +127,29 @@
                 <Font size="14.0" />
             </font>
         </Label>
-        <CheckBox fx:id="CBpicture" mnemonicParsing="false" text="Picture" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-        <CheckBox fx:id="CBposition" mnemonicParsing="false" text="Block position text file" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-        <CheckBox fx:id="CBamount" mnemonicParsing="false" text="Block amount text file" GridPane.columnIndex="3" GridPane.rowIndex="6" />
-        <CheckBox fx:id="CBschematic" mnemonicParsing="false" text="Schematic" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+        <CheckBox fx:id="CBpicture" mnemonicParsing="false" text="Picture" GridPane.columnIndex="3" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets left="2.0" />
+         </GridPane.margin></CheckBox>
+        <CheckBox fx:id="CBposition" mnemonicParsing="false" text="Block position text file" GridPane.columnIndex="3" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets left="2.0" />
+         </GridPane.margin></CheckBox>
+        <CheckBox fx:id="CBamount" mnemonicParsing="false" text="Block amount text file" GridPane.columnIndex="3" GridPane.rowIndex="6">
+         <GridPane.margin>
+            <Insets left="2.0" />
+         </GridPane.margin></CheckBox>
+        <CheckBox fx:id="CBschematic" mnemonicParsing="false" text="Schematic" GridPane.columnIndex="3" GridPane.rowIndex="7">
+         <GridPane.margin>
+            <Insets left="2.0" />
+         </GridPane.margin></CheckBox>
         <ChoiceBox fx:id="DBthreeD" prefHeight="25.0" prefWidth="220.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>
-            <padding>
-                <Insets left="10.0" right="10.0" />
-            </padding>
+         <GridPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </GridPane.margin>
 
         </ChoiceBox>
         <Label text="Minimal Y coordinate:" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
@@ -183,8 +207,14 @@
                 <Font size="14.0" />
             </font>
         </Label>
-        <TextField fx:id="TpathSave" prefHeight="25.0" prefWidth="240.0" promptText="enter path" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-        <Button fx:id="BchoosePathSave" contentDisplay="CENTER" mnemonicParsing="false" onAction="#choosePathSave" text="Choose Folder" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+        <TextField fx:id="TpathSave" prefHeight="25.0" prefWidth="240.0" promptText="enter path" GridPane.columnIndex="1" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </GridPane.margin></TextField>
+        <Button fx:id="BchoosePathSave" contentDisplay="CENTER" mnemonicParsing="false" onAction="#choosePathSave" text="Choose Folder" GridPane.columnIndex="2" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </GridPane.margin></Button>
       <Label text="Color matching algorithm:" wrapText="true" GridPane.rowIndex="7">
          <padding>
             <Insets left="10.0" />
@@ -200,6 +230,9 @@
          <padding>
             <Insets left="10.0" right="10.0" />
          </padding>
+         <GridPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </GridPane.margin>
       </ChoiceBox>
       <Label text="Minecraft Version:" GridPane.rowIndex="8">
          <font>
@@ -213,6 +246,9 @@
          <padding>
             <Insets left="10.0" right="10.0" />
          </padding>
+         <GridPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </GridPane.margin>
       </ChoiceBox>
       <Label text="Final size in X" GridPane.columnIndex="4" GridPane.rowIndex="5">
          <font>

@@ -1,5 +1,7 @@
 package logic;
 
+import events.MessageEvent;
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,7 +81,13 @@ public class ColorIDMatrix {
         this.ch = ConfigStore.getInstance();
         this.colorIDMap = colorIDMap;
         this.cie = cie;
-        BufferedImage image = ImageIO.read(imageFile);
+        BufferedImage image;
+        try {
+            image = ImageIO.read(imageFile);
+        }catch (IOException ioe){
+            throw new IOException("Image could not be opened");
+        }
+
         if (image == null){
             throw new IllegalArgumentException("The chosen file was not an image or could not be opened.");
         }
@@ -94,6 +102,14 @@ public class ColorIDMatrix {
         bGr.dispose();
         this.width = scaledImage.getWidth();
         this.length = scaledImage.getHeight() + 1;
+
+        if (this.width * this.length > 1500000) {
+            throw new IllegalArgumentException("The (scaled) picture is to large and can not be calculated");
+        }
+        else if (this.width * this.length > 500000) {
+            EventBus.getDefault().post(new MessageEvent("The (scaled) picture is large, this will take a while"));
+        }
+
         imageToColorIDMatrix(scaledImage);
     }
 

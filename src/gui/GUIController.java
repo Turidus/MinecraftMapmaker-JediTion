@@ -373,46 +373,84 @@ public class GUIController {
         */
         //Text fields
 
-        File file = new File(configStore.pathToSave);
-        TpathSave.setText(file.getAbsolutePath());
-
         if(configStore.pathToImage != null){
             Tpath.setText(new File(configStore.pathToImage).getAbsolutePath());
         }
+        Tooltip TpathTP = new Tooltip("Picture that will be processed");
+        Tooltip.install(Tpath, TpathTP);
+
+        File file = new File(configStore.pathToSave);
+        TpathSave.setText(file.getAbsolutePath());
+        Tooltip TpathSaveTP = new Tooltip("Folder which will contain the results");
+        Tooltip.install(Tpath, TpathSaveTP);
 
         if(configStore.name != null){
             Tname.setText(configStore.name);
         }
+        Tooltip TnameTP = new Tooltip("Optional name of the project");
+        Tooltip.install(Tname, TnameTP);
 
         TminY.setText(String.valueOf(configStore.minY));
+        Tooltip TminYTP = new Tooltip("Minimal world height you will place the structure on. Default: 4");
+        Tooltip.install(TminY, TminYTP);
 
         TmaxY.setText(String.valueOf(configStore.maxY));
+        Tooltip TmaxYTP = new Tooltip("Maximal world height you want to place blocks. The greater" +
+                " the difference between maxY and min Y becomes," +
+                " the lower is the chance of pixel errors and colors mismatches in the finale picture. Default: 250");
+        Tooltip.install(TmaxY, TmaxYTP);
 
         TmaxX.setText(String.valueOf(configStore.maxX));
+        Tooltip TmaxXTP = new Tooltip("This determines the width of the final structure. " +
+                "This can be used to resize the input picture to a desired size. 0 will use the original size. Default: 0");
+        Tooltip.install(TmaxX, TmaxXTP);
 
         TmaxZ.setText(String.valueOf(configStore.maxZ));
+        Tooltip TmaxZTP = new Tooltip("This determines the length of the final structure. " +
+                "This can be used to resize the input picture to a desired size. 0 will use the original size. Default: 0");
+        Tooltip.install(TmaxZ, TmaxZTP);
 
         TmaxS.setText(String.valueOf(configStore.maxS));
+        Tooltip TmaxSTP = new Tooltip("Sets the size of the final square schematic. If smaller then the" +
+                " size of the structure, multiple schematics will be created. This massively improves performance while importing in minecraft." +
+                " Default: 129");
+        Tooltip.install(TmaxS, TmaxSTP);
 
         //Checkboxes
         CBpicture.setSelected(configStore.picture);
+        Tooltip CBpictureTP = new Tooltip("If checked, an approximated preview will be generated and saved to the folder");
+        Tooltip.install(CBpicture, CBpictureTP);
 
         CBamount.setSelected(configStore.amountFile);
+        Tooltip CBamountTP = new Tooltip("If checked, a text file containing the amount of needed blocks per block type " +
+                "will be generated and saved to the folder");
+        Tooltip.install(CBamount, CBamountTP);
 
         CBposition.setSelected(configStore.positionFile);
+        Tooltip CBpositionTP = new Tooltip("If checked, a text file containing the relative positions of all blocks " +
+                "will be generated and saved to the folder");
+        Tooltip.install(CBposition, CBpositionTP);
 
         CBschematic.setSelected(configStore.schematic);
+        Tooltip CBschematicTP = new Tooltip("If checked, one or more Sponge Schematic (.schem) files will be generated");
+        Tooltip.install(CBschematic, CBschematicTP);
 
         //Choiceboxes
         ObservableList<String> choices = FXCollections.observableArrayList("Flat - 51 Colors","Staircase - 153 Colors");
         DBthreeD.setItems(choices);
         if (configStore.threeD) DBthreeD.getSelectionModel().select(1);
         else DBthreeD.getSelectionModel().select(0);
+        Tooltip DBthreeDTP  = new Tooltip("Selecting flat will lead to a flat structure that can an maximum display 51" +
+                " different colors on the map. Staircase will lead to a 3D structure with 153 colors on the map.");
+        Tooltip.install(DBthreeD, DBthreeDTP);
 
         ObservableList<String> cieChoices = FXCollections.observableArrayList("CIE deltaE2000","Euclidean");
         CIE.setItems(cieChoices);
         if (!configStore.cie) CIE.getSelectionModel().select(1);
         else CIE.getSelectionModel().select(0);
+        Tooltip CIETP  = new Tooltip("Allows to choose a color matching algorithm. CIE tries to match human" +
+                " perception and should lead to better results.");
+        Tooltip.install(CIE, CIETP);
 
         ObservableList<String> mcVersionChoices = FXCollections.observableArrayList();
         String toSelect = null;
@@ -422,8 +460,9 @@ public class GUIController {
         }
         McDataVersion.setItems(mcVersionChoices);
         if(toSelect != null) McDataVersion.getSelectionModel().select(toSelect);
-
-
+        Tooltip McDataVersionTP  = new Tooltip("Choose the minecraft version you are playing." +
+                " For Version 1.11 and 1.12, use MinecraftMapMaker v2.x.x");
+        Tooltip.install(McDataVersion, McDataVersionTP);
     }
 
     private void setBlocksToUseFromBlacklist(){

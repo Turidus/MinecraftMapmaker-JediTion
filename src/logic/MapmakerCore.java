@@ -27,6 +27,7 @@ public class MapmakerCore implements Runnable {
 
     @Override
     public void run() {
+        EventBus.getDefault().post(new MessageEvent("Started Processing"));
         final long time = System.currentTimeMillis();
         ColorIDMatrix colorIDMatrix;
         PositionMatrix positionMatrix;
