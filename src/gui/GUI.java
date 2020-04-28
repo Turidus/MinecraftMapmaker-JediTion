@@ -77,7 +77,7 @@ public class GUI extends Application {
         }
         primaryStage.setTitle("Minecraft Map Maker");
         primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/icon.gif")));
-        primaryStage.setScene(new Scene(root,1000,800));
+        primaryStage.setScene(new Scene(root,1400,800));
         primaryStage.show();
 
     }

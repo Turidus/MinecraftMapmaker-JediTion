@@ -271,7 +271,7 @@ public class GUIController {
 
         Stage stage = new Stage();
         stage.setTitle("Colors and Blocks");
-        stage.setScene(new Scene(root,1200,800));
+        stage.setScene(new Scene(root,1400,800));
         stage.show();
     }
 
