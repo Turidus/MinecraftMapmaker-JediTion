@@ -160,14 +160,14 @@ public class GUI extends Application {
             }
         }
 
-        //Setting up READMEde file
-        File fileReadmeDE = new File("resources/READMEde.md");
-        if(!fileReadmeDE.exists()){
-            fileReadmeDE.getParentFile().mkdir();
-            fileReadmeDE.createNewFile();
-            try(InputStream inputStream = getClass().getResourceAsStream("/READMEde.md")){
+        //Setting up README.txt
+        File fileReadmeText = new File("resources/README.txt");
+        if(!fileReadmeText.exists()){
+            fileReadmeText.getParentFile().mkdir();
+            fileReadmeText.createNewFile();
+            try(InputStream inputStream = getClass().getResourceAsStream("/README.md")){
 
-                try(FileOutputStream outputStream = new FileOutputStream(fileReadmeDE)) {
+                try(FileOutputStream outputStream = new FileOutputStream(fileReadmeText)) {
 
                     int read;
                     byte[] bytes = new byte[1024];
