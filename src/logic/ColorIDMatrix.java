@@ -10,10 +10,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * This class contains the ColorIDMatrix, a two dimensional array containing the appropriate colorIDs for every pixel of the image.
@@ -103,7 +100,7 @@ public class ColorIDMatrix {
         this.width = scaledImage.getWidth();
         this.length = scaledImage.getHeight() + 1;
 
-        if (this.width * this.length > 1500000) {
+        if (this.width * this.length > 1100000) {
             throw new IllegalArgumentException("The (scaled) picture is to large and can not be calculated");
         }
         else if (this.width * this.length > 500000) {
@@ -221,11 +218,20 @@ public class ColorIDMatrix {
 
         colorIDMatrix = new int[width][length];
 
-        //This loop adds the additional line of cobblestone on the top.
-        for (int[] colume : colorIDMatrix) {
-            colume[0] = 45;
+        //This loop adds the additional line of cobblestone on the top. If cobblestone is turned off, another block will be used.
+        int insertColorID;
+        if(colorIDMap.getMap().containsKey(45)){
+            insertColorID = 45;
         }
-        amountMap.put(45, width);
+        else {
+            Iterator<Integer> ii = colorIDMap.getMap().keySet().iterator();
+            insertColorID = ii.next();
+        }
+        for (int[] colume : colorIDMatrix) {
+
+            colume[0] = insertColorID;
+        }
+        amountMap.put(insertColorID, width);
 
         HashMap<Integer, Integer> knownLinks = new HashMap<>();
         for (int x = 0; x < width; x++) {

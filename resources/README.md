@@ -79,8 +79,8 @@ which block to use for this color.
 
 ## About the cobblestone line
 When you built/import the construct, you will notice that
-there is an **additional line** at the *north* end, made out of cobblestone. This is necessary to prevent
-the first line of the image to be miscolored.  
+there is an **additional line** at the *north* end, made out of cobblestone (or another kind of block if 
+cobblestone is turned of). This is necessary to prevent the first line of the image to be miscolored.
 One easy way to deal with this additional line is to place it just out of range of the map, which prevents it from being rendered.
 Another way is to replace the line of cobblestones with something that blends with the environment.
 
@@ -106,7 +106,7 @@ even ImageSizeX x 128 pixel areas. These images can then be processed and placed
 
 An additional problem is performance. Very large images can take a while to process, up to multiple minutes depending on your machine.
 
-The maximal tested size that can be processed is 1500x1000 pixels, larger images could run into the maximum heap size
+The maximal tested size that can be processed is 1000x1000 pixels, images with more than a million pixel could run into the maximum heap size
 of the JVM (Java virtual machine) which will crash the program and are not allowed.
 
 ## About (multiple) schematics
