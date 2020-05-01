@@ -25,12 +25,12 @@
 6; 167, 167, 167
     Block of Iron,minecraft:iron_block
 7; 0, 124, 0
-    Oak Leaves,minecraft:oak_leaves
-    Spruce Leaves,minecraft:spruce_leaves
-    Birch Leaves,minecraft:birch_leaves
-    Jungle Leaves,minecraft:jungle_leaves
-    Acacia Leaves,minecraft:acacia_leaves
-    Dark Oak Leaves,minecraft:dark_oak_leaves
+    Oak Leaves,minecraft:oak_leaves[persistent=true]
+    Spruce Leaves,minecraft:spruce_leaves[persistent=true]
+    Birch Leaves,minecraft:birch_leaves[persistent=true]
+    Jungle Leaves,minecraft:jungle_leaves[persistent=true]
+    Acacia Leaves,minecraft:acacia_leaves[persistent=true]
+    Dark Oak Leaves,minecraft:dark_oak_leaves[persistent=true]
 8; 255, 255, 255
     Snow Block,minecraft:snow_block
     White Wool,minecraft:white_wool
