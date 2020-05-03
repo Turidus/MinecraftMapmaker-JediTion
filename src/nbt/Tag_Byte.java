@@ -1,6 +1,8 @@
 package nbt;
 
-import com.sun.istack.internal.NotNull;
+
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

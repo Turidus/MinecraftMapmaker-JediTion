@@ -22,7 +22,6 @@ import logic.ConfigStore;
 import logic.MapIDEntry;
 import org.greenrobot.eventbus.EventBus;
 
-import javax.xml.bind.TypeConstraintException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -242,16 +241,16 @@ public class ColorBlockController {
 
             //Get the chosen block:
             String chosenBlockName;
-            if(children.get(3).getClass().getSimpleName().equals("ChoiceBox")) {
+            if(children.get(3) instanceof ChoiceBox) {
                 ChoiceBox<String> choiceBox = (ChoiceBox<String>) children.get(3);
                 chosenBlockName = choiceBox.getSelectionModel().getSelectedItem();
             }
-            else if (children.get(3).getClass().getSimpleName().equals("Label")) {
+            else if (children.get(3) instanceof Label) {
                 Label choiceLabel = (Label) children.get(3);
                 chosenBlockName = choiceLabel.getText();
             }
             else{
-                EventBus.getDefault().post(new CriticalExceptionEvent("Turidus did something wrong: Parsing of chosen blocks did fail", new TypeConstraintException("Wrong Type")));
+                EventBus.getDefault().post(new CriticalExceptionEvent("Turidus did something wrong: Parsing of chosen blocks did fail", new IllegalStateException("Wrong Type")));
                 Bdone.getScene().getWindow().hide();
                 return;
             }
