@@ -125,14 +125,16 @@ public class ColorIDMap {
         int rgb = 0;
         ArrayList<MapIDEntry> tempList = new ArrayList<>();
         for (String line : reader.lines().toArray(String[]::new)){
-            if (line.startsWith("#")) continue;
+            if (line.startsWith("#") || line.isEmpty()) continue;
 
             else if (!line.startsWith(" ")){
                 if(!tempList.isEmpty()){
                     baseColorIDMap.put(baseColorID,tempList);
                     tempList = new ArrayList<>();
                 }
+                System.out.println(line);
                 String[] firstSplit = line.split(";");
+                System.out.println(firstSplit.length);
                 String[] secondSplit = firstSplit[1].split(",");
                 baseColorID = Integer.valueOf(firstSplit[0]);
                 rgb = (Integer.valueOf(secondSplit[0].trim()) << 16) | (Integer.valueOf(secondSplit[1].trim()) << 8) | (Integer.valueOf(secondSplit[2].trim()));
