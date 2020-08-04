@@ -132,9 +132,7 @@ public class ColorIDMap {
                     baseColorIDMap.put(baseColorID,tempList);
                     tempList = new ArrayList<>();
                 }
-                System.out.println(line);
                 String[] firstSplit = line.split(";");
-                System.out.println(firstSplit.length);
                 String[] secondSplit = firstSplit[1].split(",");
                 baseColorID = Integer.valueOf(firstSplit[0]);
                 rgb = (Integer.valueOf(secondSplit[0].trim()) << 16) | (Integer.valueOf(secondSplit[1].trim()) << 8) | (Integer.valueOf(secondSplit[2].trim()));
