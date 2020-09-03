@@ -68,25 +68,7 @@ import java.util.TreeMap;
  */
 public class GUIController {
 
-    private static class McVersion{
 
-        private final String version;
-        private final int dataVersion;
-
-        private McVersion(String version, int dataVersion){
-
-            this.version = version;
-            this.dataVersion = dataVersion;
-        }
-
-        private String getVersion() {
-            return version;
-        }
-
-        private int getDataVersion() {
-            return dataVersion;
-        }
-    }
 
     /*
     Logic Fields
@@ -95,8 +77,6 @@ public class GUIController {
     private ConfigStore configStore;
 
     private TreeMap<Integer, List<MapIDEntry>> baseColorIDs;
-
-    private static List<McVersion> mcVersionList;
 
 
 
@@ -168,16 +148,7 @@ public class GUIController {
     private Button Bexit;
 
 
-    /*
-    Initialisation
-     */
-    static {
-        mcVersionList = new ArrayList<>();
-        mcVersionList.add(new McVersion("1.13", 1519));
-        mcVersionList.add(new McVersion("1.14", 1952));
-        mcVersionList.add(new McVersion("1.15", 2225));
-        mcVersionList.add(new McVersion("1.16", 2566));
-    }
+
     /**
      * Public no args controller
      */
@@ -262,9 +233,9 @@ public class GUIController {
     private void colorBlockWindow(){
 
         String selectedVersion = McDataVersion.getSelectionModel().getSelectedItem();
-        for(McVersion mcv : mcVersionList){
-            if(selectedVersion.equals(mcv.version)) {
-                configStore.mcDataVersion = mcv.dataVersion;
+        for(ConfigStore.McVersion mcv : ConfigStore.mcVersionList){
+            if(selectedVersion.equals(mcv.getVersion())) {
+                configStore.mcDataVersion = mcv.getDataVersion();
                 break;
             }
         }
@@ -446,7 +417,7 @@ public class GUIController {
         Tooltip.install(CBschematic, CBschematicTP);
 
         //Choiceboxes
-        ObservableList<String> choices = FXCollections.observableArrayList("Flat - 51 Colors","Staircase - 153 Colors");
+        ObservableList<String> choices = FXCollections.observableArrayList("Flat","Staircase");
         DBthreeD.setItems(choices);
         if (configStore.threeD) DBthreeD.getSelectionModel().select(1);
         else DBthreeD.getSelectionModel().select(0);
@@ -464,9 +435,9 @@ public class GUIController {
 
         ObservableList<String> mcVersionChoices = FXCollections.observableArrayList();
         String toSelect = null;
-        for (McVersion mcv : mcVersionList){
-            mcVersionChoices.add(mcv.version);
-            if(configStore.mcDataVersion == mcv.dataVersion) toSelect = mcv.version;
+        for (ConfigStore.McVersion mcv : ConfigStore.mcVersionList){
+            mcVersionChoices.add(mcv.getVersion());
+            if(configStore.mcDataVersion == mcv.getDataVersion()) toSelect = mcv.getVersion();
         }
         McDataVersion.setItems(mcVersionChoices);
         if(toSelect != null) McDataVersion.getSelectionModel().select(toSelect);
@@ -557,9 +528,9 @@ public class GUIController {
         configStore.cie = CIE.getSelectionModel().getSelectedIndex() == 0;
 
         String selectedVersion = McDataVersion.getSelectionModel().getSelectedItem();
-        for(McVersion mcv : mcVersionList){
-            if(selectedVersion.equals(mcv.version)) {
-                configStore.mcDataVersion = mcv.dataVersion;
+        for(ConfigStore.McVersion mcv : ConfigStore.mcVersionList){
+            if(selectedVersion.equals(mcv.getVersion())) {
+                configStore.mcDataVersion = mcv.getDataVersion();
                 break;
             }
         }
@@ -571,8 +542,18 @@ public class GUIController {
 
         if (configStore.blocksToUse == null) throw new IllegalArgumentException("blocksToUse was null");
         List<Integer> tempList = new ArrayList<>(baseColorIDs.keySet());
+        List<MapIDEntry> tempEntries = new ArrayList<>();
         for(MapIDEntry entry : configStore.blocksToUse){
-            tempList.remove((Integer) entry.colorID);
+            //Only remove blocks that are used by the current selected MC Version, else remove that block from blocksToUse
+            if(entry.colorID <= ConfigStore.maxColorIDUsedByVersion.get(configStore.mcDataVersion)){
+                tempList.remove((Integer) entry.colorID);
+            }
+            else {
+                    tempEntries.add(entry);
+            }
+        }
+        for(MapIDEntry entry : tempEntries){
+            configStore.blocksToUse.remove(entry);
         }
         List<String> newBlacklist = new ArrayList<>();
         for (Integer i : tempList){

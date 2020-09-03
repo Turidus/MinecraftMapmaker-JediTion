@@ -4,9 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class holds the configuration values, which it reads out of the config.txt file
@@ -53,7 +51,49 @@ import java.util.List;
  */
 public class ConfigStore {
 
+    public static class McVersion{
+
+        private final String version;
+        private final int dataVersion;
+
+        private McVersion(String version, int dataVersion){
+
+            this.version = version;
+            this.dataVersion = dataVersion;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public int getDataVersion() {
+            return dataVersion;
+        }
+    }
+
     private static ConfigStore single_instance = null;
+
+    /**
+     * This map contains the max color ID used by version.
+     * {@code Map<dataVersion,colorID>}
+     */
+    public static Map<Integer,Integer> maxColorIDUsedByVersion;
+
+    public static List<McVersion> mcVersionList;
+
+    static {
+        mcVersionList = new ArrayList<>();
+        mcVersionList.add(new McVersion("1.13", 1519));
+        mcVersionList.add(new McVersion("1.14", 1952));
+        mcVersionList.add(new McVersion("1.15", 2225));
+        mcVersionList.add(new McVersion("1.16", 2566));
+
+        maxColorIDUsedByVersion = new HashMap<>();
+        maxColorIDUsedByVersion.put(1519, 51);
+        maxColorIDUsedByVersion.put(1952, 51);
+        maxColorIDUsedByVersion.put(2225, 51);
+        maxColorIDUsedByVersion.put(2566, 58);
+    }
 
     @Nullable
     public String pathToImage = null;

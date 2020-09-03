@@ -1,6 +1,7 @@
 package gui;
 
 import events.CriticalExceptionEvent;
+import events.MessageEvent;
 import events.NonCriticalExceptionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -71,20 +72,6 @@ public class ColorBlockController {
     private TreeMap<Integer, List<MapIDEntry>> baseColorIDs;
     private ConfigStore configStore;
 
-    /**
-     * This map contains the max color ID used by version.
-     * {@code Map<dataVersion,colorID>}
-     */
-    static Map<Integer,Integer> maxColorIDUsedByVersion;
-
-    static {
-        maxColorIDUsedByVersion = new HashMap<>();
-        maxColorIDUsedByVersion.put(1519, 51);
-        maxColorIDUsedByVersion.put(1952, 51);
-        maxColorIDUsedByVersion.put(2225, 51);
-        maxColorIDUsedByVersion.put(2566, 58);
-
-    }
 
     /*
     FX Fields
@@ -185,7 +172,7 @@ public class ColorBlockController {
             //CheckBox
             CheckBox checkBox = new CheckBox();
             //Set Disabled and unselected if not supported by minecraft version.
-            if(maxColorIDUsedByVersion.get(configStore.mcDataVersion) < entry.colorID){
+            if(configStore.maxColorIDUsedByVersion.get(configStore.mcDataVersion) < entry.colorID){
                 checkBox.setSelected(false);
                 checkBox.setDisable(true);
             }
