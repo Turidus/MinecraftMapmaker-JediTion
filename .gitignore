@@ -23,3 +23,6 @@
 hs_err_pid*
 /resources/config.txt
 /resources/BaseColorIDs.txt
+
+*.xml
+*.txt
