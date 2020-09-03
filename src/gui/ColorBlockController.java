@@ -1,6 +1,7 @@
 package gui;
 
 import events.CriticalExceptionEvent;
+import events.MessageEvent;
 import events.NonCriticalExceptionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,9 +25,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import javax.xml.bind.TypeConstraintException;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * This class controls the ColorBlock window
@@ -72,6 +71,7 @@ public class ColorBlockController {
 
     private TreeMap<Integer, List<MapIDEntry>> baseColorIDs;
     private ConfigStore configStore;
+
 
     /*
     FX Fields
@@ -171,7 +171,12 @@ public class ColorBlockController {
 
             //CheckBox
             CheckBox checkBox = new CheckBox();
-            checkBox.setSelected(!configStore.blacklist.contains(String.valueOf(keyList.get(i))));
+            //Set Disabled and unselected if not supported by minecraft version.
+            if(configStore.maxColorIDUsedByVersion.get(configStore.mcDataVersion) < entry.colorID){
+                checkBox.setSelected(false);
+                checkBox.setDisable(true);
+            }
+            else checkBox.setSelected(!configStore.blacklist.contains(String.valueOf(keyList.get(i))));
             checkBox.setPadding(new Insets(0d,2d,4d,2d));
 
             childGP.addColumn(2,checkBox);

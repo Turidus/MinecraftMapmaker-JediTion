@@ -7,7 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This is the main class of Minecraft Map Maker. It sets up the environment and starts the GUI
@@ -160,14 +163,14 @@ public class GUI extends Application {
             }
         }
 
-        //Setting up READMEde file
-        File fileReadmeDE = new File("resources/READMEde.md");
-        if(!fileReadmeDE.exists()){
-            fileReadmeDE.getParentFile().mkdir();
-            fileReadmeDE.createNewFile();
-            try(InputStream inputStream = getClass().getResourceAsStream("/READMEde.md")){
+        //Setting up README.txt
+        File fileReadmeText = new File("resources/README.txt");
+        if(!fileReadmeText.exists()){
+            fileReadmeText.getParentFile().mkdir();
+            fileReadmeText.createNewFile();
+            try(InputStream inputStream = getClass().getResourceAsStream("/README.md")){
 
-                try(FileOutputStream outputStream = new FileOutputStream(fileReadmeDE)) {
+                try(FileOutputStream outputStream = new FileOutputStream(fileReadmeText)) {
 
                     int read;
                     byte[] bytes = new byte[1024];

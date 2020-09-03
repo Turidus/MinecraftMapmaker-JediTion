@@ -125,7 +125,7 @@ public class ColorIDMap {
         int rgb = 0;
         ArrayList<MapIDEntry> tempList = new ArrayList<>();
         for (String line : reader.lines().toArray(String[]::new)){
-            if (line.startsWith("#")) continue;
+            if (line.startsWith("#") || line.isEmpty()) continue;
 
             else if (!line.startsWith(" ")){
                 if(!tempList.isEmpty()){

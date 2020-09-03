@@ -2,7 +2,6 @@ package nbt;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Tag_List_Integer extends Tag {
