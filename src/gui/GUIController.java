@@ -176,6 +176,7 @@ public class GUIController {
         mcVersionList.add(new McVersion("1.13", 1519));
         mcVersionList.add(new McVersion("1.14", 1952));
         mcVersionList.add(new McVersion("1.15", 2225));
+        mcVersionList.add(new McVersion("1.16", 2566));
     }
     /**
      * Public no args controller
@@ -259,6 +260,15 @@ public class GUIController {
 
     @FXML
     private void colorBlockWindow(){
+
+        String selectedVersion = McDataVersion.getSelectionModel().getSelectedItem();
+        for(McVersion mcv : mcVersionList){
+            if(selectedVersion.equals(mcv.version)) {
+                configStore.mcDataVersion = mcv.dataVersion;
+                break;
+            }
+        }
+
         Parent root;
         try {
             root = FXMLLoader.load(getClass().getResource("ColorBlock.fxml"));
@@ -440,8 +450,8 @@ public class GUIController {
         DBthreeD.setItems(choices);
         if (configStore.threeD) DBthreeD.getSelectionModel().select(1);
         else DBthreeD.getSelectionModel().select(0);
-        Tooltip DBthreeDTP  = new Tooltip("Selecting flat will lead to a flat structure that can an maximum display 51" +
-                " different colors on the map. Staircase will lead to a 3D structure with 153 colors on the map.");
+        Tooltip DBthreeDTP  = new Tooltip("Selecting flat will lead to a flat structure." +
+                " Staircase will lead to a 3D structure with every map color having two additional shades.");
         Tooltip.install(DBthreeD, DBthreeDTP);
 
         ObservableList<String> cieChoices = FXCollections.observableArrayList("CIE deltaE2000","Euclidean");
