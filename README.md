@@ -1,12 +1,10 @@
-Compatible with Schematica and Worledit for Minecraft 1.12. Testing for 1.13 and 1.14 is commencing.
-Compatible with Minecraft 1.12, 1.13 and 1.14 if the schematic files are not used.
-
+Compatible with Schematica and Worledit for Minecraft 1.13+
 # Minecraft-MapMaker
 
 This program takes an image and generates multiple files that aid in the generation of Minecraft maps displaying
 this image. Contrary to other programs, this does not generate the maps itself.
 
-This program can work with the stepped method, using the full 153 map colors available to
+This program can work with the stepped method, using the full 153+ map colors available to
 ingame generated maps.
 
 To run this program, you need Java 1.8 installed.
