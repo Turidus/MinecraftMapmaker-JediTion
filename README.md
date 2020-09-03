@@ -1,4 +1,4 @@
-Compatible with Minecraft 1.16+
+Compatible with Minecraft 1.13+
 Compatible with Sponge Schematica format used by World Edit.
 
 # Minecraft-MapMaker
