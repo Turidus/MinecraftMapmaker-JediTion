@@ -99,29 +99,57 @@ public class MapmakerCore implements Runnable {
 
         if (configStore.schematic) {
             List<Tag_Compound> tagCompoundList = positionMatrix.getTag_CompoundList();
-            try {
-                for (Tag_Compound tagC : tagCompoundList) {
-                    String[] tagCName = tagC.getName().split(" ");
-                    File file = new File(configStore.pathToSave + configStore.name + "_Z" +
-                            tagCName[0] + "-X" + tagCName[1] + ".schem");
-                    file.getParentFile().mkdirs();
-                    file.createNewFile();
-
-                    tagC.setName("Schematic");
-
-                    ByteArrayOutputStream byteArrayOutputStream = tagC.toBytes();
-
-                    try (OutputStream out = new GZIPOutputStream(new FileOutputStream(file))) {
-                        byteArrayOutputStream.writeTo(out);
-                    }
-                }
-            } catch (IOException e) {
-                EventBus.getDefault().post(new NonCriticalExceptionEvent( "Schematic files could not be saved",e));
-            }
-            EventBus.getDefault().post(new MessageEvent("Schematics where saved"));
+            if(configStore.spongeSchematic) saveSpongeSchematic(tagCompoundList);
+            else saveLitematicaSchematic(tagCompoundList);
         }
         EventBus.getDefault().post(new MessageEvent("Time passed: " + (System.currentTimeMillis() - time)/1000d + " s"));
         EventBus.getDefault().post(new MessageEvent("Done!"));
         EventBus.getDefault().post(new DoneEvent());
+    }
+
+    private void saveLitematicaSchematic(List<Tag_Compound> tagCompoundList) {
+        try {
+            for (Tag_Compound tagC : tagCompoundList) {
+                String[] tagCName = tagC.getName().split(" ");
+                File file = new File(configStore.pathToSave + configStore.name + "_Z" +
+                        tagCName[0] + "-X" + tagCName[1]);
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+
+                tagC.setName(configStore.name + "_Z" + tagCName[0] + "-X" + tagCName[1]);
+
+                ByteArrayOutputStream byteArrayOutputStream = tagC.toBytes();
+
+                try (OutputStream out = new GZIPOutputStream(new FileOutputStream(file))) {
+                    byteArrayOutputStream.writeTo(out);
+                }
+            }
+            EventBus.getDefault().post(new MessageEvent("Schematics where saved"));
+        } catch (IOException e) {
+            EventBus.getDefault().post(new NonCriticalExceptionEvent( "Schematic files could not be saved",e));
+        }
+    }
+
+    private void saveSpongeSchematic(List<Tag_Compound> tagCompoundList) {
+        try {
+            for (Tag_Compound tagC : tagCompoundList) {
+                String[] tagCName = tagC.getName().split(" ");
+                File file = new File(configStore.pathToSave + configStore.name + "_Z" +
+                        tagCName[0] + "-X" + tagCName[1] + ".schem");
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+
+                tagC.setName("Schematic");
+
+                ByteArrayOutputStream byteArrayOutputStream = tagC.toBytes();
+
+                try (OutputStream out = new GZIPOutputStream(new FileOutputStream(file))) {
+                    byteArrayOutputStream.writeTo(out);
+                }
+            }
+            EventBus.getDefault().post(new MessageEvent("Schematics where saved"));
+        } catch (IOException e) {
+            EventBus.getDefault().post(new NonCriticalExceptionEvent( "Schematic files could not be saved",e));
+        }
     }
 }

@@ -1,6 +1,7 @@
 package nbt;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class Tag_End extends Tag {
     public Tag_End() {
@@ -14,5 +15,10 @@ public class Tag_End extends Tag {
         byteArrayOutputStream.write(tagID);
 
         return byteArrayOutputStream;
+    }
+
+    @Override
+    public ByteArrayOutputStream payloadToBytes() throws IOException {
+        return toBytes();
     }
 }

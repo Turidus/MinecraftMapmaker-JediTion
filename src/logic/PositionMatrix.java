@@ -111,7 +111,6 @@ public class PositionMatrix {
      */
     public List<Tag_Compound> getTag_CompoundList() throws IllegalArgumentException {
         ArrayList<Tag_Compound> tagCompoundList = new ArrayList<>();
-        int dataVersion = configStore.mcDataVersion;
 
 
         int maxSchematicHeight = maxY - minY  + 1;
@@ -202,6 +201,7 @@ public class PositionMatrix {
 
                 List<Integer> blockList = new ArrayList<>();
                 Map<String, Integer> patternMap = new HashMap<>();
+                int totalBlocks = 0;
                 int curIndex = 0;
                 for (int y = 0; y < schematicHeight; y++) {
                     for (int z = lengthRanges.get(rangeZ - 1); z < lengthRanges.get(rangeZ); z++) {
@@ -218,6 +218,7 @@ public class PositionMatrix {
                                     blockList.add(patternMap.get("minecraft:air"));
                                     break;
                                 case 1:
+                                    totalBlocks++;
                                     if(!patternMap.containsKey("minecraft:glass")){
                                         patternMap.put("minecraft:glass", curIndex);
                                         curIndex++;
@@ -225,6 +226,7 @@ public class PositionMatrix {
                                     blockList.add(patternMap.get("minecraft:glass"));
                                     break;
                                 default:
+                                    totalBlocks++;
                                     if (colorIDMatrix.getEntryFromID(colorID) == null)
                                         throw new IllegalArgumentException(String.format("%d was not a valid colorID", colorID));
 
@@ -241,23 +243,200 @@ public class PositionMatrix {
 
                 //Building Tag_Compound
                 String tag_compoundName = (rangeZ - 1) + " " + (rangeX - 1);
-                List<Tag> tagList = new ArrayList<>();
-                tagList.add(new Tag_Int("Version", 2));
-                tagList.add(new Tag_Int("DataVersion", configStore.mcDataVersion));
-                tagList.add(makeMetaDataObject(tag_compoundName));
-                tagList.add(new Tag_Short("Width", (short) (widthRanges.get(rangeX) - widthRanges.get(rangeX - 1))));
-                tagList.add(new Tag_Short("Height", (short) schematicHeight));
-                tagList.add(new Tag_Short("Length", (short) (lengthRanges.get(rangeZ) - lengthRanges.get(rangeZ - 1))));
-                tagList.add(new Tag_Int("PaletteMax", patternMap.keySet().size()));
-                tagList.add(makePaletteObject(patternMap));
-                tagList.add(new Tag_ByteArray("BlockData", makeVarInt(blockList)));
-
-                tagCompoundList.add(new Tag_Compound(tag_compoundName, tagList));
+                int partWidth = widthRanges.get(rangeX) - widthRanges.get(rangeX - 1);
+                int partLength = lengthRanges.get(rangeZ) - lengthRanges.get(rangeZ - 1);
+                if (configStore.spongeSchematic) {
+                    tagCompoundList.add(getSpongeSchematica(tag_compoundName,
+                                                                partWidth,
+                                                                schematicHeight,
+                                                                partLength,
+                                                                patternMap,
+                                                                blockList));
+                }
+                else tagCompoundList.add(getLitematicaSchematic(tag_compoundName,
+                                                                partWidth,
+                                                                schematicHeight,
+                                                                partLength,
+                                                                totalBlocks,
+                                                                patternMap,
+                                                                blockList));
             }
         }
         return tagCompoundList;
     }
 
+    public int[][] getMatrix() {
+        return positionMatrix;
+    }
+
+    private Tag_Compound getLitematicaSchematic(String name,
+                                                int partWidth,
+                                                int height,
+                                                int partLength,
+                                                int totalBlocks,
+                                                Map<String, Integer> patternMap,
+                                                List<Integer> blockList) {
+
+        List<Tag> tagList = new ArrayList<>();
+        /*
+        Metadata
+         */
+        List<Tag> metaDataList = new ArrayList<>();
+
+        List<Tag> enclosingList = new ArrayList<>();
+        enclosingList.add(new Tag_Int("x", partWidth));
+        enclosingList.add(new Tag_Int("y", height));
+        enclosingList.add(new Tag_Int("z", partLength));
+        metaDataList.add(new Tag_Compound("EnclosingSize", enclosingList));
+
+        metaDataList.add(new Tag_String("Author", "MinecraftMapMaper"));
+        metaDataList.add(new Tag_String("Description", ""));
+        metaDataList.add(new Tag_String("Name", name.replace(" ", "")));
+        metaDataList.add(new Tag_Int("RegionCount", 1));
+        metaDataList.add(new Tag_Long("TimeCreated", System.currentTimeMillis()));
+        metaDataList.add(new Tag_Long("TimeModified", System.currentTimeMillis()));
+        metaDataList.add(new Tag_Int("TotalBlocks", totalBlocks));
+        metaDataList.add(new Tag_Long("TotalVolume", partWidth * height * partLength));
+
+        tagList.add(new Tag_Compound("Metadata", metaDataList));
+
+        /*
+        Region
+         */
+        List<Tag> regionList = new ArrayList<>();
+        List<Tag> subregionList = new ArrayList<>();
+
+        List<Tag> positionList = new ArrayList<>();
+        positionList.add(new Tag_Int("x", 0));
+        positionList.add(new Tag_Int("y", 0));
+        positionList.add(new Tag_Int("z", 0));
+        subregionList.add(new Tag_Compound("Position",positionList));
+
+        List<Tag> sizeList = new ArrayList<>();
+        sizeList.add(new Tag_Int("x", partWidth));
+        sizeList.add(new Tag_Int("y", height));
+        sizeList.add(new Tag_Int("z", partLength));
+        subregionList.add(new Tag_Compound("Size",sizeList));
+
+        subregionList.add(makePaletteTagList(patternMap));
+        subregionList.add(new Tag_List("Entities", new ArrayList<Tag_Compound>()));
+        subregionList.add(new Tag_List("PendingBlockTicks", new ArrayList<Tag_Compound>()));
+        subregionList.add(new Tag_List("PendingFluidTicks", new ArrayList<Tag_Compound>()));
+        subregionList.add(new Tag_List("TileEntities", new ArrayList<Tag_Compound>()));
+
+        int bitsPerEntry = Math.max(2, Integer.SIZE - Integer.numberOfLeadingZeros(patternMap.size() - 1));
+        subregionList.add(generateBlockStates(blockList, bitsPerEntry));
+
+        regionList.add(new Tag_Compound(name.replace(" ", ""),subregionList));
+        tagList.add(new Tag_Compound("Regions", regionList));
+        tagList.add(new Tag_Int("MinecraftDataVersion", configStore.mcDataVersion));
+        tagList.add(new Tag_Int("Version", 5));
+
+        return new Tag_Compound(name + ".litematic", tagList);
+    }
+
+    private Tag_Compound getSpongeSchematica(String tag_compoundName,
+                                             int width,
+                                             int height,
+                                             int length,
+                                             Map<String,Integer> patternMap,
+                                             List<Integer> blockList) {
+
+        List<Tag> tagList = new ArrayList<>();
+        tagList.add(new Tag_Int("Version", 2));
+        tagList.add(new Tag_Int("DataVersion", configStore.mcDataVersion));
+        tagList.add(makeMetaDataObject(tag_compoundName));
+        tagList.add(new Tag_Short("Width", (short) width));
+        tagList.add(new Tag_Short("Height", (short) height));
+        tagList.add(new Tag_Short("Length", (short) length));
+        tagList.add(new Tag_Int("PaletteMax", patternMap.keySet().size()));
+        tagList.add(makePaletteTagCompound(patternMap));
+        tagList.add(new Tag_ByteArray("BlockData", makeVarInt(blockList)));
+        return new Tag_Compound(tag_compoundName, tagList);
+    }
+
+
+    private Tag_Compound makeMetaDataObject(String tag_compoundName) {
+        List<Tag> tagList = new ArrayList<>();
+        tagList.add(new Tag_String("Name", tag_compoundName));
+        tagList.add(new Tag_String("Author", "MinecraftMapmaker"));
+        tagList.add(new Tag_Long("Date", System.currentTimeMillis()));
+
+        return new Tag_Compound("Metadata Object", tagList);
+    }
+
+    private Tag_LongArray generateBlockStates(List<Integer> blockList, int bitsPerEntry) {
+        /*
+        Math based on the implementation in Litematica by Matti Ruohonen under the GNU Lesser General Public License v3.0.
+        See https://github.com/maruohon/litematica/blob/b64b54c9ddaace55b6db8320ae23fda4dcb73fd7/src/main/java/fi/dy/masa/litematica/schematic/container/LitematicaBitArray.java#L7
+        */
+
+        int bits = bitsPerEntry * blockList.size();
+        int over = bits % 64;
+        int arraySize;
+        if(over == 0){
+            arraySize = bits / 64;
+        }
+        else {
+            arraySize = (bits + 64 - over) / 64;
+        }
+        long[] longArray = new long[arraySize];
+        long maxEntryValue = (1L << bitsPerEntry) - 1L;
+
+        for(int i = 0; i < blockList.size(); i++){
+            int value = blockList.get(i);
+            int startOffset = i * bitsPerEntry;
+            int startArrayIndex = startOffset >> 6;
+            int endArrayIndex = ((i + 1) * bitsPerEntry - 1) >> 6;
+            int startBitOffset = startOffset & 0x3f;
+            longArray[startArrayIndex] = longArray[startArrayIndex] & ~(maxEntryValue << startBitOffset) | ((long) value & maxEntryValue) << startBitOffset;
+
+            if(startArrayIndex != endArrayIndex){
+                int endOffset = 64 - startBitOffset;
+                int j1 = bitsPerEntry -endOffset;
+                longArray[endArrayIndex] = longArray[endArrayIndex] >>> j1 << j1 | ((long) value & maxEntryValue) >> endOffset;
+            }
+        }
+
+        return new Tag_LongArray("BlockStates", longArray);
+    }
+
+    private Tag_Compound makePaletteTagCompound(Map<String, Integer> patternMap) {
+        TreeMap<Integer, String> switchedMap = new TreeMap<>();
+        for(String key : patternMap.keySet()) {
+            switchedMap.put(patternMap.get(key), key);
+        }
+        List<Tag> tagList = new ArrayList<>();
+        for(Integer key : switchedMap.keySet()){
+            tagList.add(new Tag_Int(switchedMap.get(key),key));
+        }
+        return new Tag_Compound("Palette", tagList);
+    }
+
+    private Tag_List makePaletteTagList(Map<String, Integer> patternMap) {
+        TreeMap<Integer, String> switchedMap = new TreeMap<>();
+        for(String key : patternMap.keySet()) {
+            switchedMap.put(patternMap.get(key), key);
+        }
+        List<Tag_Compound> tagList = new ArrayList<>();
+        for(Integer key : switchedMap.keySet()){
+            Tag_String block = new Tag_String("Name", switchedMap.get(key));
+            tagList.add(new Tag_Compound("1 entry", Collections.singletonList(block)));
+        }
+        return new Tag_List("BlockStatePalette", tagList);
+    }
+
+    private List<Byte> makeVarInt(List<Integer> blockList) {
+        List<Byte> byteList = new ArrayList<>();
+        for(Integer i : blockList){
+            while( (i & -128) != 0){
+                byteList.add((byte)(i & 127 | 128));
+                i >>>= 7;
+            }
+            byteList.add(i.byteValue());
+        }
+        return byteList;
+    }
 
     /**
      * This method builds the positionMatrix out of the {@link ColorIDMatrix}
@@ -368,42 +547,5 @@ public class PositionMatrix {
                 if (inExceedingRange) rangeZValues.add(length);
             }
         }
-    }
-
-    public int[][] getMatrix() {
-        return positionMatrix;
-    }
-
-    private Tag_Compound makeMetaDataObject(String tag_compoundName) {
-        List<Tag> tagList = new ArrayList<>();
-        tagList.add(new Tag_String("Name", tag_compoundName));
-        tagList.add(new Tag_String("Author", "MinecraftMapmaker"));
-        tagList.add(new Tag_Long("Date", System.currentTimeMillis()));
-
-        return new Tag_Compound("Metadata Object", tagList);
-    }
-
-    private Tag_Compound makePaletteObject(Map<String, Integer> patternMap) {
-        TreeMap<Integer, String> switchedMap = new TreeMap<>();
-        for(String key : patternMap.keySet()) {
-            switchedMap.put(patternMap.get(key), key);
-        }
-        List<Tag> tagList = new ArrayList<>();
-        for(Integer key : switchedMap.keySet()){
-            tagList.add(new Tag_Int(switchedMap.get(key),key));
-        }
-        return new Tag_Compound("Palette", tagList);
-    }
-
-    private List<Byte> makeVarInt(List<Integer> blockList) {
-        List<Byte> byteList = new ArrayList<>();
-        for(Integer i : blockList){
-            while( (i & -128) != 0){
-                byteList.add((byte)(i & 127 | 128));
-                i >>>= 7;
-            }
-            byteList.add(i.byteValue());
-        }
-        return byteList;
     }
 }

@@ -53,9 +53,9 @@ public class ConfigStore {
 
     public static class McVersion{
 
+
         private final String version;
         private final int dataVersion;
-
         private McVersion(String version, int dataVersion){
 
             this.version = version;
@@ -69,6 +69,7 @@ public class ConfigStore {
         public int getDataVersion() {
             return dataVersion;
         }
+
     }
 
     private static ConfigStore single_instance = null;
@@ -80,7 +81,6 @@ public class ConfigStore {
     public static Map<Integer,Integer> maxColorIDUsedByVersion;
 
     public static List<McVersion> mcVersionList;
-
     static {
         mcVersionList = new ArrayList<>();
         mcVersionList.add(new McVersion("1.13", 1519));
@@ -94,6 +94,7 @@ public class ConfigStore {
         maxColorIDUsedByVersion.put(2225, 51);
         maxColorIDUsedByVersion.put(2566, 58);
     }
+
 
     @Nullable
     public String pathToImage = null;
@@ -120,6 +121,8 @@ public class ConfigStore {
     public boolean amountFile = true;
 
     public boolean schematic = true;
+
+    public boolean spongeSchematic = false;
 
     public boolean cie = true;
 

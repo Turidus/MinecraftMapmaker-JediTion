@@ -2,11 +2,11 @@ package nbt;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -140,9 +140,12 @@ class TagTest {
 
     @Test
     void tag_list() throws IOException{
+        List<Tag_Int> tagIntList = new ArrayList<>();
+        tagIntList.add(new Tag_Int("a", 1));
+        tagIntList.add(new Tag_Int("a", 2));
 
-        Tag_List_Integer tag_listIntegerInteger = new Tag_List_Integer("test", Collections.singletonList(2));
-        ByteArrayOutputStream byteArrayOutputStream = tag_listIntegerInteger.toBytes();
+        Tag_List tag_list = new Tag_List("test", tagIntList);
+        ByteArrayOutputStream byteArrayOutputStream = tag_list.toBytes();
 
         /*for(byte item : byteArrayOutputStream.toByteArray()){
             System.out.printf("%8s%n", Integer.toBinaryString(item & 0xFF));
@@ -157,6 +160,10 @@ class TagTest {
         expected.write(0);
         expected.write(0);
         expected.write(0);
+        expected.write(2);
+        expected.write(0);
+        expected.write(0);
+        expected.write(0);
         expected.write(1);
         expected.write(0);
         expected.write(0);
@@ -165,6 +172,8 @@ class TagTest {
 
         assertEquals(expected.toString(),byteArrayOutputStream.toString());
     }
+
+
 
     @Test
     void tag_compound() throws IOException{
@@ -207,6 +216,59 @@ class TagTest {
         expected.write(0);
 
         assertEquals(expected.toString(),byteArrayOutputStream.toString());
+    }
+
+    @Test
+    public void tag_longArray() throws IOException {
+        long[] longArray = {1L, 2L, 3L};
+
+        Tag_LongArray tag = new Tag_LongArray("test", longArray);
+        ByteArrayOutputStream byteArrayOutputStream = tag.toBytes();
+
+        for(byte item : byteArrayOutputStream.toByteArray()){
+            System.out.printf("%8s%n", Integer.toBinaryString(item & 0xFF));
+        }
+    }
+
+    @Test
+    public void nbtExplorerTest() throws IOException {
+
+        File file = new File("testResults/test.nbt");
+        file.getParentFile().mkdirs();
+        file.createNewFile();
+
+        byte[] bytes = {(byte)1,(byte)2};
+        int[] ints = {1,2};
+        long[] longs = {1,2};
+        Tag_String stringTag = new Tag_String("a", "b");
+
+        List<Tag> tagList = new ArrayList<>();
+        tagList.add(new Tag_Byte("Byte", (byte)1));
+        tagList.add(new Tag_Short("Short", (short) 1));
+        tagList.add(new Tag_Int("Int", 1));
+        tagList.add(new Tag_Long("Long", 1));
+        tagList.add(new Tag_String("Long", "1"));
+        tagList.add(new Tag_ByteArray("Bytes", bytes));
+        tagList.add(new Tag_IntArray("Ints", ints));
+        tagList.add(new Tag_LongArray("Ints", longs));
+
+        List<Tag> tagList2 = new ArrayList<>();
+        tagList2.add(new Tag_Compound("Test1", tagList));
+        tagList2.add(new Tag_Compound("Test2", tagList));
+
+        List<Tag_Compound> tagList3 = new ArrayList<>();
+        tagList3.add(new Tag_Compound("aC", Collections.singletonList(stringTag)));
+        tagList3.add(new Tag_Compound("aC", Collections.singletonList(stringTag)));
+        tagList3.add(new Tag_Compound("aC", Collections.singletonList(stringTag)));
+
+        tagList2.add(new Tag_List("List", tagList3));
+        Tag_Compound tagC = new Tag_Compound("Test", tagList2);
+
+        ByteArrayOutputStream byteArrayOutputStream = tagC.toBytes();
+
+        try (OutputStream out = new GZIPOutputStream(new FileOutputStream(file))) {
+            byteArrayOutputStream.writeTo(out);
+        }
     }
 
 }

@@ -21,15 +21,12 @@ public class Tag_Long extends Tag{
 
         byteArrayOutputStream.write(tagID);
         stringToBytes(name).writeTo(byteArrayOutputStream);
-        byteArrayOutputStream.write((byte)(value >> 56));
-        byteArrayOutputStream.write((byte)(value >> 48));
-        byteArrayOutputStream.write((byte)(value >> 40));
-        byteArrayOutputStream.write((byte)(value >> 32));
-        byteArrayOutputStream.write((byte)(value >> 24));
-        byteArrayOutputStream.write((byte)(value >> 16));
-        byteArrayOutputStream.write((byte)(value >> 8));
-        byteArrayOutputStream.write((byte)value);
-
+        longToBytes(value).writeTo(byteArrayOutputStream);
         return byteArrayOutputStream;
+    }
+
+    @Override
+    public ByteArrayOutputStream payloadToBytes() throws IOException {
+        return longToBytes(value);
     }
 }

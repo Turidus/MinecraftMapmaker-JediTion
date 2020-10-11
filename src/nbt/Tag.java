@@ -4,7 +4,7 @@
  * The only function it can fulfill is support the generation of schematic files and map.dat files.
  *
  *
- * Implemented are Tag_End, Tag_Byte, Tag_Short, Tag_Int, Tag_ByteArray, Tag_List_Integer (incomplete), Tag_String, Tag_Compound
+ * Implemented are Tag_End, Tag_Byte, Tag_Short, Tag_Int, Tag_ByteArray, Tag_IntArray (incomplete), Tag_String, Tag_Compound
  *
  *
  * Made by Turidus https://github.com/Turidus/Minecraft-MapMaker
@@ -45,7 +45,10 @@ public abstract class Tag {
         this.tagID = tagID;
     }
 
+    public byte getTagID() { return tagID; }
+
     public abstract ByteArrayOutputStream toBytes() throws IOException;
+    public abstract ByteArrayOutputStream payloadToBytes() throws IOException;
 
     protected ByteArrayOutputStream stringToBytes(@NotNull String input) throws IOException {
 
@@ -58,7 +61,7 @@ public abstract class Tag {
         return byteArrayOutputStream;
     }
 
-    protected ByteArrayOutputStream shortToBytes(@NotNull short input){
+    protected ByteArrayOutputStream shortToBytes(short input){
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.write((byte)(input >> 8));
@@ -67,10 +70,25 @@ public abstract class Tag {
         return byteArrayOutputStream;
     }
 
-    protected ByteArrayOutputStream intToBytes(@NotNull int input){
+    protected ByteArrayOutputStream intToBytes(int input){
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
+        byteArrayOutputStream.write((byte)(input >> 24));
+        byteArrayOutputStream.write((byte)(input >> 16));
+        byteArrayOutputStream.write((byte)(input >> 8));
+        byteArrayOutputStream.write((byte)input);
+
+        return byteArrayOutputStream;
+    }
+
+    protected ByteArrayOutputStream longToBytes(long input){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        
+        byteArrayOutputStream.write((byte)(input >> 56));
+        byteArrayOutputStream.write((byte)(input >> 48));
+        byteArrayOutputStream.write((byte)(input >> 40));
+        byteArrayOutputStream.write((byte)(input >> 32));
         byteArrayOutputStream.write((byte)(input >> 24));
         byteArrayOutputStream.write((byte)(input >> 16));
         byteArrayOutputStream.write((byte)(input >> 8));

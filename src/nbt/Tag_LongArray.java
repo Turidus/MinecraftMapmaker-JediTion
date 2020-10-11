@@ -4,23 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class Tag_ByteArray extends Tag {
+public class Tag_LongArray extends Tag {
     private final String name;
-    private final byte[] value;
+    private final long[] value;
 
-    public Tag_ByteArray(String name, byte[] value) {
-        super((byte)7);
+    public Tag_LongArray(String name, long[] value) {
+        super((byte)12);
         this.name = name;
         this.value = value;
-    }
-
-    public Tag_ByteArray(String name, List<Byte> value) {
-        super((byte)7);
-        this.name = name;
-        this.value = new byte[value.size()];
-        for (int i = 0; i < value.size(); i++) {
-             this.value[i] = value.get(i);
-        }
     }
 
     @Override
@@ -30,7 +21,9 @@ public class Tag_ByteArray extends Tag {
         byteArrayOutputStream.write(tagID);
         stringToBytes(name).writeTo(byteArrayOutputStream);
         intToBytes(value.length).writeTo(byteArrayOutputStream);
-        byteArrayOutputStream.write(value,0, value.length);
+        for (long item : value){
+            longToBytes(item).writeTo(byteArrayOutputStream);
+        }
 
         return  byteArrayOutputStream;
     }
@@ -39,8 +32,9 @@ public class Tag_ByteArray extends Tag {
     public ByteArrayOutputStream payloadToBytes() throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         intToBytes(value.length).writeTo(byteArrayOutputStream);
-        byteArrayOutputStream.write(value,0, value.length);
-
+        for (long item : value){
+            longToBytes(item).writeTo(byteArrayOutputStream);
+        }
         return byteArrayOutputStream;
     }
 }

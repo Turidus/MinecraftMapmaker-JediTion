@@ -31,6 +31,17 @@ public class Tag_Compound extends Tag {
         return byteArrayOutputStream;
     }
 
+    @Override
+    public ByteArrayOutputStream payloadToBytes() throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        for (Tag tag : listOfTags){
+            tag.toBytes().writeTo(byteArrayOutputStream);
+        }
+        Tag_End tag_end = new Tag_End();
+        tag_end.toBytes().writeTo(byteArrayOutputStream);
+        return byteArrayOutputStream;
+    }
+
     public String getName() {
         return name;
     }

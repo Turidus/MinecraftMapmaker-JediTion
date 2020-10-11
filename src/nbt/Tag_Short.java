@@ -25,4 +25,9 @@ public class Tag_Short extends Tag {
 
         return byteArrayOutputStream;
     }
+
+    @Override
+    public ByteArrayOutputStream payloadToBytes() throws IOException {
+        return shortToBytes(value);
+    }
 }

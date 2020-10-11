@@ -28,4 +28,11 @@ public final class Tag_Byte extends Tag {
 
         return byteArrayOutputStream;
     }
+
+    @Override
+    public ByteArrayOutputStream payloadToBytes() throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1);
+        byteArrayOutputStream.write(value);
+        return byteArrayOutputStream;
+    }
 }

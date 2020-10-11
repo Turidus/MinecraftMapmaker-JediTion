@@ -23,4 +23,9 @@ public class Tag_String extends Tag {
 
         return byteArrayOutputStream;
     }
+
+    @Override
+    public ByteArrayOutputStream payloadToBytes() throws IOException {
+        return stringToBytes(value);
+    }
 }
