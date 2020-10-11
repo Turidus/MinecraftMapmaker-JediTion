@@ -121,6 +121,9 @@ public class GUIController {
     private ChoiceBox<String> McDataVersion;
 
     @FXML
+    private ChoiceBox<String> DBSchematic;
+
+    @FXML
     private CheckBox CBpicture;
 
     @FXML
@@ -444,6 +447,14 @@ public class GUIController {
         Tooltip McDataVersionTP  = new Tooltip("Choose the minecraft version you are playing." +
                 " For Version 1.11 and 1.12, use MinecraftMapMaker v2.x.x");
         Tooltip.install(McDataVersion, McDataVersionTP);
+
+        ObservableList<String> schemChoices = FXCollections.observableArrayList("Sponge","Litematic");
+        DBSchematic.setItems(schemChoices);
+        if (configStore.spongeSchematic) DBSchematic.getSelectionModel().select(0);
+        else DBSchematic.getSelectionModel().select(1);
+        Tooltip DBSchmaticDTP  = new Tooltip("Schematic format." +
+                " Sponge is compatible with Worldedit, Litematic with Litematica.");
+        Tooltip.install(DBSchematic, DBSchmaticDTP);
     }
 
     private void setBlocksToUseFromBlacklist(){
@@ -526,6 +537,7 @@ public class GUIController {
 
         configStore.threeD = DBthreeD.getSelectionModel().getSelectedIndex() == 1;
         configStore.cie = CIE.getSelectionModel().getSelectedIndex() == 0;
+        configStore.spongeSchematic = DBSchematic.getSelectionModel().getSelectedIndex() == 0;
 
         String selectedVersion = McDataVersion.getSelectionModel().getSelectedItem();
         for(ConfigStore.McVersion mcv : ConfigStore.mcVersionList){
