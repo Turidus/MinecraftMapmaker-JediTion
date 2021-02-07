@@ -203,6 +203,7 @@ public class PositionMatrix {
                 Map<String, Integer> patternMap = new HashMap<>();
                 int totalBlocks = 0;
                 int curIndex = 0;
+                patternMap.put("minecraft:air", curIndex++); //Workaround for Litematica assuming minecraft:air == 0.
                 for (int y = 0; y < schematicHeight; y++) {
                     for (int z = lengthRanges.get(rangeZ - 1); z < lengthRanges.get(rangeZ); z++) {
                         for (int x = widthRanges.get((rangeX - 1)); x < widthRanges.get((rangeX)); x++) {
@@ -211,10 +212,6 @@ public class PositionMatrix {
                             int colorID = schematicCube[y][z][x];
                             switch (colorID) {
                                 case 0:
-                                    if(!patternMap.containsKey("minecraft:air")){
-                                        patternMap.put("minecraft:air", curIndex);
-                                        curIndex++;
-                                    }
                                     blockList.add(patternMap.get("minecraft:air"));
                                     break;
                                 case 1:
