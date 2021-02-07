@@ -144,6 +144,7 @@ public class AboutController {
                 Desktop.getDesktop().browse(new URL(url).toURI());
             } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
+                EventBus.getDefault().post(new MessageEvent("Could not open Webbrowser, please visit " + url));
             }
         }
         else {
