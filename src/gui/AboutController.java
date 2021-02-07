@@ -4,16 +4,19 @@ import events.MessageEvent;
 import events.NonCriticalExceptionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import org.greenrobot.eventbus.EventBus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
@@ -63,6 +66,12 @@ public class AboutController {
 
     @FXML
     private Button Bversion;
+
+    @FXML
+    private Hyperlink repro;
+
+    @FXML
+    private Hyperlink newVersion;
 
     public AboutController(){}
 
@@ -117,6 +126,29 @@ public class AboutController {
         System.out.println(jsonObject.get("tag_name"));
         if(jsonObject.get("tag_name").equals(curVersion)) EventBus.getDefault().post(new MessageEvent("This version is up to date"));
         else EventBus.getDefault().post(new MessageEvent("There is a new version, get it under About -> Latest Version"));
+    }
+
+    @FXML
+    private void loadRepro(){
+        loadLink(repro.getText());
+    }
+
+    @FXML
+    private void loadNewVersion(){
+        loadLink(repro.getText());
+    }
+
+    private void loadLink(String url){
+        if(Desktop.isDesktopSupported()){
+            try {
+                Desktop.getDesktop().browse(new URL(url).toURI());
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            EventBus.getDefault().post(new MessageEvent("Could not open Webbrowser, please visit " + url));
+        }
     }
 
 }
