@@ -1,6 +1,6 @@
 package nbt;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,7 +9,7 @@ public final class Tag_Byte extends Tag {
     private final String name;
     private final byte value;
 
-    public Tag_Byte(@NotNull String name, @NotNull byte value) {
+    public Tag_Byte(@NotNull String name, byte value) {
         super((byte)1);
         this.name = name;
         this.value = value;
