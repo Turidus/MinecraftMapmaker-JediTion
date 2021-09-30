@@ -10,6 +10,6 @@ module MinecraftMapmaker.JediTion {
     requires java.desktop;
     requires org.slf4j;
 
-    opens de.turidus.gui to javafx.fxml;
-    exports de.turidus.gui;
+    opens de.turidus.minecraft_mapmaker to javafx.fxml;
+    exports de.turidus.minecraft_mapmaker;
 }
