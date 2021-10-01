@@ -54,25 +54,7 @@ import java.util.*;
  */
 public class ConfigStore {
 
-    public static class McVersion{
-
-
-        private final String version;
-        private final int dataVersion;
-        private McVersion(String version, int dataVersion){
-
-            this.version = version;
-            this.dataVersion = dataVersion;
-        }
-
-        public String getVersion() {
-            return version;
-        }
-
-        public int getDataVersion() {
-            return dataVersion;
-        }
-
+    public record McVersion(String version, int dataVersion) {
     }
 
     private static ConfigStore single_instance = null;
@@ -90,12 +72,14 @@ public class ConfigStore {
         mcVersionList.add(new McVersion("1.14", 1952));
         mcVersionList.add(new McVersion("1.15", 2225));
         mcVersionList.add(new McVersion("1.16", 2566));
+        mcVersionList.add(new McVersion("1.17", 2724));
 
         maxColorIDUsedByVersion = new HashMap<>();
         maxColorIDUsedByVersion.put(1519, 51);
         maxColorIDUsedByVersion.put(1952, 51);
         maxColorIDUsedByVersion.put(2225, 51);
         maxColorIDUsedByVersion.put(2566, 58);
+        maxColorIDUsedByVersion.put(2724, 61);
     }
 
 

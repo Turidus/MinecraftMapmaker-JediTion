@@ -238,8 +238,8 @@ public class GUIController {
 
         String selectedVersion = mcDataVersion.getSelectionModel().getSelectedItem();
         for(ConfigStore.McVersion mcv : ConfigStore.mcVersionList){
-            if(selectedVersion.equals(mcv.getVersion())) {
-                configStore.mcDataVersion = mcv.getDataVersion();
+            if(selectedVersion.equals(mcv.version())) {
+                configStore.mcDataVersion = mcv.dataVersion();
                 break;
             }
         }
@@ -440,8 +440,8 @@ public class GUIController {
         ObservableList<String> mcVersionChoices = FXCollections.observableArrayList();
         String toSelect = null;
         for (ConfigStore.McVersion mcv : ConfigStore.mcVersionList){
-            mcVersionChoices.add(mcv.getVersion());
-            if(configStore.mcDataVersion == mcv.getDataVersion()) toSelect = mcv.getVersion();
+            mcVersionChoices.add(mcv.version());
+            if(configStore.mcDataVersion == mcv.dataVersion()) toSelect = mcv.version();
         }
         mcDataVersion.setItems(mcVersionChoices);
         if(toSelect != null) mcDataVersion.getSelectionModel().select(toSelect);
@@ -542,8 +542,8 @@ public class GUIController {
 
         String selectedVersion = mcDataVersion.getSelectionModel().getSelectedItem();
         for(ConfigStore.McVersion mcv : ConfigStore.mcVersionList){
-            if(selectedVersion.equals(mcv.getVersion())) {
-                configStore.mcDataVersion = mcv.getDataVersion();
+            if(selectedVersion.equals(mcv.version())) {
+                configStore.mcDataVersion = mcv.dataVersion();
                 break;
             }
         }
