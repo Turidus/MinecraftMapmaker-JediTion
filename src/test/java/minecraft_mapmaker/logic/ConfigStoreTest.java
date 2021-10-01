@@ -1,4 +1,4 @@
-package de.turidus.minecraft_mapmaker.logic;
+package minecraft_mapmaker.logic;
 
 import de.turidus.minecraft_mapmaker.utils.ConfigStore;
 import org.junit.jupiter.api.Test;

@@ -14,7 +14,6 @@ public class FaF {
     public static final String LICENSE = "LICENSE";
     public static final String README = "README.md";
 
-    public static final String SELECTED_BLOCKS_DEFAULT = "selectedBlocks-default";
     public static final String SELECTED_BLOCKS = "selectedBlocks";
 
     public static final String CONFIG_FOLDER = "config/";

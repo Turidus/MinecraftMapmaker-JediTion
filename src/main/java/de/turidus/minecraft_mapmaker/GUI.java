@@ -112,9 +112,5 @@ public class GUI extends Application {
 
         //Setting up README file
         FileHandler.getFileReaderFromConfigFolderOrDefault(FaF.README, FaF.README);
-
-
-        //Setting up selectedBlocks file
-        FileHandler.getFileReaderFromConfigFolderOrDefault(FaF.SELECTED_BLOCKS, FaF.SELECTED_BLOCKS_DEFAULT);
     }
 }

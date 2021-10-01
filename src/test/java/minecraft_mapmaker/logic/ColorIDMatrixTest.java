@@ -1,5 +1,8 @@
-package de.turidus.minecraft_mapmaker.logic;
+package minecraft_mapmaker.logic;
 
+import de.turidus.minecraft_mapmaker.logic.ColorIDMap;
+import de.turidus.minecraft_mapmaker.logic.ColorIDMatrix;
+import de.turidus.minecraft_mapmaker.logic.MapIDEntry;
 import de.turidus.minecraft_mapmaker.utils.FaF;
 import org.junit.jupiter.api.Test;
 

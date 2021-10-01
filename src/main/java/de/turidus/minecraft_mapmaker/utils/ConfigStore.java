@@ -216,7 +216,7 @@ public class ConfigStore {
         Saving data to the usedBlock file
          */
         if(this.blocksToUse != null){
-            try(FileOutputStream fileOutputStream = new FileOutputStream(FaF.SELECTED_BLOCKS)){
+            try(FileOutputStream fileOutputStream = new FileOutputStream(FaF.CONFIG_FOLDER + FaF.SELECTED_BLOCKS)){
                 try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)){
                     objectOutputStream.writeObject(this.blocksToUse);
                 }

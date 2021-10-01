@@ -1,5 +1,6 @@
-package de.turidus.minecraft_mapmaker.nbt;
+package minecraft_mapmaker.nbt;
 
+import de.turidus.minecraft_mapmaker.nbt.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
