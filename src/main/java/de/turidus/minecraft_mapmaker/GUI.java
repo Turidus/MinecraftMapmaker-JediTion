@@ -56,9 +56,12 @@ import java.util.Objects;
  */
 public class GUI extends Application {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    private static final Logger logger = LoggerFactory.getLogger(GUI.class.getSimpleName());
 
     public static void main(String[] args) {
+        logger.info(" ---------------------------------------- ");
+        logger.info(" ---------------------------------------- ");
+        logger.info("Program Start");
         launch(args);
     }
 
