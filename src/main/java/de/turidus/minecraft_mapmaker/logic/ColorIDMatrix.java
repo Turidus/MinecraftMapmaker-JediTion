@@ -148,6 +148,7 @@ public class ColorIDMatrix {
     public String getAmountString() {
         TreeMap<String, ArrayList<Integer>> sortingMap = new TreeMap<>();
         int waterAmount = 0;
+        int lichenAmount = 0;
 
         for (Map.Entry<Integer, Integer> entry : amountMap.entrySet()) {
 
@@ -181,11 +182,13 @@ public class ColorIDMatrix {
             if (blockID.equals("minecraft:water")) {
                 waterAmount = amount;
             }
-
+            else if(blockID.equals("minecraft:glow_lichen")){
+                lichenAmount = amount;
+            }
         }
 
         if (waterAmount > 0) amountString.append("\nGlas blocks to surround Water (at most): ").append(waterAmount * 5);
-
+        if (lichenAmount > 0) amountString.append("\nSolid blocks to place under lichen: ").append(lichenAmount);
 
         return amountString.toString();
     }

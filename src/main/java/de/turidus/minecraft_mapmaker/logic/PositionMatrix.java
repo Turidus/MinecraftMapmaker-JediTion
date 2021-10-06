@@ -116,6 +116,7 @@ public class PositionMatrix {
 
         int maxSchematicHeight = maxY - minY  + 1;
         int highestUsedY = minY;
+        int lichenSupportBlock = colorIDMatrix.getEntryfromPoint(0, 0).colorID();
 
         /*
         The order of indexes is [y][z][x] by the convention of Schematics, also the z-value is inverted to the image based ordering.
@@ -166,6 +167,14 @@ public class PositionMatrix {
                     try {
                         if (schematicCube[correctedY][z][x + 1] == 0) {
                             schematicCube[correctedY][z][x + 1] = 1;
+                        }
+                    } catch (IndexOutOfBoundsException ignored) {
+                    }
+                }
+                else if(entry.blockID().equals("minecraft:glow_lichen")){
+                    try {
+                        if (schematicCube[correctedY - 1][z][x] == 0) {
+                            schematicCube[correctedY - 1][z][x] = lichenSupportBlock;
                         }
                     } catch (IndexOutOfBoundsException ignored) {
                     }
