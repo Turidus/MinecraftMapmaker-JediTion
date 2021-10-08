@@ -1,5 +1,5 @@
 Compatible with Minecraft 1.16+
-Compatible with Sponge Schematica format used by World Edit.
+Compatible with Sponge Schematica format used by World Edit and the Litmatica Schematic format.
 
 # Minecraft-MapMaker
 
@@ -7,9 +7,18 @@ This program takes an image and generates multiple files that aid in the buildin
 displaying this image. It is meant for multiplayer servers that do not allow directly manipulating the map data. 
 Contrary to other programs, this program does not generate the map file itself.
 
-This program can work with both the flat method, for 58 colors, and the staircase method for 174 colors. ()
+This program can work with both the flat method, for 61 colors, and the staircase method for 183 colors.
 
-To run this program, you only need Java 1.8
+To run this program, you can either use the .exe in the provided zip file or the jar file.
+
+### Zip file
+Only available for windows:
+Download the zip file and unpack it at a location of your choosing. You can then simply run the minecraftMapmaker-{version}.exe.
+You will get a warning from Windows, because the program is not signed. Signing would need a cryptographic certificate which would be prohibitively expensive.
+You can ignore the warning safely as long as you have downloaded the zip file directly from Github.
+
+### Jar file
+You can also run the jar file directly. The currently needed Java Version is at least Java 17.
 
 ## Generated Files
 
