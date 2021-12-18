@@ -138,35 +138,35 @@ public class PositionMatrix {
                 if (entry.blockID().equals("minecraft:water")) {
                     try {
                         if (schematicCube[correctedY - 1][z][x] == 0) {
-                            schematicCube[correctedY - 1][z][x] = 1;
+                            schematicCube[correctedY - 1][z][x] = -1;
                         }
                     } catch (IndexOutOfBoundsException ignored) {
                     }
 
                     try {
                         if (schematicCube[correctedY][z - 1][x] == 0) {
-                            schematicCube[correctedY][z - 1][x] = 1;
+                            schematicCube[correctedY][z - 1][x] = -1;
                         }
                     } catch (IndexOutOfBoundsException ignored) {
                     }
 
                     try {
                         if (schematicCube[correctedY][z + 1][x] == 0) {
-                            schematicCube[correctedY][z + 1][x] = 1;
+                            schematicCube[correctedY][z + 1][x] = -1;
                         }
                     } catch (IndexOutOfBoundsException ignored) {
                     }
 
                     try {
                         if (schematicCube[correctedY][z][x - 1] == 0) {
-                            schematicCube[correctedY][z][x - 1] = 1;
+                            schematicCube[correctedY][z][x - 1] = -1;
                         }
                     } catch (IndexOutOfBoundsException ignored) {
                     }
 
                     try {
                         if (schematicCube[correctedY][z][x + 1] == 0) {
-                            schematicCube[correctedY][z][x + 1] = 1;
+                            schematicCube[correctedY][z][x + 1] = -1;
                         }
                     } catch (IndexOutOfBoundsException ignored) {
                     }
@@ -174,7 +174,7 @@ public class PositionMatrix {
                 else if(entry.blockID().equals("minecraft:glow_lichen")){
                     try {
                         if (schematicCube[correctedY - 1][z][x] == 0) {
-                            schematicCube[correctedY - 1][z][x] = lichenSupportBlock;
+                            schematicCube[correctedY - 1][z][x] = -2;
                         }
                     } catch (IndexOutOfBoundsException ignored) {
                     }
@@ -222,13 +222,19 @@ public class PositionMatrix {
                             int colorID = schematicCube[y][z][x];
                             switch(colorID) {
                                 case 0 -> blockList.add(patternMap.get("minecraft:air"));
-                                case 1 -> {
+                                case -1 -> {
                                     totalBlocks++;
-                                    if(!patternMap.containsKey("minecraft:glass")) {
-                                        patternMap.put("minecraft:glass", curIndex);
-                                        curIndex++;
+                                    if(!patternMap.containsKey(configStore.blockForWater)) {
+                                        patternMap.put(configStore.blockForWater, curIndex++);
                                     }
-                                    blockList.add(patternMap.get("minecraft:glass"));
+                                    blockList.add(patternMap.get(configStore.blockForWater));
+                                }
+                                case -2 -> {
+                                    totalBlocks++;
+                                    if(!patternMap.containsKey(configStore.blockForLichen)) {
+                                        patternMap.put(configStore.blockForLichen, curIndex++);
+                                    }
+                                    blockList.add(patternMap.get(configStore.blockForLichen));
                                 }
                                 default -> {
                                     totalBlocks++;
@@ -236,8 +242,7 @@ public class PositionMatrix {
                                         throw new IllegalArgumentException(String.format("%d was not a valid colorID", colorID));
                                     String blockID = Objects.requireNonNull(colorIDMatrix.getEntryFromID(colorID)).blockID();
                                     if(!patternMap.containsKey(blockID)) {
-                                        patternMap.put(blockID, curIndex);
-                                        curIndex++;
+                                        patternMap.put(blockID, curIndex++);
                                     }
                                     blockList.add(patternMap.get(blockID));
                                 }
