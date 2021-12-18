@@ -5,12 +5,12 @@
 #Be aware: Transparent blocks only appear on the map if a solid block is placed under them.
 #Add transparent blocks on your own peril.
 1; 127, 178, 56
-    Grass Block,minecraft:grass
+    Grass Block,minecraft:grass_block
 2; 247, 233, 163
-    Sandstone Slab,minecraft:sandstone_slab
+    Sandstone Slab,minecraft:sandstone_slab[top_slot_bit=true]
     Sandstone,minecraft:sandstone
     Birch Wood Planks,minecraft:birch_planks
-    Birch Wood Slab,minecraft:birch_slab
+    Birch Wood Slab,minecraft:birch_slab[top_slot_bit=true]
     Bone Block,minecraft:bone_block
     Glowstone,minecraft:glowstone
     End Stone,minecraft:end_stone
@@ -44,30 +44,30 @@
     Jukebox,minecraft:jukebox
     Grass Path,minecraft:grass_path
     Jungle Wood Planks,minecraft:jungle_planks
-    Jungle Wood Slab,minecraft:jungle_slab
+    Jungle Wood Slab,minecraft:jungle_slab[top_slot_bit=true]
 11; 112, 112, 112
     Cobblestone,minecraft:cobblestone
-    Cobblestone Slab,minecraft:cobblestone_slab
+    Cobblestone Slab,minecraft:cobblestone_slab[top_slot_bit=true]
     Stone,minecraft:stone
-    Stone Slab,minecraft:stone_slab
+    Stone Slab,minecraft:stone_slab[top_slot_bit=true]
     Stone Brick,minecraft:stone_bricks
-    Stone Brick Slab,minecraft:stone_brick_slab
+    Stone Brick Slab,minecraft:stone_brick_slab[top_slot_bit=true]
     Moss Stone,minecraft:mossy_cobblestone
     Andesite,minecraft:andesite
 12; 64, 64, 255
     Water,minecraft:water
 13; 143, 119, 72
     Oak Wood Plank,minecraft:oak_planks
-    Oak Wood Slab,minecraft:oak_slab
+    Oak Wood Slab,minecraft:oak_slab[top_slot_bit=true]
 14; 255, 252, 245
     Diorite,minecraft:diorite
     Block of Quartz,minecraft:quartz_block
-    Quartz Slab,minecraft:quartz_slab
+    Quartz Slab,minecraft:quartz_slab[top_slot_bit=true]
     Sea Lantern,minecraft:sea_lantern
 15; 216, 127, 51
     Terracotta,minecraft:terracotta
     Acacia Wood Planks,minecraft:acacia_planks
-    Acacia Wood Slab,minecraft:acacia_slab
+    Acacia Wood Slab,minecraft:acacia_slab[top_slot_bit=true]
     Orange Wool,minecraft:orange_wool
     Orange Concrete,minecraft:orange_concrete
     Orange Glazed Terracotta,minecraft:orange_glazed_terracotta
@@ -118,7 +118,7 @@
     Blue Concrete,minecraft:blue_concrete
 26; 102, 76, 51
     Dark Oak Wood Planks,minecraft:dark_oak_planks
-    Dark Oak Slab,minecraft:dark_oak_slab
+    Dark Oak Slab,minecraft:dark_oak_slab[top_slot_bit=true]
     Brown Glazed Terracotta,minecraft:brown_glazed_terracotta
     Brown Wool,minecraft:brown_wool
     Brown Concrete,minecraft:brown_concrete
@@ -129,7 +129,7 @@
 28; 153, 51, 51
     Red Glazed Terracotta,minecraft:red_glazed_terracotta
     Brick,minecraft:bricks
-    Brick Slab,minecraft:brick_slab
+    Brick Slab,minecraft:brick_slab[top_slot_bit=true]
     Red Wool,minecraft:red_wool
     Red Concrete,minecraft:red_concrete
 29; 25, 25, 25
@@ -149,7 +149,7 @@
     Block of Emerald,minecraft:emerald_block
 34; 129, 86, 49
     Spruce Wood Planks,minecraft:spruce_planks
-    Spruce Wood Slab,minecraft:spruce_slab
+    Spruce Wood Slab,minecraft:spruce_slab[top_slot_bit=true]
     Podzol,minecraft:podzol
 35; 112, 2, 0
     Netherrack,minecraft:netherrack

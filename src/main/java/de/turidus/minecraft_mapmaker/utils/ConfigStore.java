@@ -97,6 +97,10 @@ public class ConfigStore {
 
     public String pathToSave = "save/";
 
+    public String blockForWater = "minecraft:glass";
+
+    public String blockForLichen = "minecraft:cobblestone";
+
     public List<String> blacklist = new ArrayList<>();
 
     public boolean threeD = true;
