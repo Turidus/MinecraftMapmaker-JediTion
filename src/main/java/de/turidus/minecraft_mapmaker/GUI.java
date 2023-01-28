@@ -3,6 +3,7 @@ package de.turidus.minecraft_mapmaker;
 import de.turidus.minecraft_mapmaker.utils.FaF;
 import de.turidus.minecraft_mapmaker.utils.FileHandler;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,6 +11,9 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -58,62 +62,28 @@ public class GUI extends Application {
 
     private static final Logger logger = LoggerFactory.getLogger(GUI.class.getSimpleName());
 
-    public static void main(String[] args) {
-        logger.info(" ---------------------------------------- ");
-        logger.info(" ---------------------------------------- ");
-        logger.info("Program Start");
-        launch(args);
+    static class StageReadyEvent extends ApplicationEvent {
+        public StageReadyEvent(Stage stage) {super(stage);}
+
+        public Stage getStage() {
+            return (Stage) getSource();
+        }
+
+    }
+
+    private ConfigurableApplicationContext applicationContext;
+
+    @Override
+    public void start(Stage stage) { applicationContext.publishEvent(new StageReadyEvent(stage)); }
+
+    public void init() {
+        applicationContext = new SpringApplicationBuilder(Main.class).run();
     }
 
     @Override
-    public void start(Stage primaryStage) {
-        try {
-            setUp();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            logger.error("Could not set up files.", e);
-            return;
-        }
-
-
-        Parent root;
-        try {
-            root = loadFXML();
-            if (root == null) throw new IOException("Could not find GUI.xml file.");
-        }
-        catch (IOException e) {
-            logger.error("Could not set GUI.", e);
-            return;
-        }
-        primaryStage.setTitle("Minecraft Map Maker");
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(FaF.ICON))));
-        primaryStage.setScene(new Scene(root,1400,800));
-        primaryStage.show();
-
+    public void stop() throws Exception {
+        applicationContext.close();
+        Platform.exit();
     }
 
-    private static Parent loadFXML() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Thread.currentThread().getContextClassLoader().getResource(FaF.GUI_FXML));
-        return fxmlLoader.load();
-    }
-
-    /**
-     * Decompresses needed files
-     * @throws IOException If files can not be found or files can not be written to disc
-     */
-    private void setUp() throws IOException {
-
-        //Setting up config.txt file
-        FileHandler.getFileFromConfigFolderOrDefault(FaF.CONFIG,FaF.CONFIG_DEFAULT);
-
-        //Setting up BaseColorIDs.txt file
-        FileHandler.getFileReaderFromConfigFolderOrDefault(FaF.BASE_COLOR_ID, FaF.BASE_COLOR_ID_DEFAULT);
-
-        //Setting up LICENSE.txt file
-        FileHandler.getFileReaderFromConfigFolderOrDefault(FaF.LICENSE, FaF.LICENSE);
-
-        //Setting up README file
-        FileHandler.getFileReaderFromConfigFolderOrDefault(FaF.README, FaF.README);
-    }
 }
