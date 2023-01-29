@@ -129,7 +129,7 @@
                         </goals>
                         <configuration>
                             <mainClass>
-                                de.turidus.minecraft_mapmaker.GUI
+                                de.turidus.minecraft_mapmaker.Main
                             </mainClass>
                         </configuration>
                     </execution>
