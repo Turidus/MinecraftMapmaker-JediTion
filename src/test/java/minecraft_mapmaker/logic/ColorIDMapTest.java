@@ -30,13 +30,20 @@ class ColorIDMapTest {
             entryList.add(baseColorIDMap.get(key).get(0));
         }
 
-        ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
+        ColorIDMap colorIDMap = new ColorIDMap(true, true, entryList);
 
         for (Map.Entry<Integer, MapIDEntry> entry : colorIDMap.getMap().entrySet()){
             int red =entry.getValue().getRed();
             int green = entry.getValue().getGreen();
             int blue = entry.getValue().getBlue();
-            System.out.format("ID: %d; RGB: %d,%d,%d; BlockName: %s; BlockID: %s%n", entry.getKey(), red , green, blue, entry.getValue().blockName(), entry.getValue().blockID());
+            System.out.format("ID: %d; RGB: %d,%d,%d; BlockName: %s; BlockID: %s; BlockState: &s%n",
+                              entry.getKey(),
+                              red ,
+                              green,
+                              blue,
+                              entry.getValue().blockName(),
+                              entry.getValue().blockID(),
+                              entry.getValue().blockState());
         }
     }
 
@@ -47,15 +54,6 @@ class ColorIDMapTest {
         for (int key : baseColorIDMap.keySet()){
             entryList.add(baseColorIDMap.get(key).get(0));
         }
-
-        ColorIDMap colorIDMap = new ColorIDMap(false,entryList);
-
-        /*for (Map.Entry<Integer, MapIDEntry> entry : colorIDMap.getMap().entrySet()) {
-            int red = entry.getValue().getRed();
-            int green = entry.getValue().getGreen();
-            int blue = entry.getValue().getBlue();
-            System.out.format("ID: %d; RGB: %d,%d,%d; BlockName: %s; BlockID: %s%n", entry.getKey(), red, green, blue, entry.getValue().blockName, entry.getValue().blockID);
-        }*/
     }
 
     

@@ -28,7 +28,7 @@ class ColorIDMatrixTest {
             entryList.add(baseColorIDMap.get(key).get(0));
         }
 
-        ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
+        ColorIDMap colorIDMap = new ColorIDMap(true,true,entryList);
 
         ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/icon.gif"),colorIDMap, false);
 
@@ -50,7 +50,7 @@ class ColorIDMatrixTest {
             entryList.add(baseColorIDMap.get(key).get(0));
         }
 
-        ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
+        ColorIDMap colorIDMap = new ColorIDMap(true, true, entryList);
         ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/test.png"),colorIDMap, false);
         MapIDEntry mapIDEntry = colorIDMatrix.getEntryfromPoint(0,2);
         System.out.println(mapIDEntry.colorID());
@@ -70,15 +70,11 @@ class ColorIDMatrixTest {
             entryList.add(baseColorIDMap.get(key).get(0));
         }
 
-        ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
+        ColorIDMap colorIDMap = new ColorIDMap(true, true, entryList);
 
         ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File(FaF.ICON), colorIDMap, false);
         String resultString = colorIDMatrix.getAmountString();
         System.out.println(resultString);
-
-        /*System.out.println(resultString);
-        System.out.println(resultString.indexOf("133"));
-        System.out.println(resultString.lastIndexOf("40"));*/
 
         assertFalse(resultString.isEmpty());
     }
@@ -91,7 +87,7 @@ class ColorIDMatrixTest {
             entryList.add(baseColorIDMap.get(key).get(0));
         }
 
-        ColorIDMap colorIDMap = new ColorIDMap(true,entryList);
+        ColorIDMap colorIDMap = new ColorIDMap(true,true, entryList);
 
         ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/DTH.jpg"),colorIDMap, false);
         BufferedImage image = colorIDMatrix.imageFromColorIDMatrix();

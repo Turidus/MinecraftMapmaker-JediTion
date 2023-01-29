@@ -37,7 +37,7 @@ public class MapmakerCore implements Runnable {
             if(configStore.blocksToUse == null) throw new InvalidObjectException("Blocks to use was not set");
             if(configStore.pathToImage == null) throw new InvalidObjectException("Path to image was not set");
             File file = new File(configStore.pathToImage);
-            ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.blocksToUse);
+            ColorIDMap colorIDMap = new ColorIDMap(configStore.threeD, configStore.spongeSchematic, configStore.blocksToUse);
             colorIDMatrix = new ColorIDMatrix(file, colorIDMap, configStore.cie);
             EventBus.getDefault().post(new MessageEvent("ColorIDMatrix was calculated"));
             positionMatrix = new PositionMatrix(colorIDMatrix);

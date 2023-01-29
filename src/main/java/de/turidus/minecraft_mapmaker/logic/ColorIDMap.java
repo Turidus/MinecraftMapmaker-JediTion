@@ -1,7 +1,9 @@
 package de.turidus.minecraft_mapmaker.logic;
 
+import de.turidus.minecraft_mapmaker.events.MessageEvent;
 import de.turidus.minecraft_mapmaker.utils.FaF;
 import de.turidus.minecraft_mapmaker.utils.FileHandler;
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -54,8 +56,10 @@ import java.util.TreeMap;
 public class ColorIDMap {
 
     private final HashMap<Integer, MapIDEntry> map = new HashMap<>();
+    private final boolean                      spongeSchematic;
 
-    public ColorIDMap(boolean threeD, @NotNull List<MapIDEntry> usedBlocks) {
+    public ColorIDMap(boolean threeD, boolean spongeSchematic, @NotNull List<MapIDEntry> usedBlocks) {
+        this.spongeSchematic = spongeSchematic;
         if (threeD) mapColorIDGenerator3D(usedBlocks);
         else mapColorIDGenerator2D(usedBlocks);
     }
@@ -88,10 +92,11 @@ public class ColorIDMap {
             int rgb255 = (rgbArray[0] << 16 | rgbArray[1] << 8 | rgbArray[2]);
             int colorID255 = entry.colorID() * 4 + 2;
 
+            String[] blockIDAndState = getblockIDAndState(entry.blockID());
 
-            map.put(colorID180, new MapIDEntry(colorID180, rgb180, entry.blockName(), entry.blockID()));
-            map.put(colorID220, new MapIDEntry(colorID220, rgb220, entry.blockName(), entry.blockID()));
-            map.put(colorID255, new MapIDEntry(colorID255, rgb255, entry.blockName(), entry.blockID()));
+            map.put(colorID180, new MapIDEntry(colorID180, rgb180, entry.blockName(), blockIDAndState[0], blockIDAndState[1]));
+            map.put(colorID220, new MapIDEntry(colorID220, rgb220, entry.blockName(), blockIDAndState[0], blockIDAndState[1]));
+            map.put(colorID255, new MapIDEntry(colorID255, rgb255, entry.blockName(), blockIDAndState[0], blockIDAndState[1]));
         }
     }
 
@@ -109,8 +114,20 @@ public class ColorIDMap {
             int rgb220 = (mult220(rgbArray[0]) << 16 | mult220(rgbArray[1]) << 8 | mult220(rgbArray[2]));
             int colorID220 = entry.colorID() * 4 + 1;
 
-            map.put(colorID220, new MapIDEntry(colorID220, rgb220, entry.blockName(), entry.blockID()));
+            String[] blockIDAndState = getblockIDAndState(entry.blockID());
+            map.put(colorID220, new MapIDEntry(colorID220, rgb220, entry.blockName(), blockIDAndState[0], blockIDAndState[1]));
         }
+    }
+
+    private String[] getblockIDAndState(String blockID) {
+        if( blockID.contains("[")) return replaceBlockFlag(blockID);
+        return new String[]{blockID, ""};
+    }
+
+    private String[] replaceBlockFlag(String blockName) {
+        String[] split = blockName.split("\\[");
+        split[1] = "[" + split[1];
+        return split;
     }
 
     /**
@@ -137,11 +154,10 @@ public class ColorIDMap {
                 String[] secondSplit = firstSplit[1].split(",");
                 baseColorID = Integer.parseInt(firstSplit[0]);
                 rgb = (Integer.parseInt(secondSplit[0].trim()) << 16) | (Integer.parseInt(secondSplit[1].trim()) << 8) | (Integer.parseInt(secondSplit[2].trim()));
-                //System.out.println("ID: " + baseColorID + "red:" + secondSplit[0]);
             }
             else {
                 String[] firstSplit = line.split(",");
-                MapIDEntry tempEntry = new MapIDEntry(baseColorID,rgb,firstSplit[0].trim(),firstSplit[1].trim());
+                MapIDEntry tempEntry = new MapIDEntry(baseColorID,rgb,firstSplit[0].trim(),firstSplit[1].trim(), "");
                 tempList.add(tempEntry);
             }
         }

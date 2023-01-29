@@ -240,7 +240,8 @@ public class PositionMatrix {
                                     totalBlocks++;
                                     if(colorIDMatrix.getEntryFromID(colorID) == null)
                                         throw new IllegalArgumentException(String.format("%d was not a valid colorID", colorID));
-                                    String blockID = Objects.requireNonNull(colorIDMatrix.getEntryFromID(colorID)).blockID();
+                                    MapIDEntry blockEntry = colorIDMatrix.getEntryFromID(colorID);
+                                    String blockID = configStore.spongeSchematic ? blockEntry.blockID() + blockEntry.blockState() : blockEntry.blockID();
                                     if(!patternMap.containsKey(blockID)) {
                                         patternMap.put(blockID, curIndex++);
                                     }

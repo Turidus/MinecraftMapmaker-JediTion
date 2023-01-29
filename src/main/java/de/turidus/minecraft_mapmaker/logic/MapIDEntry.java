@@ -44,13 +44,14 @@ import java.io.Serializable;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public record MapIDEntry(int colorID, int rgb, String blockName, String blockID) implements Serializable {
+public record MapIDEntry(int colorID, int rgb, String blockName, String blockID, String blockState) implements Serializable {
 
-    public MapIDEntry(int colorID, int rgb, @NotNull String blockName, @NotNull String blockID) {
+    public MapIDEntry(int colorID, int rgb, @NotNull String blockName, @NotNull String blockID, @NotNull String blockState) {
         this.colorID = colorID;
         this.rgb = rgb;
         this.blockName = blockName;
         this.blockID = blockID;
+        this.blockState = blockState;
     }
 
     /**
