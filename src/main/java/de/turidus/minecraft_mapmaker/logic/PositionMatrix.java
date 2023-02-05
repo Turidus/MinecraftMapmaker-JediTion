@@ -241,7 +241,7 @@ public class PositionMatrix {
                                     if(colorIDMatrix.getEntryFromID(colorID) == null)
                                         throw new IllegalArgumentException(String.format("%d was not a valid colorID", colorID));
                                     MapIDEntry blockEntry = colorIDMatrix.getEntryFromID(colorID);
-                                    String blockID = configStore.spongeSchematic ? blockEntry.blockID() + blockEntry.blockState() : blockEntry.blockID();
+                                    String blockID = blockEntry.blockID() + blockEntry.blockState();
                                     if(!patternMap.containsKey(blockID)) {
                                         patternMap.put(blockID, curIndex++);
                                     }
@@ -431,8 +431,19 @@ public class PositionMatrix {
         }
         List<Tag_Compound> tagList = new ArrayList<>();
         for(Integer key : switchedMap.keySet()){
-            Tag_String block = new Tag_String("Name", switchedMap.get(key));
-            tagList.add(new Tag_Compound("1 entry", Collections.singletonList(block)));
+            String value = switchedMap.get(key);
+            if(!value.contains("[")){
+                Tag_String block = new Tag_String("Name", value);
+                tagList.add(new Tag_Compound("", Collections.singletonList(block)));
+            }
+            else {
+                String[] splitState = value.split("\\[");
+                Tag_String block = new Tag_String("Name", splitState[0]);
+                String[] splitProperty = splitState[1].replace("]", "").split("=");
+                Tag_String property = new Tag_String(splitProperty[0],splitProperty[1]);
+                Tag_Compound properties = new Tag_Compound("Properties", Collections.singletonList(property));
+                tagList.add(new Tag_Compound("", Arrays.asList(block, properties)));
+            }
         }
         return new Tag_List("BlockStatePalette", tagList);
     }
