@@ -58,10 +58,16 @@ public class ColorIDMap {
     private final HashMap<Integer, MapIDEntry> map = new HashMap<>();
     private final boolean                      spongeSchematic;
 
+
     public ColorIDMap(boolean threeD, boolean spongeSchematic, @NotNull List<MapIDEntry> usedBlocks) {
         this.spongeSchematic = spongeSchematic;
+        addAirToMap();
         if (threeD) mapColorIDGenerator3D(usedBlocks);
         else mapColorIDGenerator2D(usedBlocks);
+    }
+
+    private void addAirToMap() {
+        map.put(0, new MapIDEntry(0, 0, "Air","minecraft:air",""));
     }
 
     private int mult180(int x) {

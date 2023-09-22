@@ -116,7 +116,6 @@ public class PositionMatrix {
 
         int maxSchematicHeight = maxY - minY  + 1;
         int highestUsedY = minY;
-        int lichenSupportBlock = colorIDMatrix.getEntryfromPoint(0, 0).colorID();
 
         /*
         The order of indexes is [y][z][x] by the convention of Schematics, also the z-value is inverted to the image based ordering.

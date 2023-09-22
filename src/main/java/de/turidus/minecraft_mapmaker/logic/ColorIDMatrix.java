@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * This class contains the ColorIDMatrix, a two dimensional array containing the appropriate colorIDs for every pixel of the image.
@@ -227,11 +228,9 @@ public class ColorIDMatrix {
             insertColorID = 45;
         }
         else {
-            Iterator<Integer> ii = colorIDMap.getMap().keySet().iterator();
-            insertColorID = ii.next();
+            insertColorID = colorIDMap.getMap().entrySet().stream().filter(isNotAirAndWater()).map(Map.Entry::getKey).findFirst().orElse(0);
         }
         for (int[] colume : colorIDMatrix) {
-
             colume[0] = insertColorID;
         }
         amountMap.put(insertColorID, width);
@@ -241,41 +240,59 @@ public class ColorIDMatrix {
             for (int z = 1; z < length; z++) {
 
                 int rgb = image.getRGB(x, z - 1);
-
-                /*
-                Finds the entry in ColorIDMap with the closest rgb value to the rgb value of the pixel
-                 */
-                if (knownLinks.containsKey(rgb)) {
-                    int tempcolorID = knownLinks.get(rgb);
-                    colorIDMatrix[x][z] = tempcolorID;
-
-                    /*If knownLinks already contains the rgb value, then amountMap has to contain the paired colorID*/
-                    int count = amountMap.get(tempcolorID);
-                    amountMap.replace(tempcolorID, count + 1);
-                } else {
-                    double curDif = Double.MAX_VALUE;
-                    int curColorID = 0;
-                    for (Map.Entry<Integer, MapIDEntry> entry : colorIDMap.getMap().entrySet()) {
-
-                        double tempdif = colorDistance(rgb, entry.getValue().rgb(), this.cie);
-                        if (tempdif < curDif) {
-                            curDif = tempdif;
-                            curColorID = entry.getKey();
-                        }
-                    }
-
-                    knownLinks.put(rgb, curColorID);
-                    if (amountMap.containsKey(curColorID)) {
-                        int count = amountMap.get(curColorID);
-                        amountMap.replace(curColorID, count + 1);
-                    } else {
-                        amountMap.put(curColorID, 1);
-                    }
-
-                    colorIDMatrix[x][z] = curColorID;
+                if(getAlpha(rgb) == 0) {
+                    colorIDMatrix[x][z] = 0;
+                }
+                else {
+                    addCorrectColorIDToMatrix(knownLinks, rgb, x, z);
                 }
             }
         }
+    }
+
+    @NotNull
+    private static Predicate<Map.Entry<Integer, MapIDEntry>> isNotAirAndWater() {
+        return entry -> !entry.getValue().blockID().equals("minecraft:air") && !entry.getValue().blockID().equals("minecraft:water");
+    }
+
+    /*
+      Finds the entry in ColorIDMap with the closest rgb value to the rgb value of the pixel
+    */
+    private void addCorrectColorIDToMatrix(HashMap<Integer, Integer> knownLinks, int rgb, int x, int z) {
+        if (knownLinks.containsKey(rgb)) {
+            int tempcolorID = knownLinks.get(rgb);
+            colorIDMatrix[x][z] = tempcolorID;
+
+            /*If knownLinks already contains the rgb value, then amountMap has to contain the paired colorID*/
+            int count = amountMap.get(tempcolorID);
+            amountMap.replace(tempcolorID, count + 1);
+        } else {
+            double curDif = Double.MAX_VALUE;
+            int curColorID = 0;
+            for (Map.Entry<Integer, MapIDEntry> entry : colorIDMap.getMap().entrySet()) {
+                if (entry.getValue().colorID() == 0) continue; //Skips checking against air
+
+                double tempdif = colorDistance(rgb, entry.getValue().rgb(), this.cie);
+                if (tempdif < curDif) {
+                    curDif = tempdif;
+                    curColorID = entry.getKey();
+                }
+            }
+
+            knownLinks.put(rgb, curColorID);
+            if (amountMap.containsKey(curColorID)) {
+                int count = amountMap.get(curColorID);
+                amountMap.replace(curColorID, count + 1);
+            } else {
+                amountMap.put(curColorID, 1);
+            }
+
+            colorIDMatrix[x][z] = curColorID;
+        }
+    }
+
+    private int getAlpha(int rgb) {
+        return (byte)(rgb >> 24) & 0xFF;
     }
 
     /**
