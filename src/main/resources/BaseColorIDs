@@ -17,6 +17,7 @@
     End Stone Bricks,minecraft:end_stone_bricks
 3; 199, 199, 199
     Cobweb,minecraft:cobweb
+    White Candle,minecraft:white_candle
 4; 255, 0, 0
     Block of Redstone,minecraft:redstone_block
     TNT,minecraft:tnt
@@ -24,6 +25,7 @@
     Ice,minecraft:ice
 6; 167, 167, 167
     Block of Iron,minecraft:iron_block
+    Heavy Weighted Pressure Plates,minecraft:heavy_weighted_pressure_plate
 7; 0, 124, 0
     Oak Leaves,minecraft:oak_leaves[persistent=true]
     Spruce Leaves,minecraft:spruce_leaves[persistent=true]
@@ -32,15 +34,15 @@
     Acacia Leaves,minecraft:acacia_leaves[persistent=true]
     Dark Oak Leaves,minecraft:dark_oak_leaves[persistent=true]
 8; 255, 255, 255
+    White Glazed Terracotta,minecraft:white_glazed_terracotta
     Snow Block,minecraft:snow_block
     White Wool,minecraft:white_wool
-    White Glazed Terracotta,minecraft:white_glazed_terracotta
     White Concrete,minecraft:white_concrete
 9; 164, 168, 184
     Clay,minecraft:clay
 10; 151, 109, 77
-    Coarse Dirt,minecraft:coarse_dirt
     Dirt,minecraft:dirt
+    Coarse Dirt,minecraft:coarse_dirt
     Jukebox,minecraft:jukebox
     Grass Path,minecraft:grass_path
     Jungle Wood Planks,minecraft:jungle_planks
@@ -125,6 +127,9 @@
     Green Glazed Terracotta,minecraft:green_glazed_terracotta
     Green Wool,minecraft:green_wool
     Green Concrete,minecraft:green_concrete
+    Basalt,minecraft:basalt
+    Smooth Basalt,minecraft:smooth_basalt
+    Sculk,minecraft:sculk
 28; 153, 51, 51
     Red Glazed Terracotta,minecraft:red_glazed_terracotta
     Brick,minecraft:bricks
@@ -132,13 +137,14 @@
     Red Wool,minecraft:red_wool
     Red Concrete,minecraft:red_concrete
 29; 25, 25, 25
+    Black Glazed Terracotta,minecraft:black_glazed_terracotta
     Block of Coal,minecraft:coal_block
     Obsidian,minecraft:obsidian
-    Black Glazed Terracotta,minecraft:black_glazed_terracotta
     Black Wool,minecraft:black_wool
     Black Concrete,minecraft:black_concrete
 30; 250, 238, 77
     Block of Gold,minecraft:gold_block
+    Light Weighted Pressure Plate,minecraft:light_weighted_pressure_plate
 31; 92, 219, 213
     Prismarine Bricks,minecraft:prismarine_bricks
     Block of Diamond,minecraft:diamond_block
@@ -169,16 +175,19 @@
     Pink Terracotta,minecraft:pink_terracotta
 43; 57, 41, 35
     Gray Terracotta,minecraft:gray_terracotta
+    Tuff,minecraft:tuff
 44; 135, 107, 98
     Light Gray Terracotta,minecraft:light_gray_terracotta
 45; 87, 92, 92
     Cyan Terracotta,minecraft:cyan_terracotta
+    Mud,minecraft:mud
 46; 122, 73, 88
     Purple Terracotta,minecraft:purple_terracotta
 47; 76, 62, 92
     Blue Terracotta,minecraft:blue_terracotta
 48; 76, 50, 35
     Brown Terracotta,minecraft:brown_terracotta
+    Dripstone Block,minecraft:dripstone_block
 49; 76, 82, 42
     Green Terracotta,minecraft:green_terracotta
 50; 142, 60, 46
@@ -205,3 +214,4 @@
     Block of Raw Iron,minecraft:raw_iron_block
 61; 127, 167, 150
     Glow Lichen,minecraft:glow_lichen
+    Verdant Froglight,minecraft:verdant_froglight

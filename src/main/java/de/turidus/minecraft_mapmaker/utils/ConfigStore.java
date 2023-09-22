@@ -73,6 +73,9 @@ public class ConfigStore {
         mcVersionList.add(new McVersion("1.15", 2225));
         mcVersionList.add(new McVersion("1.16", 2566));
         mcVersionList.add(new McVersion("1.17", 2724));
+        mcVersionList.add(new McVersion("1.18", 2860));
+        mcVersionList.add(new McVersion("1.19", 3105));
+        mcVersionList.add(new McVersion("1.20", 3463));
 
         maxColorIDUsedByVersion = new HashMap<>();
         maxColorIDUsedByVersion.put(1519, 51);
@@ -80,6 +83,9 @@ public class ConfigStore {
         maxColorIDUsedByVersion.put(2225, 51);
         maxColorIDUsedByVersion.put(2566, 58);
         maxColorIDUsedByVersion.put(2724, 61);
+        maxColorIDUsedByVersion.put(2860, 61);
+        maxColorIDUsedByVersion.put(3105, 61);
+        maxColorIDUsedByVersion.put(3463, 61);
     }
 
 
@@ -99,7 +105,7 @@ public class ConfigStore {
 
     public String blockForWater = "minecraft:glass";
 
-    public String blockForLichen = "minecraft:cobblestone";
+    public String supportBlock = "minecraft:cobblestone";
 
     public List<String> blacklist = new ArrayList<>();
 
@@ -283,6 +289,8 @@ public class ConfigStore {
                     case "pathToImage":
                     case "name":
                     case "pathToSave":
+                    case "supportBlock":
+                    case "blockForWater":
                         try {
                             field.set(this, split[1]);
                         } catch (IllegalAccessException ignored) {

@@ -170,7 +170,9 @@ public class PositionMatrix {
                     } catch (IndexOutOfBoundsException ignored) {
                     }
                 }
-                else if(entry.blockID().equals("minecraft:glow_lichen")){
+                else if(entry.blockID().equals("minecraft:glow_lichen")
+                        || entry.blockID().equals("minecraft:heavy_weighted_pressure_plate")
+                        || entry.blockID().equals("minecraft:light_weighted_pressure_plate")){
                     try {
                         if (schematicCube[correctedY - 1][z][x] == 0) {
                             schematicCube[correctedY - 1][z][x] = -2;
@@ -230,10 +232,10 @@ public class PositionMatrix {
                                 }
                                 case -2 -> {
                                     totalBlocks++;
-                                    if(!patternMap.containsKey(configStore.blockForLichen)) {
-                                        patternMap.put(configStore.blockForLichen, curIndex++);
+                                    if(!patternMap.containsKey(configStore.supportBlock)) {
+                                        patternMap.put(configStore.supportBlock, curIndex++);
                                     }
-                                    blockList.add(patternMap.get(configStore.blockForLichen));
+                                    blockList.add(patternMap.get(configStore.supportBlock));
                                 }
                                 default -> {
                                     totalBlocks++;

@@ -5,8 +5,10 @@
 
 pathToSave = save/
 
+#Block that surrounds water. Has to be a transparent block like glass.
 blockForWater = minecraft:glass
-blockForLichen = minecraft:cobblestone
+#Block that supports non stable blocks like Glow Lichen or plates.
+supportBlock = minecraft:cobblestone
 
 #The blacklist excludes certain colors from being placed.
 #To exclude a color, add the base color id (as found in the BaseColorID File).
