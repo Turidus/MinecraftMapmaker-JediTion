@@ -86,6 +86,8 @@
     Yellow Glazed Terracotta,minecraft:yellow_glazed_terracotta
     Yellow Wool,minecraft:yellow_wool
     Yellow Concrete,minecraft:yellow_concrete
+    Block of Bamboo,minecraft:bamboo_block
+    Bamboo Pressure Plate,minecraft:bamboo_pressure_plate
 19; 127, 204, 25
     Lime Glazed Terracotta,minecraft:lime_glazed_terracotta
     Lime Wool,minecraft:lime_wool
@@ -215,3 +217,8 @@
 61; 127, 167, 150
     Glow Lichen,minecraft:glow_lichen
     Verdant Froglight,minecraft:verdant_froglight
+62; 207, 175, 159
+    Cherry Planks,minecraft:cherry_planks
+    Cherry Slab,minecraft:cherry_slab
+63; 239, 125, 163
+    Cherry Leaves,minecraft:cherry_leaves

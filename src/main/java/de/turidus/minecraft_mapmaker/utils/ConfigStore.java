@@ -85,7 +85,7 @@ public class ConfigStore {
         maxColorIDUsedByVersion.put(2724, 61);
         maxColorIDUsedByVersion.put(2860, 61);
         maxColorIDUsedByVersion.put(3105, 61);
-        maxColorIDUsedByVersion.put(3463, 61);
+        maxColorIDUsedByVersion.put(3463, 63);
     }
 
 

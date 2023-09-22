@@ -171,8 +171,7 @@ public class PositionMatrix {
                     }
                 }
                 else if(entry.blockID().equals("minecraft:glow_lichen")
-                        || entry.blockID().equals("minecraft:heavy_weighted_pressure_plate")
-                        || entry.blockID().equals("minecraft:light_weighted_pressure_plate")){
+                        || entry.blockID().contains("_plate")){
                     try {
                         if (schematicCube[correctedY - 1][z][x] == 0) {
                             schematicCube[correctedY - 1][z][x] = -2;
