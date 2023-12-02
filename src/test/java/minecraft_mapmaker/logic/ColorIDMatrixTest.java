@@ -38,8 +38,8 @@ class ColorIDMatrixTest {
         assertEquals(17 ,mapIDEntry.getRed());
         assertEquals(17, mapIDEntry.getGreen());
         assertEquals(17, mapIDEntry.getBlue());
-        assertEquals("minecraft:coal_block", mapIDEntry.blockID());
-        assertEquals("Block of Coal", mapIDEntry.blockName());
+        assertEquals("minecraft:black_glazed_terracotta", mapIDEntry.blockID());
+        assertEquals("Black Glazed Terracotta", mapIDEntry.blockName());
     }
 
     @Test
