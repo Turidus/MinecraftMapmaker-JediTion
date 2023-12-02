@@ -20,7 +20,7 @@ class PositionMatrixTest {
 
     @Test
     void newPositionMatrix() throws IOException, ClassNotFoundException {
-        File file = new File(FaF.ICON);
+        File file = new File("testpictures/icon.gif");
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList<>();
         for (int key : baseColorIDMap.keySet()){
@@ -36,7 +36,7 @@ class PositionMatrixTest {
 
     @Test
     void positionString() throws IOException, ClassNotFoundException {
-        File file = new File("testpictures/DTH.jpg");
+        File file = new File("testpictures/icon.gif");
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList<>();
         for (int key : baseColorIDMap.keySet()){
@@ -53,7 +53,7 @@ class PositionMatrixTest {
 
     @Test
     void tagCompoundList() throws IOException, ClassNotFoundException {
-        File file = new File("testpictures/DTH.jpg");
+        File file = new File("testpictures/icon.gif");
         TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = ColorIDMap.getBaseColorIDMap();
         ArrayList<MapIDEntry> entryList = new ArrayList<>();
         for (int key : baseColorIDMap.keySet()){
@@ -65,13 +65,6 @@ class PositionMatrixTest {
 
         PositionMatrix positionMatrix = new PositionMatrix(colorIDMatrix);
         List<Tag_Compound> tag_compoundList = positionMatrix.getTag_CompoundList();
-
-        /*int count = 0;
-        for (byte item : tag_compoundList.get(0).toBytes().toByteArray()){
-            System.out.println(count + ": " + String.format("%8s",String.valueOf(item)).replace(" ", "0"));
-            count++;
-        }*/
-
     }
 
 }

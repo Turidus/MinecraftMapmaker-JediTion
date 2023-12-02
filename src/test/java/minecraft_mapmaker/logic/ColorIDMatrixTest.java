@@ -38,7 +38,7 @@ class ColorIDMatrixTest {
         assertEquals(17 ,mapIDEntry.getRed());
         assertEquals(17, mapIDEntry.getGreen());
         assertEquals(17, mapIDEntry.getBlue());
-        assertEquals("173", mapIDEntry.blockID());
+        assertEquals("minecraft:coal_block", mapIDEntry.blockID());
         assertEquals("Block of Coal", mapIDEntry.blockName());
     }
 
@@ -51,14 +51,14 @@ class ColorIDMatrixTest {
         }
 
         ColorIDMap colorIDMap = new ColorIDMap(true, true, entryList);
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/test.png"),colorIDMap, false);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/icon.gif"),colorIDMap, false);
         MapIDEntry mapIDEntry = colorIDMatrix.getEntryfromPoint(0,2);
         System.out.println(mapIDEntry.colorID());
         System.out.println(mapIDEntry.getRed());
         System.out.println(mapIDEntry.getGreen());
         System.out.println(mapIDEntry.getBlue());
 
-        assertEquals(34,mapIDEntry.colorID());
+        assertEquals(116,mapIDEntry.colorID());
     }
 
 
@@ -72,7 +72,7 @@ class ColorIDMatrixTest {
 
         ColorIDMap colorIDMap = new ColorIDMap(true, true, entryList);
 
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File(FaF.ICON), colorIDMap, false);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/icon.gif"), colorIDMap, false);
         String resultString = colorIDMatrix.getAmountString();
         System.out.println(resultString);
 
@@ -89,7 +89,7 @@ class ColorIDMatrixTest {
 
         ColorIDMap colorIDMap = new ColorIDMap(true,true, entryList);
 
-        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/DTH.jpg"),colorIDMap, false);
+        ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/icon.gif"),colorIDMap, false);
         BufferedImage image = colorIDMatrix.imageFromColorIDMatrix();
         ImageIcon icon=new ImageIcon(image);
         JFrame frame=new JFrame();
@@ -101,7 +101,7 @@ class ColorIDMatrixTest {
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         try {
-            Thread.sleep(10000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -13,7 +13,7 @@
 
     <groupId>de.turidus</groupId>
     <artifactId>minecraft_mapmaker</artifactId>
-    <version>4.0.2</version>
+    <version>4.1.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

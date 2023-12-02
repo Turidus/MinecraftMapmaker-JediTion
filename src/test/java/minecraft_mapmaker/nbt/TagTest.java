@@ -94,19 +94,15 @@ class TagTest {
         Tag_ByteArray tag_byteArray2 = new Tag_ByteArray("test", bytes2);
         ByteArrayOutputStream byteArrayOutputStream2 = tag_byteArray2.toBytes();
 
-        /*for(byte item : byteArrayOutputStream.toByteArray()){
-            System.out.printf("%8s%n", Integer.toBinaryString(item & 0xFF));
-        }
-        System.out.println("");
-        for(byte item : byteArrayOutputStream2.toByteArray()){
-            System.out.printf("%8s%n", Integer.toBinaryString(item & 0xFF));
-        }*/
-
         ByteArrayOutputStream expected = new ByteArrayOutputStream();
         expected.write(7);
         expected.write(0);
         expected.write(4);
         expected.write("test".getBytes());
+        expected.write(0);
+        expected.write(0);
+        expected.write(0);
+        expected.write(3);
         expected.write(0);
         expected.write(1);
         expected.write(2);
