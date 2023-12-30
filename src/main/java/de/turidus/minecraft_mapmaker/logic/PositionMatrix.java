@@ -300,7 +300,7 @@ public class PositionMatrix {
         enclosingList.add(new Tag_Int("z", partLength));
         metaDataList.add(new Tag_Compound("EnclosingSize", enclosingList));
 
-        metaDataList.add(new Tag_String("Author", "MinecraftMapMaper"));
+        metaDataList.add(new Tag_String("Author", "MinecraftMapMaker"));
         metaDataList.add(new Tag_String("Description", ""));
         metaDataList.add(new Tag_String("Name", name.replace(" ", "")));
         metaDataList.add(new Tag_Int("RegionCount", 1));
@@ -382,16 +382,7 @@ public class PositionMatrix {
         See https://github.com/maruohon/litematica/blob/b64b54c9ddaace55b6db8320ae23fda4dcb73fd7/src/main/java/fi/dy/masa/litematica/schematic/container/LitematicaBitArray.java#L7
         */
 
-        int bits = bitsPerEntry * blockList.size();
-        int over = bits % 64;
-        int arraySize;
-        if(over == 0){
-            arraySize = bits / 64;
-        }
-        else {
-            arraySize = (bits + 64 - over) / 64;
-        }
-        long[] longArray = new long[arraySize];
+        long[] longArray   = getCorrectlySizedArray(blockList, bitsPerEntry);
         long maxEntryValue = (1L << bitsPerEntry) - 1L;
 
         for(int i = 0; i < blockList.size(); i++){
@@ -410,6 +401,19 @@ public class PositionMatrix {
         }
 
         return new Tag_LongArray("BlockStates", longArray);
+    }
+
+    private static long[] getCorrectlySizedArray(List<Integer> blockList, int bitsPerEntry) {
+        int bits = bitsPerEntry * blockList.size();
+        int over = bits % 64;
+        int arraySize;
+        if(over == 0){
+            arraySize = bits / 64;
+        }
+        else {
+            arraySize = (bits + 64 - over) / 64;
+        }
+        return new long[arraySize];
     }
 
     private Tag_Compound makePaletteTagCompound(Map<String, Integer> patternMap) {
