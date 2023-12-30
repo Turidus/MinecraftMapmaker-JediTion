@@ -150,7 +150,6 @@ public class ColorIDMap {
         ArrayList<MapIDEntry> tempList = new ArrayList<>();
         for (String line : reader.lines().toArray(String[]::new)){
             if (line.startsWith("#") || line.isEmpty()) continue;
-
             else if (!line.startsWith(" ")){
                 if(!tempList.isEmpty()){
                     baseColorIDMap.put(baseColorID,tempList);

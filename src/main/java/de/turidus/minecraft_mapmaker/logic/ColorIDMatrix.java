@@ -308,12 +308,8 @@ public class ColorIDMatrix {
             }
 
             knownLinks.put(rgb, curColorID);
-            if (amountMap.containsKey(curColorID)) {
-                int count = amountMap.get(curColorID);
-                amountMap.replace(curColorID, count + 1);
-            } else {
-                amountMap.put(curColorID, 1);
-            }
+            amountMap.putIfAbsent(curColorID, 0);
+            amountMap.replace(curColorID, amountMap.get(curColorID) + 1);
 
             colorIDMatrix[x][z] = curColorID;
         }
