@@ -270,7 +270,8 @@ public class ColorIDMatrix {
 
     private int getInsertColorID() {
         if(colorIDMap.getMap().containsKey(45)){
-            ch.supportBlock = colorIDMap.getEntry(45).blockID();
+            MapIDEntry supportEntry = colorIDMap.getEntry(45);
+            ch.supportBlock = supportEntry.blockID() + supportEntry.blockState();
             return 45;
         }
         else {
