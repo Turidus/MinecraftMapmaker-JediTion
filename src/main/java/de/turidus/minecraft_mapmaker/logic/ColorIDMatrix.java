@@ -57,6 +57,7 @@ import java.util.function.Predicate;
  */
 public class ColorIDMatrix {
 
+    private final ConfigStore ch;
     private int[][] colorIDMatrix;
 
     private final int width;
@@ -76,7 +77,7 @@ public class ColorIDMatrix {
      * @throws IOException
      */
     public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap, boolean cie) throws IOException, IllegalArgumentException, ClassNotFoundException {
-        ConfigStore ch = ConfigStore.getInstance();
+        this.ch = ConfigStore.getInstance();
         this.colorIDMap = colorIDMap;
         this.cie = cie;
         BufferedImage image;
@@ -268,14 +269,13 @@ public class ColorIDMatrix {
     }
 
     private int getInsertColorID() {
-        int insertColorID;
         if(colorIDMap.getMap().containsKey(45)){
-            insertColorID = 45;
+            ch.supportBlock = colorIDMap.getEntry(45).blockID();
+            return 45;
         }
         else {
-            insertColorID = colorIDMap.getMap().entrySet().stream().filter(isNotAirAndWater()).map(Map.Entry::getKey).findFirst().orElse(0);
+            return colorIDMap.getMap().entrySet().stream().filter(isNotAirAndWater()).map(Map.Entry::getKey).findFirst().orElse(0);
         }
-        return insertColorID;
     }
 
     @NotNull
