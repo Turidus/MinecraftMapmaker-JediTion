@@ -129,8 +129,6 @@
     Green Glazed Terracotta,minecraft:green_glazed_terracotta
     Green Wool,minecraft:green_wool
     Green Concrete,minecraft:green_concrete
-    Basalt,minecraft:basalt
-    Smooth Basalt,minecraft:smooth_basalt
     Sculk,minecraft:sculk
 28; 153, 51, 51
     Red Glazed Terracotta,minecraft:red_glazed_terracotta
@@ -141,6 +139,8 @@
 29; 25, 25, 25
     Black Glazed Terracotta,minecraft:black_glazed_terracotta
     Block of Coal,minecraft:coal_block
+    Basalt,minecraft:basalt
+    Smooth Basalt,minecraft:smooth_basalt
     Obsidian,minecraft:obsidian
     Black Wool,minecraft:black_wool
     Black Concrete,minecraft:black_concrete
