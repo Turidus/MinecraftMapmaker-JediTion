@@ -297,11 +297,10 @@ public class GUIController {
             String name = file.getName();
             if (name.contains(".")) configStore.name = name.split("\\.")[0];
             else configStore.name = name;
-            configStore.pathToSave += "/" + configStore.name + "/";
         } else {
             configStore.name = configStore.name.replaceAll("[^a-zA-Z0-9_\\-]", "");
-            configStore.pathToSave += "/" + configStore.name + "/";
         }
+        configStore.pathToSave += "/" + configStore.name + "/";
         EventBus.getDefault().post(new StartEvent());
         Thread thread = new Thread(new MapmakerCore());
         thread.start();
@@ -483,26 +482,26 @@ public class GUIController {
 
         try{
             minY = Integer.parseInt(TminY.getText());
-            if(minY > 251 || minY < 0){
-                throw new IllegalArgumentException("minY is only vaild when 0 <= minY <= 251");
+            if(minY > 316 || minY < 0){
+                throw new IllegalArgumentException("The value for minY is only valid between 0 and 316 inclusive.");
             }
         }
         catch (NumberFormatException e){
-            throw new NumberFormatException("minY was not a Number");
+            throw new NumberFormatException("The value for minY was not a Number");
         }
 
         try{
             maxY = Integer.parseInt(TmaxY.getText());
-            if(maxY > 255 || maxY < 4){
-                throw new IllegalArgumentException("maxY is only vaild when 4 <= maxY <= 255");
+            if(maxY > 320 || maxY < 4){
+                throw new IllegalArgumentException("The value for maxY is only valid between 4 and 320 inclusive.");
             }
         }
         catch (NumberFormatException e){
-            throw new NumberFormatException("maxY was not a Number");
+            throw new NumberFormatException("The value for maxY was not a Number.");
         }
 
         if(minY > maxY || (maxY - minY) < 4){
-            throw new IllegalArgumentException("minY has to be at least 4 smaller than maxY");
+            throw new IllegalArgumentException("The value for minY has to be at least 4 smaller than maxY.");
 
         }
 
@@ -510,24 +509,24 @@ public class GUIController {
             maxX = Integer.parseInt(TmaxX.getText());
             maxX = Math.max(maxX, 0);
         } catch (NumberFormatException e){
-            throw new NumberFormatException("Finale size in X was not a Number");
+            throw new NumberFormatException("Finale size in X was not a Number.");
         }
 
         try{
             maxZ = Integer.parseInt(TmaxZ.getText());
             maxZ = Math.max(maxZ, 0);
         } catch (NumberFormatException e){
-            throw new NumberFormatException("Finale size in Z was not a Number");
+            throw new NumberFormatException("Finale size in Z was not a Number.");
         }
 
         try{
             maxS = Integer.parseInt(TmaxS.getText());
             if(maxS <= 0){
-                throw new IllegalArgumentException("maxS is only vaild when maxS > 0");
+                throw new IllegalArgumentException("The value maxS for is only valid when greater then 0.");
             }
         }
         catch (NumberFormatException e){
-            throw new NumberFormatException("maxS was not a Number");
+            throw new NumberFormatException("The value for maxS was not a Number.");
         }
 
         configStore.minY = minY;
