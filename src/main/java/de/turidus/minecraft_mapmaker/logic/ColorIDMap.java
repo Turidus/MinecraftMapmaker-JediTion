@@ -80,7 +80,7 @@ public class ColorIDMap {
 
 
     /**
-     * This function takes a list of {@link MapIDEntry} and generates the colorIDs for a three dimensional construct
+     * This function takes a list of {@link MapIDEntry} and generates the colorIDs for a three-dimensional construct
      * @param usedBlocks A list of MapIDEntries describing the blocks that are to be used for the generation of the map.
      */
     private void mapColorIDGenerator3D(@NotNull List<MapIDEntry> usedBlocks) {
@@ -107,7 +107,7 @@ public class ColorIDMap {
     }
 
     /**
-     * This function takes a list of {@link MapIDEntry} and generates the colorIDs for a two dimensional construct
+     * This function takes a list of {@link MapIDEntry} and generates the colorIDs for a two-dimensional construct
      * @param usedBlocks A list of MapIDEntries describing the blocks that are to be used for the generation of the map.
      */
     private void mapColorIDGenerator2D(@NotNull List<MapIDEntry> usedBlocks) {
@@ -150,7 +150,6 @@ public class ColorIDMap {
         ArrayList<MapIDEntry> tempList = new ArrayList<>();
         for (String line : reader.lines().toArray(String[]::new)){
             if (line.startsWith("#") || line.isEmpty()) continue;
-
             else if (!line.startsWith(" ")){
                 if(!tempList.isEmpty()){
                     baseColorIDMap.put(baseColorID,tempList);

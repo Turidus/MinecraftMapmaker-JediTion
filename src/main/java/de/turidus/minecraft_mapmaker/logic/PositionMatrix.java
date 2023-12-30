@@ -135,40 +135,7 @@ public class PositionMatrix {
                 the unused value 1 is used.
                 */
                 if (entry.blockID().equals("minecraft:water")) {
-                    try {
-                        if (schematicCube[correctedY - 1][z][x] == 0) {
-                            schematicCube[correctedY - 1][z][x] = -1;
-                        }
-                    } catch (IndexOutOfBoundsException ignored) {
-                    }
-
-                    try {
-                        if (schematicCube[correctedY][z - 1][x] == 0) {
-                            schematicCube[correctedY][z - 1][x] = -1;
-                        }
-                    } catch (IndexOutOfBoundsException ignored) {
-                    }
-
-                    try {
-                        if (schematicCube[correctedY][z + 1][x] == 0) {
-                            schematicCube[correctedY][z + 1][x] = -1;
-                        }
-                    } catch (IndexOutOfBoundsException ignored) {
-                    }
-
-                    try {
-                        if (schematicCube[correctedY][z][x - 1] == 0) {
-                            schematicCube[correctedY][z][x - 1] = -1;
-                        }
-                    } catch (IndexOutOfBoundsException ignored) {
-                    }
-
-                    try {
-                        if (schematicCube[correctedY][z][x + 1] == 0) {
-                            schematicCube[correctedY][z][x + 1] = -1;
-                        }
-                    } catch (IndexOutOfBoundsException ignored) {
-                    }
+                    surroundWaterWithGlass(schematicCube, correctedY, z, x);
                 }
                 else if(entry.blockID().equals("minecraft:glow_lichen")
                         || entry.blockID().contains("_plate")){
@@ -276,9 +243,162 @@ public class PositionMatrix {
         return tagCompoundList;
     }
 
+    private static void surroundWaterWithGlass(int[][][] schematicCube, int correctedY, int z, int x) {
+        try {
+            if (schematicCube[correctedY - 1][z][x] == 0) {
+                schematicCube[correctedY - 1][z][x] = -1;
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+
+        try {
+            if (schematicCube[correctedY][z - 1][x] == 0) {
+                schematicCube[correctedY][z - 1][x] = -1;
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+
+        try {
+            if (schematicCube[correctedY][z + 1][x] == 0) {
+                schematicCube[correctedY][z + 1][x] = -1;
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+
+        try {
+            if (schematicCube[correctedY][z][x - 1] == 0) {
+                schematicCube[correctedY][z][x - 1] = -1;
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+
+        try {
+            if (schematicCube[correctedY][z][x + 1] == 0) {
+                schematicCube[correctedY][z][x + 1] = -1;
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+    }
+
     public int[][] getMatrix() {
         return positionMatrix;
     }
+
+    /**
+     * This method builds the positionMatrix out of the {@link ColorIDMatrix}
+     */
+    private void positionMatrixFromColorIDMatrix() {
+        this.positionMatrix = new int[width][length];
+        fillPositionMatrixWithHeightValues();
+        secondPassToCorrectHeightValues();
+    }
+
+    private void fillPositionMatrixWithHeightValues() {
+        int startY = minY + (minY + maxY) / 2;
+
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < length; z++) {
+
+                if (z == 0) {
+                    positionMatrix[x][0] = startY;
+                } else {
+                    switch(colorIDMatrix.getEntryfromPoint(x, z).colorID() % 4) {
+                        case 1 -> positionMatrix[x][z] = positionMatrix[x][z - 1];
+                        case 2 -> positionMatrix[x][z] = positionMatrix[x][z - 1] + 1;
+                        case 0 -> {
+                            if(positionMatrix[x][z - 1] <= minY) {
+                                for(int zz = 0; zz < z; zz++) {
+                                    positionMatrix[x][zz] += 1;
+                                }
+                            }
+                            positionMatrix[x][z] = positionMatrix[x][z - 1] - 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void secondPassToCorrectHeightValues() {
+
+        normalizeMinimumYValueOfColumns();
+
+        correctViolationsOfMaximumYValues();
+    }
+
+    private void normalizeMinimumYValueOfColumns() {
+         /*
+        Normalisation of each North-South column which are independent of each other,
+        contrary to the West-East rows. At the end, each column has at least one block on
+        the minimal Y coordinate.
+         */
+
+        for (int x = 0; x < width; x++) {
+            int lowestY = maxY;
+            for (int z = 0; z < length; z++) {
+                lowestY = Math.min(lowestY, positionMatrix[x][z]);
+            }
+            if (lowestY > minY) {
+                int offsetY = lowestY - minY;
+                for (int z = 0; z < length; z++) {
+                    positionMatrix[x][z] -= offsetY;
+                }
+            }
+        }
+    }
+
+    private void correctViolationsOfMaximumYValues() {
+        /*
+        Finding all ranges of blocks in each line that are too high and force them to be lower
+        than the maximum Y coordinate. This can lead to mismatched pixels inside the picture.
+        See Readme for additional information
+         */
+
+        int maxOffsetY = maxY - minY + 1;
+
+        for (int x = 0; x < width; x++) {
+            boolean exceedingY = false;
+            boolean inExceedingRange = false;
+            List<Integer> rangeZValues = new ArrayList<>();
+
+            for (int z = 0; z < length; z++) {
+                if (positionMatrix[x][z] > maxY && !inExceedingRange) {
+                    exceedingY = true;
+                    inExceedingRange = true;
+                    rangeZValues.add(z);
+                } else if (positionMatrix[x][z] <= maxY && inExceedingRange) {
+                    inExceedingRange = false;
+                    rangeZValues.add(z);
+                }
+            }
+            if (inExceedingRange) rangeZValues.add(length);
+
+            while (exceedingY) {
+                for (int index = 0; index < rangeZValues.size(); index += 2) {
+                    for (int z = rangeZValues.get(index); z < rangeZValues.get(index + 1); z++) {
+                        positionMatrix[x][z] -= maxOffsetY;
+                    }
+                }
+
+                exceedingY = false;
+                inExceedingRange = false;
+                rangeZValues = new ArrayList<>();
+
+                for (int z = 0; z < length; z++) {
+                    if (positionMatrix[x][z] > maxY && !inExceedingRange) {
+                        exceedingY = true;
+                        inExceedingRange = true;
+                        rangeZValues.add(z);
+                    } else if (positionMatrix[x][z] <= maxY && inExceedingRange) {
+                        inExceedingRange = false;
+                        rangeZValues.add(z);
+                    }
+                }
+                if (inExceedingRange) rangeZValues.add(length);
+            }
+        }
+    }
+
 
     private Tag_Compound getLitematicaSchematic(String name,
                                                 int partWidth,
@@ -300,7 +420,7 @@ public class PositionMatrix {
         enclosingList.add(new Tag_Int("z", partLength));
         metaDataList.add(new Tag_Compound("EnclosingSize", enclosingList));
 
-        metaDataList.add(new Tag_String("Author", "MinecraftMapMaper"));
+        metaDataList.add(new Tag_String("Author", "MinecraftMapMaker"));
         metaDataList.add(new Tag_String("Description", ""));
         metaDataList.add(new Tag_String("Name", name.replace(" ", "")));
         metaDataList.add(new Tag_Int("RegionCount", 1));
@@ -382,16 +502,7 @@ public class PositionMatrix {
         See https://github.com/maruohon/litematica/blob/b64b54c9ddaace55b6db8320ae23fda4dcb73fd7/src/main/java/fi/dy/masa/litematica/schematic/container/LitematicaBitArray.java#L7
         */
 
-        int bits = bitsPerEntry * blockList.size();
-        int over = bits % 64;
-        int arraySize;
-        if(over == 0){
-            arraySize = bits / 64;
-        }
-        else {
-            arraySize = (bits + 64 - over) / 64;
-        }
-        long[] longArray = new long[arraySize];
+        long[] longArray   = getCorrectlySizedArray(blockList, bitsPerEntry);
         long maxEntryValue = (1L << bitsPerEntry) - 1L;
 
         for(int i = 0; i < blockList.size(); i++){
@@ -448,6 +559,20 @@ public class PositionMatrix {
         return new Tag_List("BlockStatePalette", tagList);
     }
 
+
+    private static long[] getCorrectlySizedArray(List<Integer> blockList, int bitsPerEntry) {
+        int bits = bitsPerEntry * blockList.size();
+        int over = bits % 64;
+        int arraySize;
+        if(over == 0){
+            arraySize = bits / 64;
+        }
+        else {
+            arraySize = (bits + 64 - over) / 64;
+        }
+        return new long[arraySize];
+    }
+
     private List<Byte> makeVarInt(List<Integer> blockList) {
         List<Byte> byteList = new ArrayList<>();
         for(Integer i : blockList){
@@ -460,111 +585,4 @@ public class PositionMatrix {
         return byteList;
     }
 
-    /**
-     * This method builds the positionMatrix out of the {@link ColorIDMatrix}
-     */
-    private void positionMatrixFromColorIDMatrix() {
-        this.positionMatrix = new int[width][length];
-
-        int startY = minY + (minY + maxY) / 2;
-
-        /*
-        First pass over the matrix to assign y values to every field
-         */
-        for (int x = 0; x < width; x++) {
-            for (int z = 0; z < length; z++) {
-
-                if (z == 0) {
-                    positionMatrix[x][0] = startY;
-                } else {
-                    switch(colorIDMatrix.getEntryfromPoint(x, z).colorID() % 4) {
-                        case 1 -> positionMatrix[x][z] = positionMatrix[x][z - 1];
-                        case 2 -> positionMatrix[x][z] = positionMatrix[x][z - 1] + 1;
-                        case 0 -> {
-                            if(positionMatrix[x][z - 1] <= minY) {
-                                for(int zz = 0; zz < z; zz++) {
-                                    positionMatrix[x][zz] += 1;
-                                }
-                            }
-                            positionMatrix[x][z] = positionMatrix[x][z - 1] - 1;
-                        }
-                    }
-                }
-            }
-        }
-
-        /*
-        Second pass over the matrix to fix too high y values
-         */
-
-        /*
-        First Step: Normalisation of each North-South column which are independent from each other,
-        contrary to the West-East rows. At the end, each column has at least one block on
-        the minimal Y coordinate.
-         */
-
-        for (int x = 0; x < width; x++) {
-            int lowestY = maxY;
-            for (int z = 0; z < length; z++) {
-                lowestY = Math.min(lowestY, positionMatrix[x][z]);
-            }
-
-            if (lowestY > minY) {
-                int offsetY = lowestY - minY;
-                for (int z = 0; z < length; z++) {
-                    positionMatrix[x][z] -= offsetY;
-                }
-            }
-        }
-
-        /*
-        Second Step: finding all ranges of blocks in each line that are too high and force them to be lower
-        than the maximum Y coordinate. This can lead to mismatched pixels inside the picture.
-        See Readme for additional information
-         */
-
-        int maxOffsetY = maxY - minY + 1;
-
-        for (int x = 0; x < width; x++) {
-            boolean exceedingY = false;
-            boolean inExceedingRange = false;
-            List<Integer> rangeZValues = new ArrayList<>();
-
-            for (int z = 0; z < length; z++) {
-                if (positionMatrix[x][z] > maxY && !inExceedingRange) {
-                    exceedingY = true;
-                    inExceedingRange = true;
-                    rangeZValues.add(z);
-                } else if (positionMatrix[x][z] <= maxY && inExceedingRange) {
-                    inExceedingRange = false;
-                    rangeZValues.add(z);
-                }
-            }
-            if (inExceedingRange) rangeZValues.add(length);
-
-            while (exceedingY) {
-                for (int index = 0; index < rangeZValues.size(); index += 2) {
-                    for (int z = rangeZValues.get(index); z < rangeZValues.get(index + 1); z++) {
-                        positionMatrix[x][z] -= maxOffsetY;
-                    }
-                }
-
-                exceedingY = false;
-                inExceedingRange = false;
-                rangeZValues = new ArrayList<>();
-
-                for (int z = 0; z < length; z++) {
-                    if (positionMatrix[x][z] > maxY && !inExceedingRange) {
-                        exceedingY = true;
-                        inExceedingRange = true;
-                        rangeZValues.add(z);
-                    } else if (positionMatrix[x][z] <= maxY && inExceedingRange) {
-                        inExceedingRange = false;
-                        rangeZValues.add(z);
-                    }
-                }
-                if (inExceedingRange) rangeZValues.add(length);
-            }
-        }
-    }
 }

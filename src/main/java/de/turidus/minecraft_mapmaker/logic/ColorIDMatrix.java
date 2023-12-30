@@ -57,6 +57,7 @@ import java.util.function.Predicate;
  */
 public class ColorIDMatrix {
 
+    private final ConfigStore ch;
     private int[][] colorIDMatrix;
 
     private final int width;
@@ -76,7 +77,7 @@ public class ColorIDMatrix {
      * @throws IOException
      */
     public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap, boolean cie) throws IOException, IllegalArgumentException, ClassNotFoundException {
-        ConfigStore ch = ConfigStore.getInstance();
+        this.ch = ConfigStore.getInstance();
         this.colorIDMap = colorIDMap;
         this.cie = cie;
         BufferedImage image;
@@ -213,7 +214,7 @@ public class ColorIDMatrix {
 
     /**
      * This method contains the de.turidus.minecraft_mapmaker.logic that transforms an image object to the colorIDMatrix
-     * It also adds an additional line of cobblestone at the north end of the matrix to provide correct shading
+     * It also adds a line of cobblestone at the north end of the matrix to provide correct shading
      *
      * @param image
      *         A {@link BufferedImage} object
@@ -221,20 +222,23 @@ public class ColorIDMatrix {
     private void imageToColorIDMatrix(BufferedImage image) {
 
         colorIDMatrix = new int[width][length];
+        prepareFirstRowOfColorIdMatrix();
+        addImageDataToColorIdMatrix(image);
+        fixFirstRowOfColorIdMatrix();
+    }
 
-        //This loop adds the additional line of cobblestone on the top. If cobblestone is turned off, another block will be used.
-        int insertColorID;
-        if(colorIDMap.getMap().containsKey(45)){
-            insertColorID = 45;
+    /**
+     * This method removes unnecessary first row blocks.
+     * A first row block is unnecessary, if the second row block is air,
+     * because air blocks do have a color that can be influenced by a block in the row above.
+     */
+    private void fixFirstRowOfColorIdMatrix() {
+        for(int[] column : colorIDMatrix){
+            if(column[1] == 0) column[0] = 0;
         }
-        else {
-            insertColorID = colorIDMap.getMap().entrySet().stream().filter(isNotAirAndWater()).map(Map.Entry::getKey).findFirst().orElse(0);
-        }
-        for (int[] colume : colorIDMatrix) {
-            colume[0] = insertColorID;
-        }
-        amountMap.put(insertColorID, width);
+    }
 
+    private void addImageDataToColorIdMatrix(BufferedImage image) {
         HashMap<Integer, Integer> knownLinks = new HashMap<>();
         for (int x = 0; x < width; x++) {
             for (int z = 1; z < length; z++) {
@@ -247,6 +251,31 @@ public class ColorIDMatrix {
                     addCorrectColorIDToMatrix(knownLinks, rgb, x, z);
                 }
             }
+        }
+    }
+
+    /**
+     * This method adds a line of cobblestone on the top of the matrix.
+     * This line will later be outside the view area of the map but still influence how the north most line of
+     * pixels on this map is colored.
+     * If cobblestone is turned off, another block will be used.
+     */
+    private void prepareFirstRowOfColorIdMatrix() {
+        int insertColorID = getInsertColorID();
+        for (int[] colume : colorIDMatrix) {
+            colume[0] = insertColorID;
+        }
+        amountMap.put(insertColorID, width);
+    }
+
+    private int getInsertColorID() {
+        if(colorIDMap.getMap().containsKey(45)){
+            MapIDEntry supportEntry = colorIDMap.getEntry(45);
+            ch.supportBlock = supportEntry.blockID() + supportEntry.blockState();
+            return 45;
+        }
+        else {
+            return colorIDMap.getMap().entrySet().stream().filter(isNotAirAndWater()).map(Map.Entry::getKey).findFirst().orElse(0);
         }
     }
 
@@ -280,12 +309,8 @@ public class ColorIDMatrix {
             }
 
             knownLinks.put(rgb, curColorID);
-            if (amountMap.containsKey(curColorID)) {
-                int count = amountMap.get(curColorID);
-                amountMap.replace(curColorID, count + 1);
-            } else {
-                amountMap.put(curColorID, 1);
-            }
+            amountMap.putIfAbsent(curColorID, 0);
+            amountMap.replace(curColorID, amountMap.get(curColorID) + 1);
 
             colorIDMatrix[x][z] = curColorID;
         }
