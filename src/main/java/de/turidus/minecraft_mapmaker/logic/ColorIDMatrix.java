@@ -2,6 +2,7 @@ package de.turidus.minecraft_mapmaker.logic;
 
 import de.turidus.minecraft_mapmaker.events.MessageEvent;
 import de.turidus.minecraft_mapmaker.utils.ConfigStore;
+import lombok.Getter;
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +16,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * This class contains the ColorIDMatrix, a two dimensional array containing the appropriate colorIDs for every pixel of the image.
+ * This class contains the ColorIDMatrix, a two-dimensional array containing the appropriate colorIDs for every pixel of the image.
  * This in turn maps the {@link ColorIDMap} to every pixel.
  *
  * @author Lars Schulze-Falck
@@ -58,9 +59,12 @@ import java.util.function.Predicate;
 public class ColorIDMatrix {
 
     private final ConfigStore ch;
+    private final boolean hasAlpha;
     private int[][] colorIDMatrix;
 
+    @Getter
     private final int width;
+    @Getter
     private final int length;
 
     private final ColorIDMap                colorIDMap;
@@ -74,42 +78,34 @@ public class ColorIDMatrix {
      *         A {@link File} object containing an image file
      * @param colorIDMap
      *         A {@link ColorIDMap}
-     * @throws IOException
+     * @throws IOException If the image could not be read.
      */
     public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap, boolean cie) throws IOException, IllegalArgumentException, ClassNotFoundException {
         this.ch = ConfigStore.getInstance();
         this.colorIDMap = colorIDMap;
         this.cie = cie;
+        BufferedImage image = getBufferedImage(imageFile);
+        hasAlpha = image.getColorModel().hasAlpha();
+        BufferedImage scaledImage = getScaledImage(image, ch.maxX == 0 ? image.getWidth() : ch.maxX, ch.maxZ == 0 ? image.getHeight() : ch.maxZ);
+        this.width = scaledImage.getWidth();
+        this.length = scaledImage.getHeight() + 1;
+
+        validateSize();
+
+        imageToColorIDMatrix(scaledImage);
+    }
+
+    private static BufferedImage getBufferedImage(@NotNull File imageFile) throws IOException {
         BufferedImage image;
         try {
             image = ImageIO.read(imageFile);
         }catch (IOException ioe){
             throw new IOException("Image could not be opened");
         }
-
         if (image == null){
             throw new IllegalArgumentException("The chosen file was not an image or could not be opened.");
         }
-
-        int scaleWidth = ch.maxX == 0 ? image.getWidth() : ch.maxX;
-        int scaleHeight = ch.maxZ == 0 ? image.getHeight() : ch.maxZ;
-
-        Image sI = image.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_AREA_AVERAGING);
-        BufferedImage scaledImage = new BufferedImage(sI.getWidth(null),sI.getHeight(null),BufferedImage.TYPE_INT_ARGB);
-        Graphics2D bGr = scaledImage.createGraphics();
-        bGr.drawImage(sI,0,0, null);
-        bGr.dispose();
-        this.width = scaledImage.getWidth();
-        this.length = scaledImage.getHeight() + 1;
-
-        if (this.width * this.length > 1100000) {
-            throw new IllegalArgumentException("The (scaled) picture is to large and can not be calculated");
-        }
-        else if (this.width * this.length > 500000) {
-            EventBus.getDefault().post(new MessageEvent("The (scaled) picture is large, this will take a while"));
-        }
-
-        imageToColorIDMatrix(scaledImage);
+        return image;
     }
 
     /**
@@ -152,45 +148,9 @@ public class ColorIDMatrix {
         int waterAmount = 0;
         int lichenAmount = 0;
 
-        for (Map.Entry<Integer, Integer> entry : amountMap.entrySet()) {
+        prepareSortingMap(sortingMap);
 
-            ArrayList<Integer> value = new ArrayList<>();
-
-            String key = colorIDMap.getEntry(entry.getKey()).blockName();
-            value.add(colorIDMap.getEntry(entry.getKey()).colorID());
-            value.add(entry.getValue());
-
-            if (!sortingMap.containsKey(key)) {
-                sortingMap.put(key, value);
-            } else {
-                value.set(1, value.get(1) + sortingMap.get(key).get(1));
-                sortingMap.replace(key, value);
-            }
-        }
-
-        StringBuilder amountString = new StringBuilder();
-
-        amountString.append(String.format("You need these blocks:%n"));
-        amountString.append(String.format("|" + centerString("Blockname", 30) + "|" + centerString("BlockID", 45) +
-                "|" + centerString("Amount", 10) + "|" + centerString("in Stacks", 10) + "|" + "%n"));
-        for (Map.Entry<String, ArrayList<Integer>> entry : sortingMap.entrySet()) {
-            String blockName = entry.getKey();
-            String blockID = (colorIDMap.getEntry(entry.getValue().get(0)).blockID());
-            Integer amount = entry.getValue().get(1);
-            Double amountInStacks = (double)amount / 64d;
-
-            amountString.append(String.format("|%-30s|%45s|%10d|%10.1f|%n", blockName, blockID, amount,amountInStacks));
-
-            if (blockID.equals("minecraft:water")) {
-                waterAmount = amount;
-            }
-            else if(blockID.equals("minecraft:glow_lichen")){
-                lichenAmount = amount;
-            }
-        }
-
-        if (waterAmount > 0) amountString.append("\nGlas blocks to surround Water (at most): ").append(waterAmount * 5);
-        if (lichenAmount > 0) amountString.append("\nSolid blocks to place under lichen: ").append(lichenAmount);
+        StringBuilder amountString = fillAmountStringBuilder(sortingMap, waterAmount, lichenAmount);
 
         return amountString.toString();
     }
@@ -210,6 +170,52 @@ public class ColorIDMatrix {
             }
         }
         return resultImage;
+    }
+
+    private void prepareSortingMap(TreeMap<String, ArrayList<Integer>> sortingMap) {
+        for (Map.Entry<Integer, Integer> entry : amountMap.entrySet()) {
+
+            ArrayList<Integer> value = new ArrayList<>();
+
+            String key = colorIDMap.getEntry(entry.getKey()).blockName();
+            value.add(colorIDMap.getEntry(entry.getKey()).colorID());
+            value.add(entry.getValue());
+
+            if (!sortingMap.containsKey(key)) {
+                sortingMap.put(key, value);
+            } else {
+                value.set(1, value.get(1) + sortingMap.get(key).get(1));
+                sortingMap.replace(key, value);
+            }
+        }
+    }
+
+    @NotNull
+    private StringBuilder fillAmountStringBuilder(TreeMap<String, ArrayList<Integer>> sortingMap, int waterAmount, int lichenAmount) {
+        StringBuilder amountString = new StringBuilder();
+
+        amountString.append(String.format("You need these blocks:%n"));
+        amountString.append(String.format("|" + centerString("Blockname", 30) + "|" + centerString("BlockID", 45) +
+                                          "|" + centerString("Amount", 10) + "|" + centerString("in Stacks", 10) + "|" + "%n"));
+        for (Map.Entry<String, ArrayList<Integer>> entry : sortingMap.entrySet()) {
+            String blockName = entry.getKey();
+            String blockID = (colorIDMap.getEntry(entry.getValue().get(0)).blockID());
+            Integer amount = entry.getValue().get(1);
+            Double amountInStacks = (double)amount / 64d;
+
+            amountString.append(String.format("|%-30s|%45s|%10d|%10.1f|%n", blockName, blockID, amount,amountInStacks));
+
+            if (blockID.equals("minecraft:water")) {
+                waterAmount = amount;
+            }
+            else if(blockID.equals("minecraft:glow_lichen")){
+                lichenAmount = amount;
+            }
+        }
+
+        if (waterAmount > 0) amountString.append("\nGlas blocks to surround Water (at most): ").append(waterAmount * 5);
+        if (lichenAmount > 0) amountString.append("\nSolid blocks to place under lichen: ").append(lichenAmount);
+        return amountString;
     }
 
     /**
@@ -244,7 +250,7 @@ public class ColorIDMatrix {
             for (int z = 1; z < length; z++) {
 
                 int rgb = image.getRGB(x, z - 1);
-                if(getAlpha(rgb) == 0) {
+                if(hasAlpha && getAlpha(rgb) == 0) {
                     colorIDMatrix[x][z] = 0;
                 }
                 else {
@@ -284,17 +290,18 @@ public class ColorIDMatrix {
         return entry -> !entry.getValue().blockID().equals("minecraft:air") && !entry.getValue().blockID().equals("minecraft:water");
     }
 
+
     /*
       Finds the entry in ColorIDMap with the closest rgb value to the rgb value of the pixel
     */
     private void addCorrectColorIDToMatrix(HashMap<Integer, Integer> knownLinks, int rgb, int x, int z) {
         if (knownLinks.containsKey(rgb)) {
-            int tempcolorID = knownLinks.get(rgb);
-            colorIDMatrix[x][z] = tempcolorID;
+            int tempColorID = knownLinks.get(rgb);
+            colorIDMatrix[x][z] = tempColorID;
 
             /*If knownLinks already contains the rgb value, then amountMap has to contain the paired colorID*/
-            int count = amountMap.get(tempcolorID);
-            amountMap.replace(tempcolorID, count + 1);
+            int count = amountMap.get(tempColorID);
+            amountMap.replace(tempColorID, count + 1);
         } else {
             double curDif = Double.MAX_VALUE;
             int curColorID = 0;
@@ -319,11 +326,10 @@ public class ColorIDMatrix {
     private int getAlpha(int rgb) {
         return (byte)(rgb >> 24) & 0xFF;
     }
-
     /**
      * This method calculates the distance between to rgb values by converting to Lab values and calculating DeltaE2000.
-     * Math found here: http://www.easyrgb.com/en/math.php See Delta E2000
-     * Explained here: https://en.wikipedia.org/wiki/Color_difference
+     * Math found here: <a href="http://www.easyrgb.com/en/math.php">...</a> See Delta E2000
+     * Explained here: <a href="https://en.wikipedia.org/wiki/Color_difference">...</a>
      *
      * @param rgbA
      *         An int containing the red value in byte 2, the green value in byte 3 and the blue value in byte 4 (left to right)
@@ -439,8 +445,8 @@ public class ColorIDMatrix {
 
     /**
      * Code taken from User Thanasis1101 on stackoverflow.com<br>
-     *     https://stackoverflow.com/a/45263428
-     * With math explained here: http://www.easyrgb.com/en/math.php
+     *     <a href="https://stackoverflow.com/a/45263428">...</a>
+     * With math explained here: <a href="http://www.easyrgb.com/en/math.php">...</a>
      * @param R Red channel value
      * @param G Green channel value
      * @param B Blue channel value
@@ -511,9 +517,28 @@ public class ColorIDMatrix {
         return lab;
     }
 
+    @NotNull
+    private static BufferedImage getScaledImage(BufferedImage image, int scaleWidth, int scaleHeight) {
+        Image sI = image.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_AREA_AVERAGING);
+        BufferedImage scaledImage = new BufferedImage(sI.getWidth(null),sI.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+        Graphics2D bGr = scaledImage.createGraphics();
+        bGr.drawImage(sI,0,0, null);
+        bGr.dispose();
+        return scaledImage;
+    }
+
+    private void validateSize() {
+        if (this.width * this.length > 1100000) {
+            throw new IllegalArgumentException("The (scaled) picture is to large and can not be calculated");
+        }
+        else if (this.width * this.length > 500000) {
+            EventBus.getDefault().post(new MessageEvent("The (scaled) picture is large, this will take a while"));
+        }
+    }
+
     /**
      * Centers a string inside a certain length.
-     * Provided by MerryCheese on Stackoverflow (https://stackoverflow.com/questions/8154366/how-to-center-a-string-using-string-format)
+     * Provided by MerryCheese on Stackoverflow (<a href="https://stackoverflow.com/questions/8154366/how-to-center-a-string-using-string-format">...</a>)
      *
      * @param text
      *         String to centerString
@@ -531,11 +556,4 @@ public class ColorIDMatrix {
         return String.format("%" + before + "s%-" + rest + "s", "", text);
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getLength() {
-        return length;
-    }
 }
