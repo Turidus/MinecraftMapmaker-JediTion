@@ -117,7 +117,7 @@ public class ColorIDMatrix {
      *         int value in range [0,length - 1]
      * @return The {@link MapIDEntry} fitting to that point
      */
-    public MapIDEntry getEntryfromPoint(int x, int z) throws IllegalArgumentException {
+    public MapIDEntry getEntryFromPoint(int x, int z) throws IllegalArgumentException {
         if (x < 0 || x >= width) {
             throw new IllegalArgumentException(String.format("x value was %d, only allowed in range [0,%d]", x, width - 1));
         }
@@ -156,16 +156,17 @@ public class ColorIDMatrix {
     }
 
     /**
-     * This method returns a {@link BufferedImage} object that shows an approximation of the resulting map in Minecraft
+     * This method returns a {@link BufferedImage} object that shows an approximation of the resulting map in Minecraft.
+     * Air blocks will be fully transparent, any other block will be fully opaque.
      *
      * @return BufferedImage approximating the result
      */
     public BufferedImage imageFromColorIDMatrix() {
-        BufferedImage resultImage = new BufferedImage(width, length, 1);
+        BufferedImage resultImage = new BufferedImage(width, length, BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < length; z++) {
-
-                int rgb = colorIDMap.getEntry(colorIDMatrix[x][z]).rgb();
+                MapIDEntry entry = colorIDMap.getEntry(colorIDMatrix[x][z]);
+                int rgb = entry.rgb() == 0 ? 0 : (entry.rgb() |  0xff000000);
                 resultImage.setRGB(x, z, rgb);
             }
         }

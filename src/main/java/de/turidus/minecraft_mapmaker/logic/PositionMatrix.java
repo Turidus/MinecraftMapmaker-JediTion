@@ -93,7 +93,7 @@ public class PositionMatrix {
                 The z values are inverted, because the matrix starts at the upper left corner of the image,
                 but in Minecraft the coordinates will start at the lower left corner.
                  */
-                positionSB.append(String.format("|%40s|%5d|%5d|%5d|%n", colorIDMatrix.getEntryfromPoint(x, z).blockName(), x, length - z - 1, positionMatrix[x][z]));
+                positionSB.append(String.format("|%40s|%5d|%5d|%5d|%n", colorIDMatrix.getEntryFromPoint(x, z).blockName(), x, length - z - 1, positionMatrix[x][z]));
             }
 
             positionSB.append(String.format("%n"));
@@ -125,7 +125,7 @@ public class PositionMatrix {
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < length; z++) {
                 int correctedY = positionMatrix[x][z] - minY;
-                MapIDEntry entry = colorIDMatrix.getEntryfromPoint(x, z);
+                MapIDEntry entry = colorIDMatrix.getEntryFromPoint(x, z);
 
                 //schematicCube[correctedY][length - (z + 1)][x] = entry.colorID;
                 schematicCube[correctedY][z][x] = entry.colorID();
@@ -302,7 +302,7 @@ public class PositionMatrix {
                 if (z == 0) {
                     positionMatrix[x][0] = startY;
                 } else {
-                    switch(colorIDMatrix.getEntryfromPoint(x, z).colorID() % 4) {
+                    switch(colorIDMatrix.getEntryFromPoint(x, z).colorID() % 4) {
                         case 1 -> positionMatrix[x][z] = positionMatrix[x][z - 1];
                         case 2 -> positionMatrix[x][z] = positionMatrix[x][z - 1] + 1;
                         case 0 -> {
