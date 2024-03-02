@@ -1,9 +1,7 @@
 package de.turidus.minecraft_mapmaker.logic;
 
-import de.turidus.minecraft_mapmaker.events.MessageEvent;
 import de.turidus.minecraft_mapmaker.utils.FaF;
 import de.turidus.minecraft_mapmaker.utils.FileHandler;
-import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -62,12 +60,54 @@ public class ColorIDMap {
     public ColorIDMap(boolean threeD, boolean spongeSchematic, @NotNull List<MapIDEntry> usedBlocks) {
         this.spongeSchematic = spongeSchematic;
         addAirToMap();
-        if (threeD) mapColorIDGenerator3D(usedBlocks);
-        else mapColorIDGenerator2D(usedBlocks);
+        if(threeD) {mapColorIDGenerator3D(usedBlocks);}
+        else {mapColorIDGenerator2D(usedBlocks);}
+    }
+
+    /**
+     * Parses the BaseColorID into a TreeMap for further handling.
+     *
+     * @return A {@code TreeMap<Integer,List<MapIDEntry>>} that contains the base color ID as key and {@link MapIDEntry} as value
+     *
+     * @throws FileNotFoundException
+     *         If BaseColorIDs.txt file could not be found
+     */
+    public static TreeMap<Integer, List<MapIDEntry>> getBaseColorIDMap() throws FileNotFoundException {
+        TreeMap<Integer, List<MapIDEntry>> baseColorIDMap = new TreeMap<>();
+        BufferedReader                     reader         = new BufferedReader(FileHandler.getFileReaderFromConfigFolderOrDefault(FaF.BASE_COLOR_ID,
+                                                                                                                                  FaF.BASE_COLOR_ID_DEFAULT));
+
+        int                   baseColorID = 0;
+        int                   rgb         = 0;
+        ArrayList<MapIDEntry> tempList    = new ArrayList<>();
+        for(String line : reader.lines().toArray(String[]::new)) {
+            if(line.startsWith("#") || line.isEmpty()) {continue;}
+            else if(!line.startsWith(" ")) {
+                if(!tempList.isEmpty()) {
+                    baseColorIDMap.put(baseColorID, tempList);
+                    tempList = new ArrayList<>();
+                }
+                String[] firstSplit  = line.split(";");
+                String[] secondSplit = firstSplit[1].split(",");
+                baseColorID = Integer.parseInt(firstSplit[0]);
+                rgb = (Integer.parseInt(secondSplit[0].trim()) << 16) | (Integer.parseInt(secondSplit[1].trim()) << 8) |
+                      (Integer.parseInt(secondSplit[2].trim()));
+            }
+            else {
+                String[]   firstSplit = line.split(",");
+                MapIDEntry tempEntry  = new MapIDEntry(baseColorID, rgb, firstSplit[0].trim(), firstSplit[1].trim(), "");
+                tempList.add(tempEntry);
+            }
+        }
+        if(!tempList.isEmpty()) {
+            baseColorIDMap.put(baseColorID, tempList);
+        }
+
+        return baseColorIDMap;
     }
 
     private void addAirToMap() {
-        map.put(0, new MapIDEntry(0, 0, "Air","minecraft:air",""));
+        map.put(0, new MapIDEntry(0, 0, "Air", "minecraft:air", ""));
     }
 
     private int mult180(int x) {
@@ -78,24 +118,25 @@ public class ColorIDMap {
         return (x * 220) / 255;
     }
 
-
     /**
-     * This function takes a list of {@link MapIDEntry} and generates the colorIDs for a three dimensional construct
-     * @param usedBlocks A list of MapIDEntries describing the blocks that are to be used for the generation of the map.
+     * This function takes a list of {@link MapIDEntry} and generates the colorIDs for a three-dimensional construct
+     *
+     * @param usedBlocks
+     *         A list of MapIDEntries describing the blocks that are to be used for the generation of the map.
      */
     private void mapColorIDGenerator3D(@NotNull List<MapIDEntry> usedBlocks) {
 
-        for (MapIDEntry entry : usedBlocks) {
+        for(MapIDEntry entry : usedBlocks) {
 
             int[] rgbArray = {entry.getRed(), entry.getGreen(), entry.getBlue()};
 
-            int rgb180 = (mult180(rgbArray[0]) << 16 | mult180(rgbArray[1]) << 8 | mult180(rgbArray[2]));
+            int rgb180     = (mult180(rgbArray[0]) << 16 | mult180(rgbArray[1]) << 8 | mult180(rgbArray[2]));
             int colorID180 = entry.colorID() * 4;
 
-            int rgb220 = (mult220(rgbArray[0]) << 16 | mult220(rgbArray[1]) << 8 | mult220(rgbArray[2]));
+            int rgb220     = (mult220(rgbArray[0]) << 16 | mult220(rgbArray[1]) << 8 | mult220(rgbArray[2]));
             int colorID220 = entry.colorID() * 4 + 1;
 
-            int rgb255 = (rgbArray[0] << 16 | rgbArray[1] << 8 | rgbArray[2]);
+            int rgb255     = (rgbArray[0] << 16 | rgbArray[1] << 8 | rgbArray[2]);
             int colorID255 = entry.colorID() * 4 + 2;
 
             String[] blockIDAndState = getblockIDAndState(entry.blockID());
@@ -107,17 +148,19 @@ public class ColorIDMap {
     }
 
     /**
-     * This function takes a list of {@link MapIDEntry} and generates the colorIDs for a two dimensional construct
-     * @param usedBlocks A list of MapIDEntries describing the blocks that are to be used for the generation of the map.
+     * This function takes a list of {@link MapIDEntry} and generates the colorIDs for a two-dimensional construct
+     *
+     * @param usedBlocks
+     *         A list of MapIDEntries describing the blocks that are to be used for the generation of the map.
      */
     private void mapColorIDGenerator2D(@NotNull List<MapIDEntry> usedBlocks) {
 
 
-        for (MapIDEntry entry : usedBlocks) {
+        for(MapIDEntry entry : usedBlocks) {
 
             int[] rgbArray = {entry.getRed(), entry.getGreen(), entry.getBlue()};
 
-            int rgb220 = (mult220(rgbArray[0]) << 16 | mult220(rgbArray[1]) << 8 | mult220(rgbArray[2]));
+            int rgb220     = (mult220(rgbArray[0]) << 16 | mult220(rgbArray[1]) << 8 | mult220(rgbArray[2]));
             int colorID220 = entry.colorID() * 4 + 1;
 
             String[] blockIDAndState = getblockIDAndState(entry.blockID());
@@ -126,52 +169,14 @@ public class ColorIDMap {
     }
 
     private String[] getblockIDAndState(String blockID) {
-        if( blockID.contains("[")) return replaceBlockFlag(blockID);
-        return new String[]{blockID, ""};
+        if(blockID.contains("[")) {return replaceBlockFlag(blockID);}
+        return new String[] {blockID, ""};
     }
 
     private String[] replaceBlockFlag(String blockName) {
         String[] split = blockName.split("\\[");
         split[1] = "[" + split[1];
         return split;
-    }
-
-    /**
-     * Parses the BaseColorID into a TreeMap for further handling.
-     * @return A {@code TreeMap<Integer,List<MapIDEntry>>} that contains the base color ID as key and {@link MapIDEntry} as value
-     * @throws FileNotFoundException If BaseColorIDs.txt file could not be found
-     */
-    public static TreeMap<Integer,List<MapIDEntry>> getBaseColorIDMap() throws FileNotFoundException {
-        TreeMap<Integer,List<MapIDEntry>> baseColorIDMap = new TreeMap<>();
-        BufferedReader reader = new BufferedReader(FileHandler.getFileReaderFromConfigFolderOrDefault(FaF.BASE_COLOR_ID, FaF.BASE_COLOR_ID_DEFAULT));
-
-        int baseColorID = 0;
-        int rgb = 0;
-        ArrayList<MapIDEntry> tempList = new ArrayList<>();
-        for (String line : reader.lines().toArray(String[]::new)){
-            if (line.startsWith("#") || line.isEmpty()) continue;
-
-            else if (!line.startsWith(" ")){
-                if(!tempList.isEmpty()){
-                    baseColorIDMap.put(baseColorID,tempList);
-                    tempList = new ArrayList<>();
-                }
-                String[] firstSplit = line.split(";");
-                String[] secondSplit = firstSplit[1].split(",");
-                baseColorID = Integer.parseInt(firstSplit[0]);
-                rgb = (Integer.parseInt(secondSplit[0].trim()) << 16) | (Integer.parseInt(secondSplit[1].trim()) << 8) | (Integer.parseInt(secondSplit[2].trim()));
-            }
-            else {
-                String[] firstSplit = line.split(",");
-                MapIDEntry tempEntry = new MapIDEntry(baseColorID,rgb,firstSplit[0].trim(),firstSplit[1].trim(), "");
-                tempList.add(tempEntry);
-            }
-        }
-        if(!tempList.isEmpty()){
-            baseColorIDMap.put(baseColorID,tempList);
-        }
-
-        return baseColorIDMap;
     }
 
     public MapIDEntry getEntry(int key) {
@@ -181,4 +186,5 @@ public class ColorIDMap {
     public HashMap<Integer, MapIDEntry> getMap() {
         return map;
     }
+
 }
