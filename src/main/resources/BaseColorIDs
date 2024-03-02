@@ -7,10 +7,10 @@
 1; 127, 178, 56
     Grass Block,minecraft:grass_block
 2; 247, 233, 163
-    Sandstone Slab,minecraft:sandstone_slab[top_slot_bit=true]
+    Sandstone Slab,minecraft:sandstone_slab[type=top]
     Sandstone,minecraft:sandstone
     Birch Wood Planks,minecraft:birch_planks
-    Birch Wood Slab,minecraft:birch_slab[top_slot_bit=true]
+    Birch Wood Slab,minecraft:birch_slab[type=top]
     Bone Block,minecraft:bone_block
     Glowstone,minecraft:glowstone
     End Stone,minecraft:end_stone
@@ -46,30 +46,30 @@
     Jukebox,minecraft:jukebox
     Grass Path,minecraft:grass_path
     Jungle Wood Planks,minecraft:jungle_planks
-    Jungle Wood Slab,minecraft:jungle_slab[top_slot_bit=true]
+    Jungle Wood Slab,minecraft:jungle_slab[type=top]
 11; 112, 112, 112
     Cobblestone,minecraft:cobblestone
-    Cobblestone Slab,minecraft:cobblestone_slab[top_slot_bit=true]
+    Cobblestone Slab,minecraft:cobblestone_slab[type=top]
     Stone,minecraft:stone
-    Stone Slab,minecraft:stone_slab[top_slot_bit=true]
+    Stone Slab,minecraft:stone_slab[type=top]
     Stone Brick,minecraft:stone_bricks
-    Stone Brick Slab,minecraft:stone_brick_slab[top_slot_bit=true]
+    Stone Brick Slab,minecraft:stone_brick_slab[type=top]
     Moss Stone,minecraft:mossy_cobblestone
     Andesite,minecraft:andesite
 12; 64, 64, 255
     Water,minecraft:water
 13; 143, 119, 72
     Oak Wood Plank,minecraft:oak_planks
-    Oak Wood Slab,minecraft:oak_slab[top_slot_bit=true]
+    Oak Wood Slab,minecraft:oak_slab[type=top]
 14; 255, 252, 245
     Diorite,minecraft:diorite
     Block of Quartz,minecraft:quartz_block
-    Quartz Slab,minecraft:quartz_slab[top_slot_bit=true]
+    Quartz Slab,minecraft:quartz_slab[type=top]
     Sea Lantern,minecraft:sea_lantern
 15; 216, 127, 51
     Terracotta,minecraft:terracotta
     Acacia Wood Planks,minecraft:acacia_planks
-    Acacia Wood Slab,minecraft:acacia_slab[top_slot_bit=true]
+    Acacia Wood Slab,minecraft:acacia_slab[type=top]
     Orange Wool,minecraft:orange_wool
     Orange Concrete,minecraft:orange_concrete
     Orange Glazed Terracotta,minecraft:orange_glazed_terracotta
@@ -121,7 +121,7 @@
     Blue Concrete,minecraft:blue_concrete
 26; 102, 76, 51
     Dark Oak Wood Planks,minecraft:dark_oak_planks
-    Dark Oak Slab,minecraft:dark_oak_slab[top_slot_bit=true]
+    Dark Oak Slab,minecraft:dark_oak_slab[type=top]
     Brown Glazed Terracotta,minecraft:brown_glazed_terracotta
     Brown Wool,minecraft:brown_wool
     Brown Concrete,minecraft:brown_concrete
@@ -129,18 +129,18 @@
     Green Glazed Terracotta,minecraft:green_glazed_terracotta
     Green Wool,minecraft:green_wool
     Green Concrete,minecraft:green_concrete
-    Basalt,minecraft:basalt
-    Smooth Basalt,minecraft:smooth_basalt
     Sculk,minecraft:sculk
 28; 153, 51, 51
     Red Glazed Terracotta,minecraft:red_glazed_terracotta
     Brick,minecraft:bricks
-    Brick Slab,minecraft:brick_slab[top_slot_bit=true]
+    Brick Slab,minecraft:brick_slab[type=top]
     Red Wool,minecraft:red_wool
     Red Concrete,minecraft:red_concrete
 29; 25, 25, 25
     Black Glazed Terracotta,minecraft:black_glazed_terracotta
     Block of Coal,minecraft:coal_block
+    Basalt,minecraft:basalt
+    Smooth Basalt,minecraft:smooth_basalt
     Obsidian,minecraft:obsidian
     Black Wool,minecraft:black_wool
     Black Concrete,minecraft:black_concrete
@@ -157,7 +157,7 @@
     Block of Emerald,minecraft:emerald_block
 34; 129, 86, 49
     Spruce Wood Planks,minecraft:spruce_planks
-    Spruce Wood Slab,minecraft:spruce_slab[top_slot_bit=true]
+    Spruce Wood Slab,minecraft:spruce_slab[type=top]
     Podzol,minecraft:podzol
 35; 112, 2, 0
     Netherrack,minecraft:netherrack
@@ -200,13 +200,15 @@
 52; 189, 48, 49
     Crimson Nylium,minecraft:crimson_nylium
 53; 148, 63, 97
-    Crimson Stem,minecraft:crimson_planks
+    Crimson Slab,minecraft:crimson_slab[type=top]
+    Crimson Plank,minecraft:crimson_planks
 54; 92, 25, 29
     Crimson Hyphae,minecraft:crimson_hyphae
 55; 22, 126, 134
     Warped Nylium,minecraft:warped_nylium
 56; 58, 142, 140
-    Warped Stem,minecraft:warped_planks
+    Warped Slab,minecraft:warped_slab[type=top]
+    Warped Planks,minecraft:warped_planks
 57; 86, 44, 62
     Warped Hyphae,minecraft:warped_hyphae
 58; 20, 180, 133

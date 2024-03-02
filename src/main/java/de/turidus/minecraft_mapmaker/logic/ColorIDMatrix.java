@@ -2,6 +2,7 @@ package de.turidus.minecraft_mapmaker.logic;
 
 import de.turidus.minecraft_mapmaker.events.MessageEvent;
 import de.turidus.minecraft_mapmaker.utils.ConfigStore;
+import lombok.Getter;
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +16,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * This class contains the ColorIDMatrix, a two dimensional array containing the appropriate colorIDs for every pixel of the image.
+ * This class contains the ColorIDMatrix, a two-dimensional array containing the appropriate colorIDs for every pixel of the image.
  * This in turn maps the {@link ColorIDMap} to every pixel.
  *
  * @author Lars Schulze-Falck
@@ -57,9 +58,13 @@ import java.util.function.Predicate;
  */
 public class ColorIDMatrix {
 
+    private final ConfigStore ch;
+    private final boolean hasAlpha;
     private int[][] colorIDMatrix;
 
+    @Getter
     private final int width;
+    @Getter
     private final int length;
 
     private final ColorIDMap                colorIDMap;
@@ -73,42 +78,34 @@ public class ColorIDMatrix {
      *         A {@link File} object containing an image file
      * @param colorIDMap
      *         A {@link ColorIDMap}
-     * @throws IOException
+     * @throws IOException If the image could not be read.
      */
     public ColorIDMatrix(@NotNull File imageFile, @NotNull ColorIDMap colorIDMap, boolean cie) throws IOException, IllegalArgumentException, ClassNotFoundException {
-        ConfigStore ch = ConfigStore.getInstance();
+        this.ch = ConfigStore.getInstance();
         this.colorIDMap = colorIDMap;
         this.cie = cie;
+        BufferedImage image = getBufferedImage(imageFile);
+        hasAlpha = image.getColorModel().hasAlpha();
+        BufferedImage scaledImage = getScaledImage(image, ch.maxX == 0 ? image.getWidth() : ch.maxX, ch.maxZ == 0 ? image.getHeight() : ch.maxZ);
+        this.width = scaledImage.getWidth();
+        this.length = scaledImage.getHeight() + 1;
+
+        validateSize();
+
+        imageToColorIDMatrix(scaledImage);
+    }
+
+    private static BufferedImage getBufferedImage(@NotNull File imageFile) throws IOException {
         BufferedImage image;
         try {
             image = ImageIO.read(imageFile);
         }catch (IOException ioe){
             throw new IOException("Image could not be opened");
         }
-
         if (image == null){
             throw new IllegalArgumentException("The chosen file was not an image or could not be opened.");
         }
-
-        int scaleWidth = ch.maxX == 0 ? image.getWidth() : ch.maxX;
-        int scaleHeight = ch.maxZ == 0 ? image.getHeight() : ch.maxZ;
-
-        Image sI = image.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_AREA_AVERAGING);
-        BufferedImage scaledImage = new BufferedImage(sI.getWidth(null),sI.getHeight(null),BufferedImage.TYPE_INT_ARGB);
-        Graphics2D bGr = scaledImage.createGraphics();
-        bGr.drawImage(sI,0,0, null);
-        bGr.dispose();
-        this.width = scaledImage.getWidth();
-        this.length = scaledImage.getHeight() + 1;
-
-        if (this.width * this.length > 1100000) {
-            throw new IllegalArgumentException("The (scaled) picture is to large and can not be calculated");
-        }
-        else if (this.width * this.length > 500000) {
-            EventBus.getDefault().post(new MessageEvent("The (scaled) picture is large, this will take a while"));
-        }
-
-        imageToColorIDMatrix(scaledImage);
+        return image;
     }
 
     /**
@@ -120,7 +117,7 @@ public class ColorIDMatrix {
      *         int value in range [0,length - 1]
      * @return The {@link MapIDEntry} fitting to that point
      */
-    public MapIDEntry getEntryfromPoint(int x, int z) throws IllegalArgumentException {
+    public MapIDEntry getEntryFromPoint(int x, int z) throws IllegalArgumentException {
         if (x < 0 || x >= width) {
             throw new IllegalArgumentException(String.format("x value was %d, only allowed in range [0,%d]", x, width - 1));
         }
@@ -151,6 +148,32 @@ public class ColorIDMatrix {
         int waterAmount = 0;
         int lichenAmount = 0;
 
+        prepareSortingMap(sortingMap);
+
+        StringBuilder amountString = fillAmountStringBuilder(sortingMap, waterAmount, lichenAmount);
+
+        return amountString.toString();
+    }
+
+    /**
+     * This method returns a {@link BufferedImage} object that shows an approximation of the resulting map in Minecraft.
+     * Air blocks will be fully transparent, any other block will be fully opaque.
+     *
+     * @return BufferedImage approximating the result
+     */
+    public BufferedImage imageFromColorIDMatrix() {
+        BufferedImage resultImage = new BufferedImage(width, length, BufferedImage.TYPE_INT_ARGB);
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < length; z++) {
+                MapIDEntry entry = colorIDMap.getEntry(colorIDMatrix[x][z]);
+                int rgb = entry.rgb() == 0 ? 0 : (entry.rgb() |  0xff000000);
+                resultImage.setRGB(x, z, rgb);
+            }
+        }
+        return resultImage;
+    }
+
+    private void prepareSortingMap(TreeMap<String, ArrayList<Integer>> sortingMap) {
         for (Map.Entry<Integer, Integer> entry : amountMap.entrySet()) {
 
             ArrayList<Integer> value = new ArrayList<>();
@@ -166,12 +189,15 @@ public class ColorIDMatrix {
                 sortingMap.replace(key, value);
             }
         }
+    }
 
+    @NotNull
+    private StringBuilder fillAmountStringBuilder(TreeMap<String, ArrayList<Integer>> sortingMap, int waterAmount, int lichenAmount) {
         StringBuilder amountString = new StringBuilder();
 
         amountString.append(String.format("You need these blocks:%n"));
         amountString.append(String.format("|" + centerString("Blockname", 30) + "|" + centerString("BlockID", 45) +
-                "|" + centerString("Amount", 10) + "|" + centerString("in Stacks", 10) + "|" + "%n"));
+                                          "|" + centerString("Amount", 10) + "|" + centerString("in Stacks", 10) + "|" + "%n"));
         for (Map.Entry<String, ArrayList<Integer>> entry : sortingMap.entrySet()) {
             String blockName = entry.getKey();
             String blockID = (colorIDMap.getEntry(entry.getValue().get(0)).blockID());
@@ -190,30 +216,12 @@ public class ColorIDMatrix {
 
         if (waterAmount > 0) amountString.append("\nGlas blocks to surround Water (at most): ").append(waterAmount * 5);
         if (lichenAmount > 0) amountString.append("\nSolid blocks to place under lichen: ").append(lichenAmount);
-
-        return amountString.toString();
-    }
-
-    /**
-     * This method returns a {@link BufferedImage} object that shows an approximation of the resulting map in Minecraft
-     *
-     * @return BufferedImage approximating the result
-     */
-    public BufferedImage imageFromColorIDMatrix() {
-        BufferedImage resultImage = new BufferedImage(width, length, 1);
-        for (int x = 0; x < width; x++) {
-            for (int z = 0; z < length; z++) {
-
-                int rgb = colorIDMap.getEntry(colorIDMatrix[x][z]).rgb();
-                resultImage.setRGB(x, z, rgb);
-            }
-        }
-        return resultImage;
+        return amountString;
     }
 
     /**
      * This method contains the de.turidus.minecraft_mapmaker.logic that transforms an image object to the colorIDMatrix
-     * It also adds an additional line of cobblestone at the north end of the matrix to provide correct shading
+     * It also adds a line of cobblestone at the north end of the matrix to provide correct shading
      *
      * @param image
      *         A {@link BufferedImage} object
@@ -221,26 +229,29 @@ public class ColorIDMatrix {
     private void imageToColorIDMatrix(BufferedImage image) {
 
         colorIDMatrix = new int[width][length];
+        prepareFirstRowOfColorIdMatrix();
+        addImageDataToColorIdMatrix(image);
+        fixFirstRowOfColorIdMatrix();
+    }
 
-        //This loop adds the additional line of cobblestone on the top. If cobblestone is turned off, another block will be used.
-        int insertColorID;
-        if(colorIDMap.getMap().containsKey(45)){
-            insertColorID = 45;
+    /**
+     * This method removes unnecessary first row blocks.
+     * A first row block is unnecessary, if the second row block is air,
+     * because air blocks do have a color that can be influenced by a block in the row above.
+     */
+    private void fixFirstRowOfColorIdMatrix() {
+        for(int[] column : colorIDMatrix){
+            if(column[1] == 0) column[0] = 0;
         }
-        else {
-            insertColorID = colorIDMap.getMap().entrySet().stream().filter(isNotAirAndWater()).map(Map.Entry::getKey).findFirst().orElse(0);
-        }
-        for (int[] colume : colorIDMatrix) {
-            colume[0] = insertColorID;
-        }
-        amountMap.put(insertColorID, width);
+    }
 
+    private void addImageDataToColorIdMatrix(BufferedImage image) {
         HashMap<Integer, Integer> knownLinks = new HashMap<>();
         for (int x = 0; x < width; x++) {
             for (int z = 1; z < length; z++) {
 
                 int rgb = image.getRGB(x, z - 1);
-                if(getAlpha(rgb) == 0) {
+                if(hasAlpha && getAlpha(rgb) == 0) {
                     colorIDMatrix[x][z] = 0;
                 }
                 else {
@@ -250,22 +261,48 @@ public class ColorIDMatrix {
         }
     }
 
+    /**
+     * This method adds a line of cobblestone on the top of the matrix.
+     * This line will later be outside the view area of the map but still influence how the north most line of
+     * pixels on this map is colored.
+     * If cobblestone is turned off, another block will be used.
+     */
+    private void prepareFirstRowOfColorIdMatrix() {
+        int insertColorID = getInsertColorID();
+        for (int[] colume : colorIDMatrix) {
+            colume[0] = insertColorID;
+        }
+        amountMap.put(insertColorID, width);
+    }
+
+    private int getInsertColorID() {
+        if(colorIDMap.getMap().containsKey(45)){
+            MapIDEntry supportEntry = colorIDMap.getEntry(45);
+            ch.supportBlock = supportEntry.blockID() + supportEntry.blockState();
+            return 45;
+        }
+        else {
+            return colorIDMap.getMap().entrySet().stream().filter(isNotAirAndWater()).map(Map.Entry::getKey).findFirst().orElse(0);
+        }
+    }
+
     @NotNull
     private static Predicate<Map.Entry<Integer, MapIDEntry>> isNotAirAndWater() {
         return entry -> !entry.getValue().blockID().equals("minecraft:air") && !entry.getValue().blockID().equals("minecraft:water");
     }
+
 
     /*
       Finds the entry in ColorIDMap with the closest rgb value to the rgb value of the pixel
     */
     private void addCorrectColorIDToMatrix(HashMap<Integer, Integer> knownLinks, int rgb, int x, int z) {
         if (knownLinks.containsKey(rgb)) {
-            int tempcolorID = knownLinks.get(rgb);
-            colorIDMatrix[x][z] = tempcolorID;
+            int tempColorID = knownLinks.get(rgb);
+            colorIDMatrix[x][z] = tempColorID;
 
             /*If knownLinks already contains the rgb value, then amountMap has to contain the paired colorID*/
-            int count = amountMap.get(tempcolorID);
-            amountMap.replace(tempcolorID, count + 1);
+            int count = amountMap.get(tempColorID);
+            amountMap.replace(tempColorID, count + 1);
         } else {
             double curDif = Double.MAX_VALUE;
             int curColorID = 0;
@@ -280,12 +317,8 @@ public class ColorIDMatrix {
             }
 
             knownLinks.put(rgb, curColorID);
-            if (amountMap.containsKey(curColorID)) {
-                int count = amountMap.get(curColorID);
-                amountMap.replace(curColorID, count + 1);
-            } else {
-                amountMap.put(curColorID, 1);
-            }
+            amountMap.putIfAbsent(curColorID, 0);
+            amountMap.replace(curColorID, amountMap.get(curColorID) + 1);
 
             colorIDMatrix[x][z] = curColorID;
         }
@@ -294,11 +327,10 @@ public class ColorIDMatrix {
     private int getAlpha(int rgb) {
         return (byte)(rgb >> 24) & 0xFF;
     }
-
     /**
      * This method calculates the distance between to rgb values by converting to Lab values and calculating DeltaE2000.
-     * Math found here: http://www.easyrgb.com/en/math.php See Delta E2000
-     * Explained here: https://en.wikipedia.org/wiki/Color_difference
+     * Math found here: <a href="http://www.easyrgb.com/en/math.php">...</a> See Delta E2000
+     * Explained here: <a href="https://en.wikipedia.org/wiki/Color_difference">...</a>
      *
      * @param rgbA
      *         An int containing the red value in byte 2, the green value in byte 3 and the blue value in byte 4 (left to right)
@@ -414,8 +446,8 @@ public class ColorIDMatrix {
 
     /**
      * Code taken from User Thanasis1101 on stackoverflow.com<br>
-     *     https://stackoverflow.com/a/45263428
-     * With math explained here: http://www.easyrgb.com/en/math.php
+     *     <a href="https://stackoverflow.com/a/45263428">...</a>
+     * With math explained here: <a href="http://www.easyrgb.com/en/math.php">...</a>
      * @param R Red channel value
      * @param G Green channel value
      * @param B Blue channel value
@@ -486,9 +518,28 @@ public class ColorIDMatrix {
         return lab;
     }
 
+    @NotNull
+    private static BufferedImage getScaledImage(BufferedImage image, int scaleWidth, int scaleHeight) {
+        Image sI = image.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_AREA_AVERAGING);
+        BufferedImage scaledImage = new BufferedImage(sI.getWidth(null),sI.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+        Graphics2D bGr = scaledImage.createGraphics();
+        bGr.drawImage(sI,0,0, null);
+        bGr.dispose();
+        return scaledImage;
+    }
+
+    private void validateSize() {
+        if (this.width * this.length > 1100000) {
+            throw new IllegalArgumentException("The (scaled) picture is to large and can not be calculated");
+        }
+        else if (this.width * this.length > 500000) {
+            EventBus.getDefault().post(new MessageEvent("The (scaled) picture is large, this will take a while"));
+        }
+    }
+
     /**
      * Centers a string inside a certain length.
-     * Provided by MerryCheese on Stackoverflow (https://stackoverflow.com/questions/8154366/how-to-center-a-string-using-string-format)
+     * Provided by MerryCheese on Stackoverflow (<a href="https://stackoverflow.com/questions/8154366/how-to-center-a-string-using-string-format">...</a>)
      *
      * @param text
      *         String to centerString
@@ -506,11 +557,4 @@ public class ColorIDMatrix {
         return String.format("%" + before + "s%-" + rest + "s", "", text);
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getLength() {
-        return length;
-    }
 }

@@ -3,7 +3,6 @@ package minecraft_mapmaker.logic;
 import de.turidus.minecraft_mapmaker.logic.ColorIDMap;
 import de.turidus.minecraft_mapmaker.logic.ColorIDMatrix;
 import de.turidus.minecraft_mapmaker.logic.MapIDEntry;
-import de.turidus.minecraft_mapmaker.utils.FaF;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
@@ -32,7 +31,7 @@ class ColorIDMatrixTest {
 
         ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/icon.gif"),colorIDMap, false);
 
-        MapIDEntry mapIDEntry = colorIDMatrix.getEntryfromPoint(0,1);
+        MapIDEntry mapIDEntry = colorIDMatrix.getEntryFromPoint(0, 1);
         assertEquals(116, mapIDEntry.colorID());
         assertEquals(1118481, mapIDEntry.rgb());
         assertEquals(17 ,mapIDEntry.getRed());
@@ -52,7 +51,7 @@ class ColorIDMatrixTest {
 
         ColorIDMap colorIDMap = new ColorIDMap(true, true, entryList);
         ColorIDMatrix colorIDMatrix = new ColorIDMatrix(new File("testpictures/icon.gif"),colorIDMap, false);
-        MapIDEntry mapIDEntry = colorIDMatrix.getEntryfromPoint(0,2);
+        MapIDEntry mapIDEntry = colorIDMatrix.getEntryFromPoint(0, 2);
         System.out.println(mapIDEntry.colorID());
         System.out.println(mapIDEntry.getRed());
         System.out.println(mapIDEntry.getGreen());
