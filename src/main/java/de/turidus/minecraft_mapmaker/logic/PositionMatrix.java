@@ -56,7 +56,7 @@ public class PositionMatrix {
     private final int           length;
     private final ColorIDMatrix colorIDMatrix;
     ConfigStore configStore = ConfigStore.getInstance();
-    private int[][] positionMatrix;
+    private ColorHeight[][] positionMatrix;
 
     /**
      * This constructor calls {@link PositionMatrix#positionMatrixFromColorIDMatrix()} to build the position matrix
@@ -147,7 +147,7 @@ public class PositionMatrix {
                                                 colorIDMatrix.getEntryFromPoint(x, z).blockName(),
                                                 x,
                                                 length - z - 1,
-                                                positionMatrix[x][z]));
+                                                positionMatrix[x][z].height));
             }
 
             positionSB.append(String.format("%n"));
@@ -180,7 +180,7 @@ public class PositionMatrix {
 
         for(int x = 0; x < width; x++) {
             for(int z = 0; z < length; z++) {
-                int        correctedY = positionMatrix[x][z] - minY;
+                int        correctedY = positionMatrix[x][z].height - minY;
                 MapIDEntry entry      = colorIDMatrix.getEntryFromPoint(x, z);
 
                 schematicCube[correctedY][z][x] = entry.colorID();
@@ -217,23 +217,13 @@ public class PositionMatrix {
     Even so, you should use Fast asynchrone world edit or similar.
     See Readme for additional information
      */
-        int schematicLength = length;
-        int schematicWidth  = width;
         int schematicHeight;
         if(highestUsedY < maxSchematicHeight) {schematicHeight = highestUsedY + 1;}
         else {schematicHeight = maxSchematicHeight;}
 
-        List<Integer> lengthRanges = new ArrayList<>();
-        for(int i = 0; i < (schematicLength / maxSize + 1); i++) {
-            lengthRanges.add(i * maxSize);
-        }
-        if(lengthRanges.get(lengthRanges.size() - 1) < schematicLength) {lengthRanges.add(schematicLength);}
+        List<Integer> lengthRanges = getRanges(length);
 
-        List<Integer> widthRanges = new ArrayList<>();
-        for(int i = 0; i < (schematicWidth / maxSize + 1); i++) {
-            widthRanges.add(i * maxSize);
-        }
-        if(widthRanges.get(widthRanges.size() - 1) < schematicWidth) {widthRanges.add(schematicWidth);}
+        List<Integer> widthRanges = getRanges(width);
 
         for(int rangeZ = 1; rangeZ < lengthRanges.size(); rangeZ++) {
             for(int rangeX = 1; rangeX < widthRanges.size(); rangeX++) {
@@ -309,35 +299,39 @@ public class PositionMatrix {
     }
 
     public int[][] getMatrix() {
-        return positionMatrix;
+        int[][] posMat = new int[positionMatrix.length][positionMatrix[0].length];
+        for(int x = 0; x < posMat.length; x++) {
+            for(int z = 0; z < posMat.length; z++) {
+                posMat[x][z] = positionMatrix[x][z].height;
+            }
+        }
+        return posMat;
     }
 
     /**
      * This method builds the positionMatrix out of the {@link ColorIDMatrix}
      */
     private void positionMatrixFromColorIDMatrix() {
-        this.positionMatrix = new int[width][length];
+        this.positionMatrix = new ColorHeight[width][length];
         fillPositionMatrixWithHeightValues();
         secondPassToCorrectHeightValues();
     }
 
     private void fillPositionMatrixWithHeightValues() {
-        int startY = minY + (minY + maxY) / 2;
-
         for(int x = 0; x < width; x++) {
             for(int z = 0; z < length; z++) {
                 int colorID = colorIDMatrix.getEntryFromPoint(x, z).colorID();
                 if(colorID == 0) {
-                    positionMatrix[x][z] = minY;
+                    positionMatrix[x][z] = new ColorHeight(true, 0);
                 }
-                if(z == 0) {
-                    positionMatrix[x][0] = startY;
+                else if(z == 0) {
+                    positionMatrix[x][0] = new ColorHeight(false, 0);
                 }
                 else {
                     switch(colorID % 4) {
-                        case 1 -> positionMatrix[x][z] = positionMatrix[x][z - 1];
-                        case 2 -> positionMatrix[x][z] = positionMatrix[x][z - 1] + 1;
-                        case 0 -> positionMatrix[x][z] = positionMatrix[x][z - 1] - 1;
+                        case 1 -> positionMatrix[x][z] = new ColorHeight(false, positionMatrix[x][z - 1].getSameColor());
+                        case 2 -> positionMatrix[x][z] = new ColorHeight(false, positionMatrix[x][z - 1].getLighterColor());
+                        case 0 -> positionMatrix[x][z] = new ColorHeight(false, positionMatrix[x][z - 1].getDarkerColor());
                     }
                 }
             }
@@ -360,12 +354,12 @@ public class PositionMatrix {
         for(int x = 0; x < width; x++) {
             int lowestY = maxY;
             for(int z = 0; z < length; z++) {
-                lowestY = Math.min(lowestY, positionMatrix[x][z]);
+                lowestY = Math.min(lowestY, positionMatrix[x][z].height);
             }
             int offsetY = lowestY - minY;
             if(offsetY != 0) {
                 for(int z = 0; z < length; z++) {
-                    positionMatrix[x][z] -= offsetY;
+                    positionMatrix[x][z].height -= offsetY;
                 }
             }
         }
@@ -381,48 +375,42 @@ public class PositionMatrix {
         int maxOffsetY = maxY - minY + 1;
 
         for(int x = 0; x < width; x++) {
-            boolean       exceedingY       = false;
-            boolean       inExceedingRange = false;
-            List<Integer> rangeZValues     = new ArrayList<>();
+            boolean       exceedingY;
+            List<Integer> rangeZValues = new ArrayList<>();
 
-            for(int z = 0; z < length; z++) {
-                if(positionMatrix[x][z] > maxY && !inExceedingRange) {
-                    exceedingY = true;
-                    inExceedingRange = true;
-                    rangeZValues.add(z);
-                }
-                else if(positionMatrix[x][z] <= maxY && inExceedingRange) {
-                    inExceedingRange = false;
-                    rangeZValues.add(z);
-                }
-            }
-            if(inExceedingRange) {rangeZValues.add(length);}
+            exceedingY = isExceedingY(x, rangeZValues);
 
             while(exceedingY) {
                 for(int index = 0; index < rangeZValues.size(); index += 2) {
                     for(int z = rangeZValues.get(index); z < rangeZValues.get(index + 1); z++) {
-                        positionMatrix[x][z] -= maxOffsetY;
+                        positionMatrix[x][z].height -= maxOffsetY;
                     }
                 }
 
                 exceedingY = false;
-                inExceedingRange = false;
                 rangeZValues = new ArrayList<>();
 
-                for(int z = 0; z < length; z++) {
-                    if(positionMatrix[x][z] > maxY && !inExceedingRange) {
-                        exceedingY = true;
-                        inExceedingRange = true;
-                        rangeZValues.add(z);
-                    }
-                    else if(positionMatrix[x][z] <= maxY && inExceedingRange) {
-                        inExceedingRange = false;
-                        rangeZValues.add(z);
-                    }
-                }
-                if(inExceedingRange) {rangeZValues.add(length);}
+                exceedingY = isExceedingY(x, rangeZValues);
             }
         }
+    }
+
+    private boolean isExceedingY(int x, List<Integer> rangeZValues) {
+        boolean exceedingY       = false;
+        boolean inExceedingRange = false;
+        for(int z = 0; z < length; z++) {
+            if(positionMatrix[x][z].height > maxY && !inExceedingRange) {
+                exceedingY = true;
+                inExceedingRange = true;
+                rangeZValues.add(z);
+            }
+            else if(positionMatrix[x][z].height <= maxY && inExceedingRange) {
+                inExceedingRange = false;
+                rangeZValues.add(z);
+            }
+        }
+        if(inExceedingRange) {rangeZValues.add(length);}
+        return exceedingY;
     }
 
     private Tag_Compound getLitematicaSchematic(String name,
@@ -594,6 +582,34 @@ public class PositionMatrix {
             byteList.add(i.byteValue());
         }
         return byteList;
+    }
+
+    @NotNull
+    private List<Integer> getRanges(int schematicLength) {
+        List<Integer> lengthRanges = new ArrayList<>();
+        for(int i = 0; i < (schematicLength / maxSize + 1); i++) {
+            lengthRanges.add(i * maxSize);
+        }
+        if(lengthRanges.get(lengthRanges.size() - 1) < schematicLength) {lengthRanges.add(schematicLength);}
+        return lengthRanges;
+    }
+
+    private static final class ColorHeight {
+
+        public final boolean air;
+        public       int     height;
+
+        public ColorHeight(boolean air, int height) {
+            this.air = air;
+            this.height = height;
+        }
+
+        int getSameColor() {return height;}
+
+        int getDarkerColor() {return air ? height : height - 1;}
+
+        int getLighterColor() {return air ? height : height + 1;}
+
     }
 
 }
