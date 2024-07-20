@@ -179,6 +179,7 @@
 43; 57, 41, 35
     Gray Terracotta,minecraft:gray_terracotta
     Tuff,minecraft:tuff
+    Tuff Slab,minecraft:tuff_slab[type=top]
 44; 135, 107, 98
     Light Gray Terracotta,minecraft:light_gray_terracotta
 45; 87, 92, 92
@@ -222,6 +223,6 @@
     Verdant Froglight,minecraft:verdant_froglight
 62; 207, 175, 159
     Cherry Planks,minecraft:cherry_planks
-    Cherry Slab,minecraft:cherry_slab
+    Cherry Slab,minecraft:cherry_slab[type=top]
 63; 239, 125, 163
     Cherry Leaves,minecraft:cherry_leaves
