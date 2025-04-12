@@ -73,17 +73,17 @@ public class AboutController {
     @FXML
     private Hyperlink newVersion;
 
-    public AboutController(){}
+    public AboutController() {}
 
     @FXML
-    private void initialize(){
+    private void initialize() {
 
 
-        try(InputStream inputStream = getClass().getResourceAsStream("/version")){
+        try(InputStream inputStream = getClass().getResourceAsStream("/version")) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             Lversion.setText(reader.readLine());
             reader.close();
-        }catch (IOException e){
+        } catch(IOException e) {
             EventBus.getDefault().post(new NonCriticalExceptionEvent("Version file could not be found", e));
         }
     }
@@ -95,18 +95,18 @@ public class AboutController {
      */
     @FXML
     private void checkVersion() {
-        if (!Lversion.getText().contains("Version")) {
+        if(!Lversion.getText().contains("Version")) {
             EventBus.getDefault().post(new NonCriticalExceptionEvent("Version file could not be found", new IOException()));
             return;
         }
         String curVersion = Lversion.getText().split(" ")[1].trim();
 
-        String url = "https://api.github.com/repos/Turidus/MinecraftMapMaker-JediTion/releases/latest";
+        String      url = "https://api.github.com/repos/Turidus/MinecraftMapMaker-JediTion/releases/latest";
         InputStream response;
 
         try {
             response = new URL(url).openStream();
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
             return;
         }
@@ -115,34 +115,34 @@ public class AboutController {
         JSONObject jsonObject;
 
         try {
-            jsonObject = (JSONObject)jsonParser.parse(new InputStreamReader(response));
-        } catch (IOException e) {
-            EventBus.getDefault().post(new NonCriticalExceptionEvent("Could not get the version of the newest release",e));
+            jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(response));
+        } catch(IOException e) {
+            EventBus.getDefault().post(new NonCriticalExceptionEvent("Could not get the version of the newest release", e));
             return;
-        } catch (ParseException e) {
-            EventBus.getDefault().post(new NonCriticalExceptionEvent("Could not find the version of the newest release",e));
+        } catch(ParseException e) {
+            EventBus.getDefault().post(new NonCriticalExceptionEvent("Could not find the version of the newest release", e));
             return;
         }
         System.out.println(jsonObject.get("tag_name"));
-        if(jsonObject.get("tag_name").equals(curVersion)) EventBus.getDefault().post(new MessageEvent("This version is up to date"));
-        else EventBus.getDefault().post(new MessageEvent("There is a new version, get it under About -> Latest Version"));
+        if(jsonObject.get("tag_name").equals(curVersion)) {EventBus.getDefault().post(new MessageEvent("This version is up to date"));}
+        else {EventBus.getDefault().post(new MessageEvent("There is a new version, get it under About -> Latest Version"));}
     }
 
     @FXML
-    private void loadRepro(){
+    private void loadRepro() {
         loadLink(repro.getText());
     }
 
     @FXML
-    private void loadNewVersion(){
-        loadLink(repro.getText());
+    private void loadNewVersion() {
+        loadLink(newVersion.getText());
     }
 
-    private void loadLink(String url){
-        if(Desktop.isDesktopSupported()){
+    private void loadLink(String url) {
+        if(Desktop.isDesktopSupported()) {
             try {
                 Desktop.getDesktop().browse(new URL(url).toURI());
-            } catch (IOException | URISyntaxException e) {
+            } catch(IOException | URISyntaxException e) {
                 e.printStackTrace();
                 EventBus.getDefault().post(new MessageEvent("Could not open Webbrowser, please visit " + url));
             }
