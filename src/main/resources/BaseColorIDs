@@ -94,6 +94,7 @@
     Lime Concrete,minecraft:lime_concrete
     Melon,103
 20; 242, 127, 165
+    Cherry Leaves,minecraft:cherry_leaves
     Pink Glazed Terracotta,minecraft:pink_glazed_terracotta
     Pink Wool,minecraft:pink_wool
     Pink Concrete,minecraft:pink_concrete
@@ -163,6 +164,8 @@
     Netherrack,minecraft:netherrack
     Nether Bricks,minecraft:nether_bricks
 36; 209, 177, 161
+    Cherry Slab,minecraft:cherry_slab[type=top]
+    Cherry Planks,minecraft:cherry_planks
     White Terracotta,minecraft:white_terracotta
 37; 159, 82, 36
     Orange Terracotta,minecraft:orange_terracotta
@@ -221,8 +224,4 @@
 61; 127, 167, 150
     Glow Lichen,minecraft:glow_lichen
     Verdant Froglight,minecraft:verdant_froglight
-62; 207, 175, 159
-    Cherry Planks,minecraft:cherry_planks
-    Cherry Slab,minecraft:cherry_slab[type=top]
-63; 239, 125, 163
-    Cherry Leaves,minecraft:cherry_leaves
+
