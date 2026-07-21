@@ -32,27 +32,27 @@ A GUI will open where you can generate the files you want.
 
 ### GUI
 
-####Menu Bar
+#### Menu Bar
 
  - File: Here you can close the window
  - Edit: Here you can save the current configuration or load the default values
  - About: Here you can find out more and check for new updates.
 
 
-####Main Window
+#### Main Window
 The GUI has three main columns.
 
-#####First column
+##### First column
 In the first column you can choose the image to process and a folder to save the files to. You can also optionally
 choose a project name under which the files will be saved and modify the colors and the blocks to be used in the generation.
 It also lets you choose the color matching algorithm. CIE deltaE 2000 matches closer to the human reception of colors,
 while Euclidian uses a very simple approach, that leads to sharper color islands. When in doubt, test it out.
 At last, you can choose the minecraft version you play at.
 
-#####Second column
+##### Second column
 In the second column you can choose what will be generated.
 
-#####Third column
+##### Third column
 In the third column you can modify the constrains under which the map will be generated.
 
 The field Minimal Y coordinate should be on the level where you plan to build the map. 
@@ -73,7 +73,7 @@ The field Maximum Schematic size hast to bigger than 0. It limits the size of th
 If you set it very low you have to import lots of schematics, if you set it too high,
 importing the schematics can choke or even outright crash your server (see About large images). 
 
-####Colors and Blocks
+#### Colors and Blocks
 In this window you can select the colors that are used by clicking the check mark and also select, where available,
 which block to use for this color.
 
